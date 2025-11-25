@@ -1,0 +1,737 @@
+/* ========= RESET ========= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue",
+               Arial, "Noto Sans KR", sans-serif;
+  color: #111;
+  background: #fff;
+  overflow-x: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* =================================================================== */
+/* ======================= INDEX.HTML STYLES ========================= */
+/* =================================================================== */
+
+/* ========= HEADER (BASE) ========= */
+.header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.9); /* 반투명 - INDEX 기본 스타일 */
+  backdrop-filter: blur(10px);          /* 블러 - INDEX 기본 스타일 */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06); /* INDEX 기본 스타일 */
+}
+
+.header-inner {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-logo img {
+  height: 50px; /* 상단 로고 높이 */
+  display: block;
+}
+
+.header-nav {
+  display: flex;
+  gap: 28px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+}
+
+/* ⚠️ 모든 페이지의 헤더 링크 색상을 기본 (inherit/body color)로 통일 */
+.header-nav a {
+  color: inherit; /* 기본 텍스트 색상 (#111)으로 설정 */
+  margin-left: 0 !important; /* product-header, about-header에서 추가했던 margin 제거 */
+}
+
+/* ⚠️ .header.about-header, .header.product-header 등의 특정 스타일 제거 (INDEX와 통일) */
+/* (기존 .header 정의를 사용) */
+
+
+main {
+  margin-top: 70px;
+}
+
+/* ========= HERO (INDEX) ========= */
+.hero {
+  min-height: 160vh;
+  width: 100%;
+  position: relative;
+  padding: 20px 20px 0;
+  padding-bottom: 250px;
+}
+
+.hero-inner {
+  max-width: 1600px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 40px;
+  position: relative;
+   margin-bottom: 300px;
+}
+
+.hero-left {
+    position: sticky;
+    top: 120px;
+    height: calc(100vh - 90px);
+    padding-left: 60px;
+    display: flex;
+    align-items: center;
+}
+
+.hero-left-img {
+   height: auto;
+   width: 100%;
+    max-width: none;
+    height: auto;
+  max-width: 80%;
+  object-fit: cover;
+  display: block;
+}
+
+.hero-right {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.hero-right-top {
+  flex: 1;
+  overflow: hidden;
+}
+
+.hero-right-top img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-logo {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80vw;
+  max-width: 1400px;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 1;
+  transition: transform 0.6s ease, opacity 0.6s ease;
+}
+
+.hero-logo.scrolled {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+}
+
+/* ========= PRODUCT SECTION (INDEX) ========= */
+.product-section {
+    max-width: 1600px;
+    margin: 180px auto 0;
+    padding: 0 80px;
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    margin-bottom: 32px;
+}
+
+.product-grid.main-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 40px;
+    align-items: start;
+}
+
+.product-item img {
+    width: 100%;
+    height: 320px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+}
+
+.product-item h3 {
+    font-size: 13px;
+    font-weight: 500;
+    margin-top: 12px;
+    margin-bottom: 6px;
+}
+
+.product-item p {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+/* ========= COLLAGE SECTION (INDEX) ========= */
+.collage-section {
+  width: 100%;
+  max-width: 1600px;
+  margin: 200px auto 0;
+  padding: 0 40px;
+  position: relative;
+}
+
+.collage-wrapper {
+  position: relative;
+  height: 900px;
+}
+
+.collage-img img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.img1 {
+  position: absolute;
+  width: 38%;
+  left: 0;
+  top: 40px;
+}
+
+.img2 {
+  position: absolute;
+  width: 32%;
+  left: 35%;
+  top: 250px;
+}
+
+.img3 {
+  position: absolute;
+  width: 30%;
+  right: 0;
+  top: 100px;
+}
+
+/* ========= INFO SECTION (INDEX) ========= */
+.info-section {
+  max-width: 1600px;
+  margin: 120px auto 0;
+  padding: 0 40px 80px;
+}
+
+.info-text p {
+  font-size: 14px;
+  line-height: 1.7;
+  white-space: pre-line;
+}
+
+/* =================================================================== */
+/* ======================== ABOUT.HTML STYLES ======================== */
+/* =================================================================== */
+
+body.about-page {
+  background: #000;
+  color: #fff;
+}
+
+/* ⚠️ about-header 스타일 제거 및 재정의: index.html과 동일하게 */
+/* .header.about-header {
+  background: rgba(0, 0, 0, 0.45); <- 제거 
+  border-bottom: none; <- 제거
+}
+.header.about-header .header-nav a {
+  color: #fff; <- 제거 (inherit으로 통일)
+  margin-left: 24px; <- 제거 (0으로 통일)
+} 
+*/
+/* about-page의 헤더만 다시 색상 통일 (body.about-page의 color: #fff를 따라가도록) */
+body.about-page .header .header-nav a {
+  color: #111; /* body.about-page의 color가 #fff이므로, 메뉴 텍스트를 #111로 강제 지정 */
+}
+body.about-page .header {
+  /* index와 동일: background: rgba(255, 255, 255, 0.9); */
+}
+
+
+.about-visual {
+  width: 100%;
+  height: 100vh;
+  background-image: url("images/about.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+.about-text {
+  position: absolute;
+  top: 50%;
+  left: 12%;
+  transform: translateY(-50%);
+  width: 480px;
+  color: #fff;
+}
+
+.about-text h2 {
+  font-size: 18px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.about-text p {
+  font-size: 14px;
+  line-height: 1.8;
+  opacity: 0.9;
+}
+
+
+/* =================================================================== */
+/* =================== CATALOGDETAIL.HTML STYLES =================== */
+/* =================================================================== */
+
+body.detail-page {
+    overflow: hidden;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+body.detail-page::-webkit-scrollbar {
+    display: none !important;
+}
+
+.detail-container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    /* 🛠️ 추가: 헤더 높이만큼 콘텐츠를 아래로 내림 */
+    padding-top: 80px; 
+}
+
+/* ⚠️ 주의: 이제 .detail-container가 80px 아래에서 시작하므로, 
+   하위 요소인 .scroll-section과 .detail-info의 height를 조정해야 합니다. */
+
+.scroll-section {
+    width: 33.33%;
+    /* 🛠️ 수정: 100vh에서 padding-top 높이만큼 빼줌 */
+    height: calc(100vh - 80px); 
+    overflow-y: scroll;
+    padding: 20px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.scroll-section::-webkit-scrollbar {
+    display: none !important;
+}
+
+/* ... (scroll-section img 스타일 유지) */
+
+.detail-info {
+    width: 33.33%;
+    padding: 40px;
+    border-left: 1px solid #eee;
+    /* 🛠️ 수정: sticky top을 헤더 높이와 같게 설정하여, 
+       헤더 바로 아래부터 고정되도록 합니다. */
+    position: sticky;
+    top: 80px; 
+    /* 🛠️ 수정: 100vh에서 padding-top 높이만큼 빼줌 */
+    height: calc(100vh - 80px);
+    overflow-y: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.detail-info::-webkit-scrollbar {
+    display: none !important;
+}
+
+.product-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+.product-price {
+    font-size: 18px;
+    font-weight: 600;
+}
+.product-oldprice {
+    text-decoration: line-through;
+    color: #888;
+    margin-bottom: 20px;
+}
+
+.size-buttons button {
+    padding: 8px 16px;
+    border: 1px solid #000;
+    background: #fff;
+    margin-right: 6px;
+    cursor: pointer;
+}
+
+.color-select {
+    display: flex;
+    gap: 10px;
+}
+.color-box {
+    width: 24px;
+    height: 24px;
+    border: 1px solid #000;
+}
+.black { background: #111; }
+.grey { background: #bfbfbf; }
+
+.add-cart-btn {
+    width: 100%;
+    padding: 14px;
+    background: #111;
+    color: #fff;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    margin: 20px 0;
+}
+
+.details-text {
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+
+/* =================================================================== */
+/* ======================= PRODUCT.HTML STYLES ======================= */
+/* =================================================================== */
+
+body.product-page {
+  background: #f4f4f4;
+}
+
+/* ⚠️ product-header 스타일 제거 및 재정의: index.html과 동일하게 */
+/* .header.product-header .header-nav a {
+  margin-left: 24px; <- 제거 (0으로 통일)
+}
+*/
+.header.product-header .header-nav .active {
+  font-weight: 700;
+}
+
+main.product-main {
+  margin-top: 100px;
+  max-width: 1600px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 30px 40px 80px;
+}
+
+.product-top h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 28px;
+}
+
+.product-card {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  text-align: center;
+  transition: 0.3s;
+}
+
+.product-card:hover {
+  transform: translateY(-6px);
+}
+
+.product-card img {
+  width: 100%;
+  height: 280px;
+  object-fit: contain;
+  margin-bottom: 16px;
+}
+
+.product-info h3 {
+  font-size: 12px;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.price {
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.filter-slot {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.filter-btn {
+  padding: 8px 18px;
+  border: 1px solid #222;
+  background: #fff;
+  cursor: pointer;
+  font-size: 12px;
+  border-radius: 4px;
+}
+
+.product-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+
+/* =================================================================== */
+/* ========================= COMMON STYLES =========================== */
+/* =================================================================== */
+
+/* ========= FOOTER ========= */
+.footer {
+    background-color: #1b0f0a;
+    color: #fff;
+    padding: 80px 0 60px;
+    margin-top: 150px;
+}
+
+.footer-columns {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 80px;
+}
+
+.footer-col {
+    flex: 1;
+}
+
+.footer-col h3 {
+    font-size: 16px;
+    margin-bottom: 18px;
+    font-weight: 700;
+}
+
+.footer-col p,
+.footer-col a {
+    font-size: 14px;
+    line-height: 1.8;
+    color: #fff;
+    text-decoration: none;
+}
+
+.footer-col a:hover {
+    opacity: 0.7;
+}
+
+.footer-bottom {
+    max-width: 1600px;
+    margin: 50px auto 0;
+    padding: 0 60px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #ccc;
+}
+/* ========== LOGIN PANEL SLIDE ========== */
+.login-panel {
+    position: fixed;
+    top: 0;
+    right: -50%;
+    width: 50%;
+    height: 100vh;
+    background: #fff;
+    z-index: 99999;
+    transition: right 0.4s ease;
+    padding: 30px 30px;
+    overflow-y: auto;
+    border-left: 1px solid #ddd;
+}
+
+.login-panel.open {
+    right: 0;
+}
+
+.login-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.login-header h2 {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+}
+
+.login-close {
+    background: none;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+
+}
+
+
+.login-input {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 12px;
+    border: 1px solid #e5e5e5;
+    background: #f7f7f7;
+    font-size: 13px;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 10px;
+    border: none;
+    font-size: 13px;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+}
+
+.login-btn.black {
+    background: #000;
+    color: #fff;
+}
+
+.login-btn.gray {
+    background: #eaeaea;
+    color: #000;
+}
+
+.social-title {
+    margin: 30px 0 15px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.social-btn {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 10px;
+    border: 1px solid #999;
+    background: #fff;
+    text-align: left;
+    font-size: 13px;
+    cursor: pointer;
+    
+}
+/* =================================================================== */
+/* ======================= JOIN.HTML STYLES ========================= */
+/* =================================================================== */
+
+/* 전체를 가운데 카드 형태로 */
+.join-wrapper {
+    width: 480px;
+    margin: 80px auto;
+    text-align: center;
+}
+
+/* 배너 이미지 */
+.join-wrapper img {
+    width: 160px;
+    margin-bottom: 20px;
+}
+
+.join-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 30px;
+}
+
+/* 입력창 */
+.input {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 14px;
+    border: 1px solid #ddd;
+    background: #fafafa;
+    font-size: 13px;
+    display: block;
+}
+
+/* 버튼 */
+.btn-black, .btn-gray {
+    width: 100%;
+    padding: 14px;
+    display: block;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 12px;
+}
+
+.btn-black {
+    background: #000;
+    color: #fff;
+}
+
+.btn-gray {
+    background: #ececec;
+    color: #000;
+}
+
+/* 소셜 로그인 */
+.social-area {
+    margin-top: 40px;
+    text-align: left;
+}
+
+.social-area p {
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.social-btn {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 8px;
+    border: 1px solid #ddd;
+    background: #fff;
+    text-align: left;
+}
+
+/* CLOSE */
+.close-btn {
+    position: absolute;
+    top: 40px;
+    right: 40px;
+    cursor: pointer;
+    font-size: 13px;
+}

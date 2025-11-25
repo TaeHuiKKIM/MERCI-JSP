@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>회원가입</title>
+<style>
+    /* 간단한 스타일 (필요에 따라 수정하세요) */
+    .join-box { width: 300px; margin: 0 auto; padding-top: 50px; }
+    .input-field { width: 100%; padding: 10px; margin-bottom: 10px; }
+    .btn { width: 100%; padding: 10px; background: black; color: white; border: none; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<div class="join-box">
+    <h2>SIGN UP</h2>
+    
+    <form action="joinIdCheck.jsp" method="post" name="joinForm">
+        
+        <input type="text" name="userId" class="input-field" placeholder="ID (EMAIL)" required>
+        
+        <input type="text" name="name" class="input-field" placeholder="NAME" required>
+        
+        <input type="password" name="password" class="input-field" placeholder="PASSWORD" required>
+        
+        <input type="password" name="passwordConfirm" class="input-field" placeholder="CONFIRM PASSWORD" required>
+        
+        <input type="button" value="CREATE ACCOUNT" class="btn" onclick="checkValue()">
+        
+        <br><br>
+        <input type="button" value="BACK TO LOGIN" class="btn" style="background:gray" onclick="location.href='../index.jsp'">
+    </form>
+</div>
+
+<script>
+    function checkValue() {
+        var form = document.joinForm;
+        var id = form.userId.value;
+        var pw = form.password.value;
+        var pwCheck = form.passwordConfirm.value;
+        var name = form.name.value;
+
+        // 1. 빈칸 검사
+        if(!id || !pw || !pwCheck || !name){
+            alert("모든 정보를 입력해주세요.");
+            return;
+        }
+
+        // [요청하신 기능 2] 비밀번호와 비밀번호 확인 값이 같은지 검사
+        if(pw !== pwCheck){
+            alert("비밀번호가 일치하지 않습니다.\n다시 확인해주세요.");
+            form.passwordConfirm.value = ""; // 비번 확인란 비우기
+            form.passwordConfirm.focus();    // 커서 이동
+            return; // 서버로 전송하지 않고 종료
+        }
+
+        // 문제가 없으면 서버(join_proc.jsp)로 전송
+        form.submit();
+    }
+</script>
+
+</body>
+</html>
