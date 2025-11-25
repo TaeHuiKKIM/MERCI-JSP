@@ -3,6 +3,11 @@
 <%@ page
 	import="java.sql.*, java.util.*, my.dao.*, my.model.*, my.util.*"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%
+// [1] 세션 확인
+String userName = (String) session.getAttribute("userName");
+boolean isLogin = (userName != null);
+%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -23,7 +28,20 @@
 			<nav class="header-nav">
 				<a href="#">HOME</a> <a href="about.html">ABOUT</a> <a
 					href="product.html">PRODUCT</a> <a href="#" id="loginMenu">LOGIN</a>
-
+				<%
+				if (isLogin) {
+				%>
+				<span style="font-weight: bold; margin-right: 10px; color: #333;">
+					<button type="button" onclick="location.href='../account.jsp'"><%=userName%>님
+					</button>
+				</span> <a href="user/logout_proc.jsp">LOGOUT</a>
+				<%
+				} else {
+				%>
+				<a href="#" id="loginMenu">LOGIN</a>
+				<%
+				}
+				%>
 			</nav>
 		</div>
 	</header>

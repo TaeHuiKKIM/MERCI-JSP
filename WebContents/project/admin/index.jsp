@@ -24,7 +24,6 @@ boolean isLogin = (userName != null);
 			<div class="header-logo">
 				<img src="../images/mainlogo.png" alt="logo">
 			</div>
-
 			<nav class="header-nav">
 				<a href="#">HOME</a> <a href="../about.html">ABOUT</a> <a
 					href="../product.html">PRODUCT</a> <a href="#" id="loginMenu">LOGIN</a>
