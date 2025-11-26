@@ -4,7 +4,7 @@
 	<object class="org.apache.commons.dbcp.DriverManagerConnectionFactory">
 		<string value="jdbc:mysql://localhost:3306/web?useSSL=false"/>
 		<string value="root"/>
-		<string value="1234"/>
+		<string value="0000"/>
 	</object>
 	
 	<object class="org.apache.commons.pool.impl.GenericObjectPool">

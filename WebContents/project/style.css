@@ -61,6 +61,15 @@ a {
   font-weight: 600;
   letter-spacing: 0.12em;
 }
+/* 로그인한 사용자 이름 스타일 */
+.header-nav .user-name {
+	display: flex;
+    font-size: 13px;
+    font-weight:600;    
+    letter-spacing: 0.12em;
+    margin-top : -3px;
+    margin-right: 4px;   
+}
 
 /* ⚠️ 모든 페이지의 헤더 링크 색상을 기본 (inherit/body color)로 통일 */
 .header-nav a {
@@ -565,20 +574,29 @@ main.product-main {
     color: #ccc;
 }
 /* ========== LOGIN PANEL SLIDE ========== */
+/* 로그인 패널 기본 스타일 (화면 오른쪽에 숨겨둠) */
 .login-panel {
     position: fixed;
     top: 0;
-    right: -50%;
-    width: 50%;
-    height: 100vh;
+    right: -400px; /* 처음에 화면 밖에 숨김 (패널 너비만큼) */
+    width: 400px;
+    height: 100%;
     background: #fff;
-    z-index: 99999;
-    transition: right 0.4s ease;
-    padding: 30px 30px;
-    overflow-y: auto;
-    border-left: 1px solid #ddd;
+    z-index: 9999;
+    transition: right 0.3s ease; /* 부드럽게 움직이는 효과 */
+    box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+    /* 내용물 정렬 */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px;
+    box-sizing: border-box;
 }
 
+/* 자바스크립트가 'active' 클래스를 붙였을 때 (화면 안으로 들어옴) */
+.login-panel.active {
+    right: 0; 
+}
 .login-panel.open {
     right: 0;
 }

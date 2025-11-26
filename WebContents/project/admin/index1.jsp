@@ -13,7 +13,7 @@ boolean isLogin = (userName != null);
 <head>
 <meta charset="UTF-8">
 <title>MERCI</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="../style.css">
 </head>
 
 <body>
@@ -22,17 +22,19 @@ boolean isLogin = (userName != null);
 	<header class="header">
 		<div class="header-inner">
 			<div class="header-logo">
-				<a href="index.jsp"><img src="images/mainlogo.png" alt="logo"></a>
+				<img src="../images/mainlogo.png" alt="logo">
 			</div>
 
 			<nav class="header-nav">
-				<a href="index.jsp">HOME</a> <a href="about.html">ABOUT</a> <a
-					href="product.html">PRODUCT</a>
+				<a href="#">HOME</a> <a href="../about.html">ABOUT</a> <a
+					href="../product.html">PRODUCT</a> <a href="#" id="loginMenu">LOGIN</a>
 				<%
 				if (isLogin) {
 				%>
-				<a href="user/account.jsp" class="user-name"><%=userName%>님</a> <a
-					href="user/logout_proc.jsp">LOGOUT</a>
+				<span style="font-weight: bold; margin-right: 10px; color: #333;">
+					<button type="button" onclick="location.href='../account.jsp'"><%=userName%>님
+					</button>
+				</span> <a href="user/logout_proc.jsp">LOGOUT</a>
 				<%
 				} else {
 				%>
@@ -48,20 +50,20 @@ boolean isLogin = (userName != null);
 
 		<!-- ========== HERO INTERACTION AREA (최상단) ========== -->
 		<!-- 중앙 고정 로고 (항상 hero 위에 있어야 함) -->
-		<img src="images/mainlogo.svg" class="hero-logo" alt="logo">
+		<img src="../images/mainlogo.svg" class="hero-logo" alt="logo">
 
 		<section class="hero">
 			<div class="hero-inner">
 
 				<!-- 왼쪽 큰 이미지 -->
 				<div class="hero-left">
-					<img src="images/heromain.png" class="hero-left-img" alt="">
+					<img src="../images/heromain.png" class="hero-left-img" alt="">
 				</div>
 
 				<!-- 오른쪽 두 개 이미지 -->
 				<div class="hero-right">
 					<div class="hero-right-top">
-						<img src="images/herorighttop.png" alt="sub look 1">
+						<img src="../images/herorighttop.png" alt="sub look 1">
 					</div>
 
 				</div>
@@ -76,6 +78,7 @@ boolean isLogin = (userName != null);
 		<!-- ========== SECTION 2 : 상품 5개 (옷 리스트) ========== -->
 
 		<%
+		String keyword = request.getParameter("keyword"); //한글
 		Connection conn = ConnectionProvider.getConnection();
 		List<Cloth> list = null;
 		String target = request.getParameter("target");
@@ -91,17 +94,49 @@ boolean isLogin = (userName != null);
 		<section class="product-section">
 			<h2 class="section-title">PRODUCTS</h2>
 			<div class="product-grid main-grid">
+
 				<c:set var="list" value="<%=list%>" />
 				<c:if test="${list != null}">
-					<c:forEach var="cloth" items="${list}">
-						<div class="product-item">
-							<a href="catalogdetail.jsp?clothId=${cloth.id}"> <img
-								src="uploadfile/${cloth.poster}" width="200" height="250">
-							</a>
-							<h3>${cloth.title}</h3>
-							<p>₩ ${cloth.price}</p>
-						</div>
-					</c:forEach>
+					<table width="400" border="1" cellpadding="3" cellspacing="0"
+						id="listtable">
+						<tr>
+							<th scope="col">아이디</th>
+							<th scope="col">이름</th>
+							<th scope="col">제작사</th>
+							<th scope="col">가격</th>
+							<th scope="col">사진</th>
+							<th scope="col">종류</th>
+							<th scope="col">수정</th>
+							<th scope="col">삭제</th>
+						</tr>
+						<c:forEach var="cloth" items="${list}">
+							<tr>
+								<td>${cloth.id}</td>
+								<td>${cloth.title}</td>
+								<td>${cloth.maker}</td>
+								<td>${cloth.price}</td>
+								<td><a href="../catalogdetail.jsp?id=${cloth.id}"> <img
+										src="../uploadfile/${cloth.poster}" width="30" , height="35">
+								</a></td>
+								<td><input type="button" value="수정"
+									onclick="location.href='updateForm.jsp?clothId=${cloth.id}'"></td>
+								<td><input type="button" value="삭제"
+									onclick="location.href='delete.jsp?clothId=${cloth.id}'"></td>
+							</tr>
+						</c:forEach>
+						<tr>
+							<form action="" method="post">
+								<%--action이 null이면 자신에게 데이터를 넘김 --%>
+								<td colspan="7">검색대상: <select name="target" id="target">
+										<option value="title">타이틀</option>
+										<option value="maker">제작사</option>
+								</select> 검색어: <label for="keyword"></label> <input name="keyword"
+									type="text" id="keyword" size="10"> <input
+									type="submit" name="btn" id="btn" value="검색">
+								</td>
+							</form>
+						</tr>
+					</table>
 				</c:if>
 			</div>
 		</section>
@@ -113,15 +148,15 @@ boolean isLogin = (userName != null);
 			<div class="collage-wrapper">
 
 				<div class="collage-img img1">
-					<img src="images/collage01.png" />
+					<img src="../images/collage01.png" />
 				</div>
 
 				<div class="collage-img img2">
-					<img src="images/collage02.png" />
+					<img src="../images/collage02.png" />
 				</div>
 
 				<div class="collage-img img3">
-					<img src="images/collage03.png" />
+					<img src="../images/collage03.png" />
 				</div>
 
 			</div>
@@ -169,46 +204,29 @@ boolean isLogin = (userName != null);
 
 
 	<div class="login-panel" id="loginPanel">
-		<div id="loginView">
-			<div class="login-header">
-				<h2>LOGIN</h2>
-				<button class="login-close" id="loginCloseBtn">CLOSE</button>
-			</div>
-			<form action="user/login_proc.jsp" method="post" name="loginForm"
-				class="login-box">
-				<input type="text" name="userId" placeholder="ID"
-					class="login-input"> <input type="password" name="password"
-					placeholder="PASSWORD" class="login-input"> <input
-					type="button" value="LOGIN" class="login-btn black"
-					onclick="loginCheck()"> <input type="button"
-					value="CREATE ACCOUNT" class="login-btn gray"
-					onclick="showJoinMode()">
-			</form>
+
+		<div class="login-header">
+			<h2>LOGIN</h2>
+			<button class="login-close" id="loginCloseBtn">CLOSE</button>
 		</div>
 
+		<form class="login-box">
+			<input type="text" placeholder="EMAIL" class="login-input"> <input
+				type="password" placeholder="PASSWORD" class="login-input">
 
-		<div id="joinView" style="display: none;">
-			<div class="login-header">
-				<h2>SIGN UP</h2>
-				<button class="login-close" id="joinCloseBtn">CLOSE</button>
-			</div>
+			<input type="button" value="LOGIN" class="login-btn black"> <input
+				type="button" value="CREATE ACCOUNT" class="login-btn gray"
+				onclick="location.href='join.html'">
+		</form>
 
-			<form action="user/join_proc.jsp" method="post" name="joinForm"
-				class="login-box">
-				<input type="text" name="userId" class="login-input"
-					placeholder="ID (EMAIL)"> <input type="text" name="name"
-					class="login-input" placeholder="NAME"> <input
-					type="password" name="password" class="login-input"
-					placeholder="PASSWORD"> <input type="password"
-					name="passwordConfirm" class="login-input"
-					placeholder="CONFIRM PASSWORD"> <input type="button"
-					value="CREATE ACCOUNT" class="login-btn gray" onclick="joinCheck()">
+		<h3 class="social-title">SOCIAL LOGIN</h3>
 
-				<input type="button" value="BACK TO LOGIN" class="login-btn gray"
-					style="margin-top: 10px; background-color: #000; color: #333;"
-					onclick="showLoginMode()">
-			</form>
+		<div class="social-login">
+			<input type="button" value="GOOGLE" class="social-btn"> <input
+				type="button" value="KAKAO" class="social-btn"> <input
+				type="button" value="NAVER" class="social-btn">
 		</div>
+
 	</div>
 	<script src="style.js"></script>
 </body>

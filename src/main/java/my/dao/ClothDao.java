@@ -2,7 +2,6 @@ package my.dao;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import my.model.Cloth;
@@ -82,7 +81,7 @@ public class ClothDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-//			JdbcUtil.close(conn); 메모리 오버플로우 가능 그래서 코드에서 닫아줌 putcart.jsp
+			JdbcUtil.close(conn);
 			JdbcUtil.close(pstmt);
 			JdbcUtil.close(rs);
 		}
@@ -147,7 +146,7 @@ public class ClothDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			// JdbcUtil.close(conn);
+			JdbcUtil.close(conn);
 			JdbcUtil.close(pstmt);
 		}
 	}
@@ -175,7 +174,7 @@ public class ClothDao {
 			rs.next();
 			return rs.getInt(1);
 		} finally {
-			//JdbcUtil.close(conn);
+			JdbcUtil.close(conn);
 			JdbcUtil.close(rs);
 		}
 	}
@@ -293,33 +292,33 @@ public class ClothDao {
 		}
 		return clothList;
 	}
-	
+
 	public List<String> selectClothType(Connection conn) throws SQLException {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		List<String> clothTypeList = new ArrayList<String>();
 		try {
-			pstmt = conn.prepareStatement("select clothType, count(*) as cnt from cloth2 group by clothType order by cnt desc");
+			pstmt = conn.prepareStatement(
+					"select clothType, count(*) as cnt from cloth2 group by clothType order by cnt desc");
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				String clothType = rs.getString("clothType");
 				clothTypeList.add(clothType);
 			}
 		} finally {
-			//JdbcUtil.close(conn);
+			JdbcUtil.close(conn);
 			JdbcUtil.close(rs);
 			JdbcUtil.close(pstmt);
 		}
 		return clothTypeList;
 	}
-	
-	
+
 	public List<Cloth> selectListByClothType(Connection conn, String clothType) throws SQLException {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		List<Cloth> clothList = null;
 		try {
-			pstmt = conn.prepareStatement("select * from cloth where clothType= " +clothType);
+			pstmt = conn.prepareStatement("select * from cloth where clothType= " + clothType);
 			rs = pstmt.executeQuery();
 			clothList = new ArrayList<Cloth>();
 			while (rs.next()) {
@@ -335,7 +334,7 @@ public class ClothDao {
 				clothList.add(cloth);
 			}
 		} finally {
-			//JdbcUtil.close(conn);
+			JdbcUtil.close(conn);
 			JdbcUtil.close(rs);
 			JdbcUtil.close(pstmt);
 		}
