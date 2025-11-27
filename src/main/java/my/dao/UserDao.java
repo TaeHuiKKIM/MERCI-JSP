@@ -176,4 +176,21 @@ public class UserDao {
 		}
 		return userList;
 	}
+	// [추가] 비밀번호 변경 메소드
+	public int updatePassword(Connection conn, String userId, String newPassword) throws SQLException {
+	    PreparedStatement pstmt = null;
+	    int result = 0;
+	    try {
+	        // user 테이블의 password 컬럼을 업데이트합니다.
+	        String sql = "UPDATE user SET password = ? WHERE userId = ?";
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, newPassword);
+	        pstmt.setString(2, userId);
+	        
+	        result = pstmt.executeUpdate(); // 성공하면 1 반환
+	    } finally {
+	        JdbcUtil.close(pstmt);
+	    }
+	    return result;
+	}
 }
