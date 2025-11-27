@@ -446,35 +446,45 @@ main.product-main {
 }
 
 /* LOGIN PANEL SLIDE */
+/* LOGIN PANEL SLIDE */
+/* LOGIN PANEL SLIDE – 최종 버전 */
 .login-panel {
     position: fixed;
-    top: 0; right: -400px;
-    width: 400px;
-    height: 100%;
-    background: #fff;
+    top: 0;
+    right: -500px;        /* 패널이 숨겨질 때 위치 */
+    width: 500px;         /* 첫 번째 사진과 동일한 슬림 패널 */
+    height: 100vh;
+    background: #ffffff;
     z-index: 9999;
-    transition: right 0.3s ease;
-    box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+    transition: right 0.35s ease;
+    box-shadow: -3px 0 12px rgba(0,0,0,0.12);
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    padding: 40px;
+    justify-content: flex-start;
+    padding: 30px;
     box-sizing: border-box;
 }
-.login-panel.active, .login-panel.open {
-    right: 0; 
+
+/* 패널 열렸을 때 */
+.login-panel.active,
+.login-panel.open {
+    right: 0;
 }
+
+/* HEADER */
 .login-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 40px;
+    margin-bottom: 32px;
 }
+
 .login-header h2 {
     font-size: 18px;
     font-weight: 700;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.04em;
 }
+
 .login-close {
     background: none;
     border: none;
@@ -482,31 +492,48 @@ main.product-main {
     font-weight: 600;
     cursor: pointer;
 }
+
+/* INPUT */
 .login-input {
     width: 100%;
-    padding: 15px;
+    padding: 14px;
     margin-bottom: 12px;
     border: 1px solid #e5e5e5;
     background: #f7f7f7;
     font-size: 13px;
+    box-sizing: border-box;
 }
+
+/* BUTTONS */
 .login-btn {
     width: 100%;
-    padding: 15px;
+    padding: 14px;
     margin-bottom: 10px;
     border: none;
     font-size: 13px;
     cursor: pointer;
     letter-spacing: 0.03em;
+    box-sizing: border-box;
 }
-.login-btn.black { background: #000; color: #fff; }
-.login-btn.gray { background: #eaeaea; color: #000; }
+
+.login-btn.black {
+    background: #000;
+    color: #fff;
+}
+
+.login-btn.gray {
+    background: #eaeaea;
+    color: #000;
+}
+
+/* SOCIAL */
 
 .social-title {
-    margin: 30px 0 15px;
+    margin: 28px 0 12px;
     font-size: 13px;
     font-weight: 600;
 }
+
 .social-btn {
     width: 100%;
     padding: 14px;
@@ -516,10 +543,11 @@ main.product-main {
     text-align: left;
     font-size: 13px;
     cursor: pointer;
+    box-sizing: border-box;
 }
 
 /* =================================================================== */
-/* ======================== JOIN.HTML STYLES ========================= */
+/* ======================== JOINform1.HTML STYLES ========================= */
 /* =================================================================== */
 .join-wrapper {
     width: 480px;
