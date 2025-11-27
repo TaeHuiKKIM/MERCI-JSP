@@ -5,6 +5,10 @@
   box-sizing: border-box;
 }
 
+::-webkit-scrollbar {
+  display: none;
+}
+
 html, body {
   height: 100%;
 }
@@ -31,9 +35,9 @@ a {
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 100;
-  background: rgba(255, 255, 255, 0.9); /* 반투명 */
-  backdrop-filter: blur(10px);          /* 블러 */
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  background: rgba(255, 255, 255, 0.9); /* 반투명 - INDEX 기본 스타일 */
+  backdrop-filter: blur(10px);          /* 블러 - INDEX 기본 스타일 */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06); /* INDEX 기본 스타일 */
 }
 
 .header-inner {
@@ -46,17 +50,29 @@ a {
 }
 
 .header-logo img {
-  height: 26px; /* 상단 로고 높이 */
+  height: 50px; /* 상단 로고 높이 */
   display: block;
 }
 
 .header-nav {
   display: flex;
   gap: 28px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.12em;
 }
+/* 로그인한 사용자 이름 스타일 */
+
+
+/* ⚠️ 모든 페이지의 헤더 링크 색상을 기본 (inherit/body color)로 통일 */
+.header-nav a {
+  color: inherit; /* 기본 텍스트 색상 (#111)으로 설정 */
+  margin-left: 0 !important; /* product-header, about-header에서 추가했던 margin 제거 */
+}
+
+/* ⚠️ .header.about-header, .header.product-header 등의 특정 스타일 제거 (INDEX와 통일) */
+/* (기존 .header 정의를 사용) */
+
 
 main {
   margin-top: 70px;
@@ -67,7 +83,11 @@ main {
   min-height: 160vh;
   width: 100%;
   position: relative;
-  padding: 20px 20px 0;
+
+  /* 좌우 여백 균일하게 잡기 */
+  padding: 20px 40px 0; 
+  /* (좌우 40px 추천: 너무 좁지 않고 딱 균형 잡힘) */
+
   padding-bottom: 250px;
 }
 
@@ -77,18 +97,19 @@ main {
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
   gap: 40px;
-  position: relative;
-   margin-bottom: 300px;
+  margin-bottom: 300px;
 }
 
+/* 왼쪽만 밀리던 패딩 제거 */
 .hero-left {
     position: sticky;
     top: 120px;
     height: calc(100vh - 90px);
-    padding-left: 60px;
+    padding-left: 0;   /* ← 이게 문제였음 */
     display: flex;
     align-items: center;
 }
+
 
 .hero-left-img {
    height: auto;
@@ -122,7 +143,7 @@ main {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 95vw;
+  width: 80vw;
   max-width: 1400px;
   pointer-events: none;
   z-index: 9999;
@@ -245,15 +266,24 @@ body.about-page {
   color: #fff;
 }
 
-.header.about-header {
-  background: rgba(0, 0, 0, 0.45);
-  border-bottom: none;
+/* ⚠️ about-header 스타일 제거 및 재정의: index.html과 동일하게 */
+/* .header.about-header {
+  background: rgba(0, 0, 0, 0.45); <- 제거 
+  border-bottom: none; <- 제거
+}
+.header.about-header .header-nav a {
+  color: #fff; <- 제거 (inherit으로 통일)
+  margin-left: 24px; <- 제거 (0으로 통일)
+} 
+*/
+/* about-page의 헤더만 다시 색상 통일 (body.about-page의 color: #fff를 따라가도록) */
+body.about-page .header .header-nav a {
+  color: #111; /* body.about-page의 color가 #fff이므로, 메뉴 텍스트를 #111로 강제 지정 */
+}
+body.about-page .header {
+  /* index와 동일: background: rgba(255, 255, 255, 0.9); */
 }
 
-.header.about-header .header-nav a {
-  color: #fff;
-  margin-left: 24px;
-}
 
 .about-visual {
   width: 100%;
@@ -305,11 +335,17 @@ body.detail-page::-webkit-scrollbar {
     display: flex;
     width: 100vw;
     height: 100vh;
+    /* 🛠️ 추가: 헤더 높이만큼 콘텐츠를 아래로 내림 */
+    padding-top: 80px; 
 }
+
+/* ⚠️ 주의: 이제 .detail-container가 80px 아래에서 시작하므로, 
+   하위 요소인 .scroll-section과 .detail-info의 height를 조정해야 합니다. */
 
 .scroll-section {
     width: 33.33%;
-    height: 100vh;
+    /* 🛠️ 수정: 100vh에서 padding-top 높이만큼 빼줌 */
+    height: calc(100vh - 80px); 
     overflow-y: scroll;
     padding: 20px;
     -ms-overflow-style: none;
@@ -319,18 +355,18 @@ body.detail-page::-webkit-scrollbar {
     display: none !important;
 }
 
-.scroll-section img {
-    width: 100%;
-    margin-bottom: 30px;
-}
+/* ... (scroll-section img 스타일 유지) */
 
 .detail-info {
     width: 33.33%;
     padding: 40px;
     border-left: 1px solid #eee;
+    /* 🛠️ 수정: sticky top을 헤더 높이와 같게 설정하여, 
+       헤더 바로 아래부터 고정되도록 합니다. */
     position: sticky;
-    top: 0;
-    height: 100vh;
+    top: 80px; 
+    /* 🛠️ 수정: 100vh에서 padding-top 높이만큼 빼줌 */
+    height: calc(100vh - 80px);
     overflow-y: auto;
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -399,10 +435,11 @@ body.product-page {
   background: #f4f4f4;
 }
 
-.header.product-header .header-nav a {
-  margin-left: 24px;
+/* ⚠️ product-header 스타일 제거 및 재정의: index.html과 동일하게 */
+/* .header.product-header .header-nav a {
+  margin-left: 24px; <- 제거 (0으로 통일)
 }
-
+*/
 .header.product-header .header-nav .active {
   font-weight: 700;
 }
@@ -535,20 +572,29 @@ main.product-main {
     color: #ccc;
 }
 /* ========== LOGIN PANEL SLIDE ========== */
+/* 로그인 패널 기본 스타일 (화면 오른쪽에 숨겨둠) */
 .login-panel {
     position: fixed;
     top: 0;
-    right: -50%;
-    width: 50%;
-    height: 100vh;
+    right: -400px; /* 처음에 화면 밖에 숨김 (패널 너비만큼) */
+    width: 400px;
+    height: 100%;
     background: #fff;
-    z-index: 99999;
-    transition: right 0.4s ease;
-    padding: 25px 27px;
-    overflow-y: auto;
-    border-left: 1px solid #ddd;
+    z-index: 9999;
+    transition: right 0.3s ease; /* 부드럽게 움직이는 효과 */
+    box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+    /* 내용물 정렬 */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px;
+    box-sizing: border-box;
 }
 
+/* 자바스크립트가 'active' 클래스를 붙였을 때 (화면 안으로 들어옴) */
+.login-panel.active {
+    right: 0; 
+}
 .login-panel.open {
     right: 0;
 }
@@ -573,8 +619,6 @@ main.product-main {
     font-weight: 600;
     cursor: pointer;
 
-    /* CLOSE 버튼 단독 위치 조정 */
-    transform: translate(15px, -20px);
 }
 
 
@@ -707,3 +751,370 @@ main.product-main {
     cursor: pointer;
     font-size: 13px;
 }
+/* =================================================================== */
+/* =======================MY PAGE STYLES ======================= */
+/* =================================================================== */
+/* 전체 컨테이너 */
+/* 전체 폰트 */
+body {
+    font-family: 'Helvetica', 'Apple SD Gothic Neo', sans-serif;
+    background: #ffffff;
+    margin: 0;
+}
+
+/* ================= HEADER ================= */
+/* 기존 mypage-header nav a 스타일 수정 */
+.mypage-header nav a {
+    margin-left: 28px; /* 메인 헤더의 gap과 동일하게 조정 필요 */
+    font-size: 13px; 
+    font-weight: 600; 
+    text-decoration: none;
+    color: #444; /* 메인 헤더 색상과 통일 필요시 변경 */
+    transition: color 0.2s ease;
+    letter-spacing: 0.12em; /* 메인 헤더와 자간 통일 */
+}
+
+/* 로고 텍스트 */
+.mypage-header .logo {
+    font-size: 22px;
+    font-weight: 600;
+    color: #222;
+}
+
+/* 메뉴 스타일 */
+.mypage-header nav a {
+    margin-left: 28px;
+    font-size: 15px;
+    font-weight: 400;
+    text-decoration: none;
+    color: #444;
+    transition: color 0.2s ease;
+}
+
+.mypage-header nav a:hover {
+    color: #000;
+}
+
+/* ================= BANNER ================= */
+.mypage-banner img {
+    width: 100%;
+    height: 200px; /* 원하는 배너 높이 */
+    object-fit: cover;
+    display: block;
+    margin-top: 70px;
+}
+
+/* ================= CONTENT ================= */
+.mypage-container {
+    width: 600px;
+    margin: 50px auto;
+    color: #222;
+    text-align: center;
+}
+
+/* 환영 문구 */
+.welcome-text {
+    font-size: 22px;
+    font-weight: 500;
+    margin-bottom: 40px;
+}
+
+/* ================= BUTTONS ================= */
+.btn {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #ccc;
+    background: #f5f5f5;
+    font-size: 13px;
+    cursor: pointer;
+    border-radius: 2px;
+    color: #222;
+    transition: 0.2s ease;
+}
+
+.btn:hover {
+    background: #ebebeb;
+}
+
+.address-btn {
+    width: 200px;
+    display: block;
+    margin: 0 auto 50px; /* 환영문구 아래 여백 넉넉히 */
+}
+
+/* 비밀번호 변경 */
+.section-title {
+    text-align: left;
+    margin: 50px 0 15px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.password-box {
+    text-align: left;
+}
+
+.password-box label {
+    font-size: 12px;
+    color: #777;
+    margin-top: 15px;
+    display: block;
+}
+
+.password-box input {
+    width: 100%;
+    padding: 14px;
+    background: #f5f5f5;
+    border: none;
+    border-radius: 2px;
+    margin-top: 6px;
+}
+
+/* DELETE 버튼 */
+.delete-btn {
+    background: #444;
+    color: #fff;
+    border: none;
+    margin-top: 20px;
+    margin-bottom: 60px; 
+}
+
+.delete-btn:hover {
+    background: #000;
+}
+/* 전체 컨테이너 위로 올리기 */
+.mypage-container {
+    width: 600px;
+    margin: 20px auto;   /* 기존 50px auto → 20px auto 로 수정 */
+    color: #222;
+    text-align: center;
+}
+
+/* 환영합니다 아래 간격도 줄이기 (너무 공백 많아서) */
+.welcome-text {
+    font-size: 22px;
+    font-weight: 500;
+    margin-bottom: 25px;   /* 기존 40px → 25px */
+}
+
+/* 배송지 버튼과 비밀번호 변경 사이 간격 줄이기 */
+.address-btn {
+    width: 200px;
+    display: block;
+    margin: 0 auto 35px;   /* 기존 50px → 35px */
+}
+
+/* 비밀번호 변경 버튼 위 여백 추가 */
+.change-btn {
+    margin-top: 25px;   /* 기존 10px → 25px */
+}
+/* =================================================================== */
+/* =======================MY PAGE STYLES ======================= */
+/* =================================================================== */
+/* 전체 컨테이너 */
+/* 전체 폰트 */
+body {
+    font-family: 'Helvetica', 'Apple SD Gothic Neo', sans-serif;
+    background: #ffffff;
+    margin: 0;
+}
+
+/* ================= HEADER ================= */
+.mypage-header {
+    width: 100%;
+    height: 70px; /* 60px → 시각적 안정감 위해 70px 추천 */
+    border-bottom: 1px solid #e5e5e5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    box-sizing: border-box;
+    background: #ffffff;
+    position: fixed;  /* 스크롤에도 고정 (선택사항) */
+    top: 0;
+    left: 0;
+    z-index: 10;
+}
+
+/* 로고 텍스트 */
+.mypage-header .logo {
+    font-size: 22px;
+    font-weight: 600;
+    color: #222;
+}
+
+/* 메뉴 스타일 */
+.mypage-header nav a {
+    margin-left: 28px;
+    font-size: 15px;
+    font-weight: 400;
+    text-decoration: none;
+    color: #444;
+    transition: color 0.2s ease;
+}
+
+.mypage-header nav a:hover {
+    color: #000;
+}
+
+/* ================= BANNER ================= */
+.mypage-banner img {
+    width: 100%;
+    height: 200px; /* 원하는 배너 높이 */
+    object-fit: cover;
+    display: block;
+    margin-top: 70px;
+}
+
+/* ================= CONTENT ================= */
+.mypage-container {
+    width: 600px;
+    margin: 50px auto;
+    color: #222;
+    text-align: center;
+}
+
+/* 환영 문구 */
+.welcome-text {
+    font-size: 22px;
+    font-weight: 500;
+    margin-bottom: 40px;
+}
+
+/* ================= BUTTONS ================= */
+.btn {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #ccc;
+    background: #f5f5f5;
+    font-size: 13px;
+    cursor: pointer;
+    border-radius: 2px;
+    color: #222;
+    transition: 0.2s ease;
+}
+
+.btn:hover {
+    background: #ebebeb;
+}
+
+.address-btn {
+    width: 200px;
+    display: block;
+    margin: 0 auto 50px; /* 환영문구 아래 여백 넉넉히 */
+}
+
+/* 비밀번호 변경 */
+.section-title {
+    text-align: left;
+    margin: 50px 0 15px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.password-box {
+    text-align: left;
+}
+
+.password-box label {
+    font-size: 12px;
+    color: #777;
+    margin-top: 15px;
+    display: block;
+}
+
+.password-box input {
+    width: 100%;
+    padding: 14px;
+    background: #f5f5f5;
+    border: none;
+    border-radius: 2px;
+    margin-top: 6px;
+}
+
+/* DELETE 버튼 */
+.delete-btn {
+    background: #444;
+    color: #fff;
+    border: none;
+    margin-top: 20px;
+    margin-bottom: 60px; 
+}
+
+.delete-btn:hover {
+    background: #000;
+}
+/* 전체 컨테이너 위로 올리기 */
+.mypage-container {
+    width: 600px;
+    margin: 20px auto;   /* 기존 50px auto → 20px auto 로 수정 */
+    color: #222;
+    text-align: center;
+}
+
+/* 환영합니다 아래 간격도 줄이기 (너무 공백 많아서) */
+.welcome-text {
+    font-size: 22px;
+    font-weight: 500;
+    margin-bottom: 25px;   /* 기존 40px → 25px */
+}
+
+/* 배송지 버튼과 비밀번호 변경 사이 간격 줄이기 */
+.address-btn {
+    width: 200px;
+    display: block;
+    margin: 0 auto 35px;   /* 기존 50px → 35px */
+}
+
+/* 비밀번호 변경 버튼 위 여백 추가 */
+.change-btn {
+    margin-top: 25px;   /* 기존 10px → 25px */
+}
+/* ======================= 배송지 입력 페이지 ======================= */
+
+.address-container {
+    width: 600px;
+    margin: 120px auto 80px;
+    padding-top: 20px;
+}
+
+.address-container h2 {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 40px;
+}
+
+.address-form label {
+    font-size: 13px;
+    color: #777;
+    display: block;
+    margin-top: 18px;
+    margin-bottom: 6px;
+}
+
+.address-form input {
+    width: 100%;
+    padding: 13px;
+    background: #f5f5f5;
+    border: none;
+    border-radius: 2px;
+    font-size: 14px;
+}
+
+/* 저장 버튼 */
+.save-btn {
+    margin-top: 40px;
+    background: #111;
+    color: #fff;
+    border: none;
+    width: 100%;
+    padding: 14px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.save-btn:hover {
+    background: #000;
+}
+	

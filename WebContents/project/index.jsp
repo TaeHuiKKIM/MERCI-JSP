@@ -31,7 +31,7 @@ boolean isLogin = (userName != null);
 				<%
 				if (isLogin) {
 				%>
-				<a href="user/account.jsp" class="user-name"><%=userName%>님</a> <a
+				<a href="user/account.jsp">MY PAGE</a> <a
 					href="user/logout_proc.jsp">LOGOUT</a>
 				<%
 				} else {
@@ -205,7 +205,7 @@ boolean isLogin = (userName != null);
 					value="CREATE ACCOUNT" class="login-btn gray" onclick="joinCheck()">
 
 				<input type="button" value="BACK TO LOGIN" class="login-btn gray"
-					style="margin-top: 10px; background-color: #000; color: #333;"
+					style="margin-top: 10px; background-color: black; color: white;"
 					onclick="showLoginMode()">
 			</form>
 		</div>

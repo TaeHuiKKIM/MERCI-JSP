@@ -1,0 +1,87 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+   pageEncoding="UTF-8"%>
+<%@ page
+   import="java.sql.*, java.util.*, my.dao.*, my.model.*, my.util.*"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>배송지 정보 입력</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body class="address-page">
+
+    <!-- 공통 HEADER -->
+    <header class="header">
+        <div class="header-inner">
+            <div class="header-logo">
+                <a href="index.jsp"><img src="images/mainlogo.png" alt="logo"></a>
+            </div>
+
+            <nav class="header-nav">
+                <a href="index.jsp">HOME</a>
+                <a href="about.html">ABOUT</a>
+                <a href="product.html">PRODUCT</a>
+                <a href="mypage.html">MYPAGE</a>
+                <a href="#" id="loginMenu">LOGIN</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 배송지 입력 폼 -->
+    <div class="address-container">
+
+        <h2>배송지 정보 입력</h2>
+
+        <form action="address_proc.jsp" method="post" class="address-form">
+
+            <label>주소명</label>
+            <input type="text" name="addressName" placeholder="예: 집, 회사" required>
+
+            <label>받는 사람</label>
+            <input type="text" name="receiver" required>
+
+            <label>전화번호</label>
+            <input type="text" name="phone" placeholder="010-0000-0000" required>
+
+            <label>도로명 주소</label>
+            <input type="text" name="roadAddress" required>
+
+            <label>상세주소</label>
+            <input type="text" name="detailAddress">
+
+            <button type="submit" class="btn save-btn">저장하기</button>
+        </form>
+
+    </div>
+
+   <div class="login-panel" id="loginPanel">
+
+      <div class="login-header">
+         <h2>LOGIN</h2>
+         <button class="login-close" id="loginCloseBtn">CLOSE</button>
+      </div>
+
+      <form class="login-box">
+         <input type="text" placeholder="EMAIL" class="login-input"> <input
+            type="password" placeholder="PASSWORD" class="login-input">
+
+         <input type="button" value="LOGIN" class="login-btn black"> <input
+            type="button" value="CREATE ACCOUNT" class="login-btn gray"
+            onclick="location.href='join.html'">
+      </form>
+
+      <h3 class="social-title">SOCIAL LOGIN</h3>
+
+      <div class="social-login">
+         <input type="button" value="GOOGLE" class="social-btn"> <input
+            type="button" value="KAKAO" class="social-btn"> <input
+            type="button" value="NAVER" class="social-btn">
+      </div>
+
+   </div>
+    <script src="style.js"></script>
+</body>
+</html>
