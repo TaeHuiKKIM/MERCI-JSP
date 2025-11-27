@@ -1,3 +1,5 @@
+/* style.js - 최종 수정본 */
+
 /* =========================================
    1. 화면 전환 및 유효성 검사 (전역 함수)
    ========================================= */
@@ -41,15 +43,19 @@ function joinCheck() {
     var pwConfirm = f.passwordConfirm.value;
     var name = f.name.value;
     
-    // 정규식
     var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
+    // 비밀번호: 영문, 숫자, 특수문자 포함 8자 이상
     var pwPattern = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*?_]).{8,}$/;
 
     if (!id || !name || !pw || !pwConfirm) { alert("모든 정보를 입력하세요."); return; }
     if (!emailPattern.test(id)) { alert("아이디는 이메일 형식이어야 합니다."); f.userId.focus(); return; }
     
-    // 비밀번호 복잡도 (필요시 주석 해제하여 pwPattern 사용 가능)
-    if (pw.length < 4) { alert("비밀번호는 4자리 이상이어야 합니다."); f.password.focus(); return; }
+    // 비밀번호 정규식 체크
+    if (!pwPattern.test(pw)) { 
+        alert("비밀번호는 8자리 이상이어야 하며,\n영문, 숫자, 특수문자를 모두 포함해야 합니다."); 
+        f.password.focus(); 
+        return; 
+    }
     
     if (pw !== pwConfirm) { 
         alert("비밀번호가 일치하지 않습니다."); 
@@ -61,23 +67,51 @@ function joinCheck() {
     f.submit();
 }
 
-// [비밀번호 변경 폼 검사]
+// [비밀번호 변경 폼 검사] - 정규식 적용됨
 function checkPasswordChange() {
     var f = document.pwForm;
+    
+    // 폼 존재 여부 확인
     if (!f) { alert("비밀번호 변경 폼을 찾을 수 없습니다."); return; }
 
     var current = f.currentPw.value;
     var newPw = f.newPw.value;
     var confirmPw = f.confirmPw.value;
 
-    if (!current || !newPw || !confirmPw) { alert("모든 정보를 입력해주세요."); return; }
+    // 1. 빈칸 검사
+    if (!current || !newPw || !confirmPw) { 
+        alert("모든 정보를 입력해주세요."); 
+        return; 
+    }
+
+    // 2. 기존 비밀번호와 새 비밀번호가 같은지 검사
+    if (current === newPw) {
+        alert("새 비밀번호는 기존 비밀번호와 다르게 설정해야 합니다.");
+        f.newPw.value = "";
+        f.confirmPw.value = "";
+        f.newPw.focus();
+        return;
+    }
+
+    // 3. 정규식 패턴 정의
+    var pwPattern = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*?_]).{8,}$/;
+
+    // 4. 새 비밀번호 유효성 검사
+    if (!pwPattern.test(newPw)) {
+        alert("새 비밀번호는 8자리 이상이어야 하며,\n영문, 숫자, 특수문자를 모두 포함해야 합니다.");
+        f.newPw.value = "";       
+        f.confirmPw.value = "";   
+        f.newPw.focus();          
+        return; 
+    }
+
+    // 5. 새 비밀번호 일치 검사
     if (newPw !== confirmPw) { 
-        alert("새 비밀번호가 일치하지 않습니다.\n다시 확인해주세요."); 
+        alert("새 비밀번호 확인이 일치하지 않습니다.\n다시 확인해주세요."); 
         f.confirmPw.value = ""; 
         f.confirmPw.focus(); 
         return; 
     }
-    if (newPw.length < 4) { alert("비밀번호는 4자리 이상이어야 합니다."); f.newPw.focus(); return; }
 
     f.submit();
 }
@@ -108,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginView = document.getElementById("loginView");
     const joinView = document.getElementById("joinView");
 
-    // [3] 메인 LOGIN 버튼 클릭 -> 패널 열기 (항상 로그인창 먼저 보여줌)
+    // [3] 메인 LOGIN 버튼 클릭 -> 패널 열기
     if (loginMenu) {
         loginMenu.addEventListener("click", (e) => {
             e.preventDefault();
@@ -133,16 +167,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // [5] 자동 로그인 패널 열기 (?login=open 감지)
-    // account.jsp 등에서 쫓겨났을 때 로그인창을 자동으로 띄워줌
+    // [5] 자동 로그인 패널 열기 (?login=open)
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('login') === 'open') {
-        // 로그인 화면으로 초기화
         if (loginView && joinView) {
             loginView.style.display = 'block';
             joinView.style.display = 'none';
         }
-        // 패널 열기 (약간의 딜레이를 주어 자연스럽게)
         if (loginPanel) {
             setTimeout(() => {
                 loginPanel.classList.add("active");

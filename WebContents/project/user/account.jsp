@@ -6,7 +6,7 @@
 <%
 // [1] 맨 위: 세션에서 저장된 이름(userName)을 가져옵니다.
 String userName = (String) session.getAttribute("userName");
-
+boolean isLogin = (userName != null);
 // 로그인이 안 된 상태(null)라면 "고객"이라고 기본값을 줍니다.
 if (userName == null) {
 	userName = "고객";
@@ -29,8 +29,19 @@ if (userName == null) {
 
 			<nav class="header-nav">
 				<a href="index.jsp">HOME</a> <a href="about.html">ABOUT</a> <a
-					href="product.html">PRODUCT</a> <a href="account.jsp">MYPAGE </a> <a
-					href="#" id="loginMenu">LOGIN</a>
+					href="product.html">PRODUCT</a>
+					<%
+				if (isLogin) {
+				%>
+				<a href="account.jsp">MY PAGE</a> <a
+					href="logout_proc.jsp">LOGOUT</a>
+				<%
+				} else {
+				%>
+				<a href="#" id="loginMenu">LOGIN</a>
+				<%
+				}
+				%>
 
 			</nav>
 		</div>
@@ -56,7 +67,7 @@ if (userName == null) {
 		<!-- 비밀번호 변경 -->
 		<h3 class="section-title">비밀번호 변경</h3>
 
-		<form action="user/password_change_proc.jsp" method="post"
+		<form action="pswChange_proc.jsp" method="post"
 			name="pwForm" class="password-box">
 
 			<label>기존 비밀번호</label> <input type="password" name="currentPw"
