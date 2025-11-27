@@ -47,14 +47,14 @@
 <head>
 <meta charset="UTF-8">
 <title>배송지 수정</title>
-<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="style.css">
 </head>
 <body class="address-page">
 
     <header class="header">
         <div class="header-inner">
             <div class="header-logo">
-                <a href="../index.jsp"><img src="../images/mainlogo.png" alt="logo"></a>
+                <a href="../index.jsp"><img src="images/mainlogo.png" alt="logo"></a>
             </div>
             <nav class="header-nav">
                 <a href="../index.jsp">HOME</a>
@@ -92,6 +92,6 @@
         </form>
     </div>
     
-    <script src="../style.js"></script>
+    <script src="style.js"></script>
 </body>
 </html>

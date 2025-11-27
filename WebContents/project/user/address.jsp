@@ -3,6 +3,11 @@
 <%@ page
    import="java.sql.*, java.util.*, my.dao.*, my.model.*, my.util.*"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%
+// [1] 세션 확인
+String userName = (String) session.getAttribute("userName");
+boolean isLogin = (userName != null);
+%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -14,21 +19,30 @@
 <body class="address-page">
 
     <!-- 공통 HEADER -->
-    <header class="header">
-        <div class="header-inner">
-            <div class="header-logo">
-                <a href="index.jsp"><img src="images/mainlogo.png" alt="logo"></a>
-            </div>
+	<header class="header">
+		<div class="header-inner">
+			<div class="header-logo">
+				<a href="index.jsp"><img src="images/mainlogo.png" alt="logo"></a>
+			</div>
 
-            <nav class="header-nav">
-                <a href="index.jsp">HOME</a>
-                <a href="about.html">ABOUT</a>
-                <a href="product.html">PRODUCT</a>
-                <a href="mypage.html">MYPAGE</a>
-                <a href="#" id="loginMenu">LOGIN</a>
-            </nav>
-        </div>
-    </header>
+			<nav class="header-nav">
+				<a href="index.jsp">HOME</a> <a href="about.html">ABOUT</a> <a
+					href="product.html">PRODUCT</a>
+				<%
+				if (isLogin) {
+				%>
+				<a href="account.jsp">MY PAGE</a> <a
+					href="logout_proc.jsp">LOGOUT</a>
+				<%
+				} else {
+				%>
+				<a href="#" id="loginMenu">LOGIN</a>
+				<%
+				}
+				%>
+			</nav>
+		</div>
+	</header>
 
     <!-- 배송지 입력 폼 -->
     <div class="address-container">

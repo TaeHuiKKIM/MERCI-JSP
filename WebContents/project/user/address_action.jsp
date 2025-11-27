@@ -25,7 +25,7 @@
         }
         
         // 처리 후 마이페이지로 복귀
-        response.sendRedirect("../account.jsp");
+        response.sendRedirect("account.jsp");
 
     } catch (Exception e) {
         e.printStackTrace();
