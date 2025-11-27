@@ -70,7 +70,7 @@
 
          <input type="button" value="LOGIN" class="login-btn black"> <input
             type="button" value="CREATE ACCOUNT" class="login-btn gray"
-            onclick="location.href='join.html'">
+            onclick="location.href='joinform1.html'">
       </form>
 
       <h3 class="social-title">SOCIAL LOGIN</h3>

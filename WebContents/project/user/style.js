@@ -181,3 +181,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
+/* ================= 배송지 모달 기능 ================= */
+function openAddrModal() {
+    const modal = document.getElementById('addrModal');
+    if(modal) modal.classList.add('show');
+}
+
+function closeAddrModal() {
+    const modal = document.getElementById('addrModal');
+    if(modal) modal.classList.remove('show');
+}

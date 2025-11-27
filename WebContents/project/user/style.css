@@ -962,3 +962,75 @@ main.product-main {
 	color: #333;
 	border-color: #bbb;
 }
+/* ================= 배송지 관리 모달 ================= */
+/* 모달 배경 (어두운 막) */
+.modal-overlay {
+    display: none; /* 평소엔 숨김 */
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+.modal-overlay.show {
+    display: flex; /* 활성화되면 보임 */
+}
+
+/* 모달 창 */
+.modal-window {
+    background: #fff;
+    width: 600px;
+    max-height: 80vh; /* 화면 높이의 80%까지만 */
+    overflow-y: auto; /* 내용 많으면 스크롤 */
+    padding: 30px;
+    border-radius: 8px;
+    position: relative;
+}
+
+.modal-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #222;
+    padding-bottom: 10px;
+}
+
+.close-modal-btn {
+    position: absolute;
+    top: 20px; right: 20px;
+    border: none;
+    background: none;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+/* 모달 내 배송지 리스트 스타일 */
+.addr-item {
+    border: 1px solid #eee;
+    padding: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.addr-item.default {
+    border: 1px solid #000;
+    background: #fafafa;
+}
+.addr-actions-small button, .addr-actions-small a {
+    font-size: 11px;
+    padding: 4px 8px;
+    margin-left: 4px;
+    border: 1px solid #ccc;
+    background: #fff;
+    cursor: pointer;
+    text-decoration: none;
+    color: #333;
+}
+.badge-default {
+    background: #000; color: #fff;
+    font-size: 10px; padding: 2px 5px;
+    margin-left: 5px;
+}
