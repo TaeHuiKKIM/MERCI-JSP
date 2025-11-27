@@ -62,7 +62,57 @@ if (userName == null) {
 		</h2>
 
 		<!-- 배송지 정보 버튼 -->
-		<a href="address.jsp" class="btn address-btn">배송지 정보 입력</a>
+		<%
+    DeliveryAddressDao deliveryDao = new DeliveryAddressDao();
+    List<DeliveryAddress> addrList = null;
+    
+    try {
+        Connection conn = ConnectionProvider.getConnection();
+        // 로그인한 유저의 배송지 목록 조회
+        addrList = deliveryDao.selectList(conn, userName); // userName 대신 userId를 써야한다면 변수명 확인 필요!
+        // (주의: selectList 메서드가 userId를 받도록 되어 있다면, 위에서 session.getAttribute("userId")로 받은 변수를 넣으세요)
+        // 예: addrList = deliveryDao.selectList(conn, (String)session.getAttribute("userId"));
+        
+        conn.close();
+    } catch(Exception e) {
+        e.printStackTrace();
+    }
+%>
+
+<div class="address-section">
+    <% 
+    // 1. 등록된 주소가 없을 때 -> 기존 '입력 버튼' 표시
+    if (addrList == null || addrList.isEmpty()) { 
+    %>
+        <div class="no-address">
+            <p>등록된 배송지가 없습니다.</p>
+            <a href="address.jsp" class="btn address-btn">배송지 정보 입력</a>
+        </div>
+    <% 
+    // 2. 주소가 있을 때 -> '주소 박스' 반복 출력
+    } else { 
+        for (DeliveryAddress addr : addrList) {
+    %>
+        <div class="address-card">
+            <div class="addr-info">
+                <span class="badge"><%= addr.getAddrName() %></span> <strong class="recipient"><%= addr.getRecipientName() %></strong>
+                <p class="phone"><%= addr.getPhone() %></p>
+                <p class="address-text">
+                    <%= addr.getAddrRoad() %> <br> 
+                    <%= addr.getAddrDetail() %>
+                </p>
+            </div>
+
+            <div class="addr-actions">
+                <button type="button" class="btn-select">선택</button>
+                <button type="button" class="btn-edit" onclick="location.href='address_edit.jsp?id=<%=addr.getAddrId()%>'">수정</button>
+            </div>
+        </div>
+    <% 
+        } 
+    } 
+    %>
+</div>
 
 		<!-- 비밀번호 변경 -->
 		<h3 class="section-title">비밀번호 변경</h3>
