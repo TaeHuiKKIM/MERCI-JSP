@@ -52,6 +52,33 @@ public class ClothDao {
 		}
 		return cloth;
 	}
+	
+	public List<Cloth> selectLike(Connection conn, String target, String keyword) throws SQLException {
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<Cloth> cloths = new ArrayList<Cloth>();
+		try {
+			pstmt = conn.prepareStatement("select * from cloth where " + target + " like ?");
+			pstmt.setString(1, "%" + keyword + "%");
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				Cloth cloth = new Cloth();
+				cloth.setId(rs.getInt(1));
+				cloth.setTitle(rs.getString(2));
+				cloth.setMaker(rs.getString(3));
+				cloth.setPrice(rs.getInt(4));
+				cloth.setPoster(rs.getString(5));
+				cloth.setFreq(rs.getInt(6));
+				cloth.setOpenDate(rs.getTimestamp(7));
+				cloth.setClothType(rs.getString(8));
+				cloths.add(cloth);
+			}
+		} finally {
+			JdbcUtil.close(pstmt);
+			JdbcUtil.close(rs);
+		}
+		return cloths;
+	}
     
     // ... (select methods omitted) ...
 

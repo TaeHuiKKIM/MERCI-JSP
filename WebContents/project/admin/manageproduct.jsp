@@ -45,17 +45,36 @@ boolean isLogin = (userName != null);
 		       onclick="location.href='product_insert_form.jsp'"
 		       style="padding: 12px 24px; background: #111; color: #fff; border: none; cursor: pointer; font-weight: 600;">
 	</div>
+	
+	<div class="product-search-bar" style="margin-bottom: 20px; text-align: center; padding: 15px; background: #222; border-radius: 5px;">
+	    <form action="manageproduct.jsp" method="post" style="display: inline-block;">
+	        <span style="font-weight:bold; margin-right:10px; color: #fff;">SEARCH:</span>
+	        <select name="target" id="target" style="padding: 8px; border: 1px solid #555; background: #333; color: #fff;">
+	            <option value="title">이름</option>
+	            <option value="maker">제작사</option>
+	        </select>
+	        <input name="keyword" type="text" id="keyword" size="20" placeholder="검색어를 입력하세요" style="padding: 8px; border: 1px solid #555; background: #333; color: #fff;"> 
+	        <input type="submit" value="검색" style="padding: 8px 20px; background: #fff; color: #111; border: none; cursor: pointer; font-weight: 600;">
+	    </form>
+	</div>
+	
 	<%
 	Connection conn = ConnectionProvider.getConnection();
 	List<Cloth> list = null;
 	String target = request.getParameter("target");
+	String keyword = request.getParameter("keyword");
+	
 	try {
 		ClothDao dao = new ClothDao();
-		if (target == null)
-			list = dao.selectList(conn); //모든 옷 목록 가져오기
-		else
-			list = dao.selectListFreq(conn, target);
+		if (keyword != null && !keyword.trim().isEmpty()) {
+			// 검색어가 있는 경우 검색 수행
+			list = dao.selectLike(conn, target, keyword);
+		} else {
+			// 검색어가 없는 경우 전체 목록 조회
+			list = dao.selectList(conn); 
+		}
 	} catch (SQLException e) {
+		e.printStackTrace();
 	}
 	%> <!-- product-grid --> <section class="manage-product-section">
 	<div class="manage-product-grid main-grid">
@@ -89,18 +108,6 @@ boolean isLogin = (userName != null);
 							onclick="if(confirm('정말로 삭제하시겠습니까?')) location.href='product_delete_proc.jsp?clothId=${cloth.id}'"></td>
 					</tr>
 				</c:forEach>
-				<tr>
-					<form action="" method="post">
-						<%--action이 null이면 자신에게 데이터를 넘김 --%>
-						<td colspan="7">검색대상: <select name="target" id="target">
-								<option value="title">타이틀</option>
-								<option value="maker">제작사</option>
-						</select> 검색어: <label for="keyword"></label> <input name="keyword"
-							type="text" id="keyword" size="10"> <input type="submit"
-							name="btn" id="btn" value="검색">
-						</td>
-					</form>
-				</tr>
 			</table>
 		</c:if>
 	</div>
