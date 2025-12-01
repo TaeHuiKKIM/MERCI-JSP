@@ -23,8 +23,7 @@ boolean isLogin = (userName != null);
 	<header class="header">
 	<div class="header-inner">
 		<div class="header-logo">
-			<a href="index.jsp"><img src="../images/mainlogo.png"
-				alt="logo"></a>
+			<a href="index.jsp"><img src="../images/mainlogo.png" alt="logo"></a>
 		</div>
 
 		<nav class="header-nav"> <a href="index.jsp">HOME</a> <a
@@ -56,14 +55,50 @@ boolean isLogin = (userName != null);
 	</section>
 
 	<main class="admin-main">
-		<div class="about-image-upload">
-			<h3>About 페이지 이미지 변경</h3>
-			<form action="upload_about_image.jsp" method="post" enctype="multipart/form-data">
-				<input type="file" name="aboutImage" accept="image/*" required>
-				<input type="submit" value="이미지 업로드">
-			</form>
-		</div>
+	<div class="about-image-upload">
+		<h3>About 페이지 이미지 변경</h3>
+		<form action="upload_about_image.jsp" method="post"
+			enctype="multipart/form-data">
+			<input type="file" name="aboutImage" accept="image/*" required>
+			<input type="submit" value="이미지 업로드">
+		</form>
+	</div>
 	</main>
+	<!-- ========== FOOTER ========== -->
+	<footer class="footer">
+	<div class="footer-columns">
+
+		<div class="footer-col">
+			<h3>CUSTOMER SERVICE</h3>
+			<p>MEMBERSHIP</p>
+			<p>CONTACT</p>
+			<p>SHIPPING & RETURNS</p>
+		</div>
+
+		<div class="footer-col">
+			<h3>COMPANY</h3>
+			<p>MERCI</p>
+			<p>대표 : 김태희, 김소희, 방현익 | 사업자등록번호 : 123-45-67890</p>
+			<p>주소 : 경기도 시흥시 산기대학로</p>
+			<p>이메일 :MERCI@gmail.com</p>
+			<p>고객센터 : 070-1234-5678</p>
+		</div>
+
+		<div class="footer-col">
+			<h3>LEGAL</h3>
+			<p>PRIVACY POLICY</p>
+
+			<h3 style="margin-top: 30px;">SOCIAL</h3>
+			<p>INSTAGRAM</p>
+			<p>KAKAOTALK</p>
+		</div>
+
+	</div>
+
+	<div class="footer-bottom">
+		<span>© MERCI 2025</span>
+	</div>
+	</footer>
 
 	<div class="login-panel" id="loginPanel">
 

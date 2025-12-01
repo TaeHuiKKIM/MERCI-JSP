@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import="com.oreilly.servlet.MultipartRequest" %>
-<%@ page import="com.oreilly.servlet.DefaultFileRenamePolicy" %>
 <%@ page import="java.io.File" %>
 <%@ page import="java.util.Enumeration" %>
+<%@ page import="com.oreilly.servlet.MultipartRequest" %>
+<%@ page import="com.oreilly.servlet.FileRenamePolicy" %>
 
 <%
     String realPath = application.getRealPath("/project/images");
@@ -11,39 +11,65 @@
     String encoding = "UTF-8";
 
     try {
-        MultipartRequest multi = new MultipartRequest(request, realPath, maxSize, encoding, new DefaultFileRenamePolicy());
+        // Implement a custom FileRenamePolicy to avoid issues with DefaultFileRenamePolicy
+        FileRenamePolicy policy = new FileRenamePolicy() {
+            public File rename(File f) {
+                // Create a unique file name by appending the current timestamp,
+                // then handle the final renaming to 'about_custom.jpg' in the code below.
+                String name = f.getName();
+                String ext = "";
+                int dot = name.lastIndexOf(".");
+                if (dot != -1) {
+                    ext = name.substring(dot);
+                    name = name.substring(0, dot);
+                }
+                String newName = name + "_" + System.currentTimeMillis() + ext;
+                return new File(f.getParent(), newName);
+            }
+        };
+
+        MultipartRequest multi = new MultipartRequest(request, realPath, maxSize, encoding, policy);
 
         Enumeration files = multi.getFileNames();
-        String file_name = "";
-        
-        while(files.hasMoreElements()){
-            String name = (String)files.nextElement();
-            file_name = multi.getFilesystemName(name);
+        String filesystemFileName = null;
+
+        if (files.hasMoreElements()) {
+            String name = (String) files.nextElement();
+            filesystemFileName = multi.getFilesystemName(name);
         }
 
-        if (file_name != null) {
-            File oldFile = new File(realPath, file_name);
+        if (filesystemFileName != null) {
+            File uploadedFile = new File(realPath, filesystemFileName);
             File newFile = new File(realPath, "about_custom.jpg");
 
             if (newFile.exists()) {
-                newFile.delete();
+                if (!newFile.delete()) {
+                    throw new IOException("Cannot delete existing file: " + newFile.getName());
+                }
             }
-            oldFile.renameTo(newFile);
             
-            response.sendRedirect("manageabout.jsp");
+            if (uploadedFile.renameTo(newFile)) {
+                // Success
+                response.sendRedirect("manageabout.jsp");
+            } else {
+                // If rename fails, try to copy and delete as a fallback
+                try {
+                    java.nio.file.Files.copy(uploadedFile.toPath(), newFile.toPath());
+                    uploadedFile.delete();
+                    response.sendRedirect("manageabout.jsp");
+                } catch (Exception copyEx) {
+                    throw new IOException("Failed to rename or copy the file.", copyEx);
+                }
+            }
         } else {
-            // 파일 업로드 실패 처리
-            out.println("<script>");
-            out.println("alert('파일 업로드에 실패했습니다.');");
-            out.println("history.back();");
-            out.println("</script>");
+            // No file was uploaded
+            out.println("<script>alert('파일이 업로드되지 않았습니다.'); history.back();</script>");
         }
 
     } catch (Exception e) {
-        e.printStackTrace();
-        out.println("<script>");
-        out.println("alert('파일 업로드 중 오류가 발생했습니다: " + e.getMessage() + "');");
-        out.println("history.back();");
-        out.println("</script>");
+        response.setContentType("text/html; charset=UTF-8");
+        out.println("<h3>An Error Occurred:</h3><pre>");
+        e.printStackTrace(new java.io.PrintWriter(out));
+        out.println("</pre>");
     }
 %>
