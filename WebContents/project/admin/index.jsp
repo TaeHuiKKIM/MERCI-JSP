@@ -22,18 +22,17 @@ boolean isLogin = (userName != null);
 	<header class="header">
 		<div class="header-inner">
 			<div class="header-logo">
-				<img src="../images/mainlogo.png" alt="logo">
+				<a href="index.jsp"><img src="../images/mainlogo.png"
+					alt="logo"></a>
 			</div>
+
 			<nav class="header-nav">
-				<a href="#">HOME</a> <a href="../about.html">ABOUT</a> <a
-					href="../product.html">PRODUCT</a> <a href="#" id="loginMenu">LOGIN</a>
+				<a href="index.jsp">HOME</a> <a href="manageabout.jsp">MANAGE
+					ABOUT</a> <a href="manageproduct.jsp">MANAGE PRODUCT</a> <a
+					href="manageorder.jsp">MANAGE ORDER</a>
 				<%
 				if (isLogin) {
-				%>
-				<span style="font-weight: bold; margin-right: 10px; color: #333;">
-					<button type="button" onclick="location.href='../account.jsp'"><%=userName%>님
-					</button>
-				</span> <a href="user/logout_proc.jsp">LOGOUT</a>
+				%><a href="../user/logout_proc.jsp">LOGOUT</a>
 				<%
 				} else {
 				%>
@@ -70,78 +69,8 @@ boolean isLogin = (userName != null);
 			</div>
 		</section>
 
-
-
-
-
 		<!-- ========== SECTION 2 : 상품 5개 (옷 리스트) ========== -->
-
-		<%
-		String keyword = request.getParameter("keyword"); //한글
-		Connection conn = ConnectionProvider.getConnection();
-		List<Cloth> list = null;
-		String target = request.getParameter("target");
-		try {
-			ClothDao dao = new ClothDao();
-			if (target == null)
-				list = dao.selectList(conn); //모든 옷 목록 가져오기
-			else
-				list = dao.selectListFreq(conn, target);
-		} catch (SQLException e) {
-		}
-		%>
-		<section class="product-section">
-			<h2 class="section-title">PRODUCTS</h2>
-			<div class="product-grid main-grid">
-
-				<c:set var="list" value="<%=list%>" />
-				<c:if test="${list != null}">
-					<table width="400" border="1" cellpadding="3" cellspacing="0"
-						id="listtable">
-						<tr>
-							<th scope="col">아이디</th>
-							<th scope="col">이름</th>
-							<th scope="col">제작사</th>
-							<th scope="col">가격</th>
-							<th scope="col">사진</th>
-							<th scope="col">종류</th>
-							<th scope="col">수정</th>
-							<th scope="col">삭제</th>
-						</tr>
-						<c:forEach var="cloth" items="${list}">
-							<tr>
-								<td>${cloth.id}</td>
-								<td>${cloth.title}</td>
-								<td>${cloth.maker}</td>
-								<td>${cloth.price}</td>
-								<td><a href="../catalogdetail.jsp?id=${cloth.id}"> <img
-										src="../uploadfile/${cloth.poster}" width="30" , height="35">
-								</a></td>
-								<td><input type="button" value="수정"
-									onclick="location.href='updateForm.jsp?clothId=${cloth.id}'"></td>
-								<td><input type="button" value="삭제"
-									onclick="location.href='delete.jsp?clothId=${cloth.id}'"></td>
-							</tr>
-						</c:forEach>
-						<tr>
-							<form action="" method="post">
-								<%--action이 null이면 자신에게 데이터를 넘김 --%>
-								<td colspan="7">검색대상: <select name="target" id="target">
-										<option value="title">타이틀</option>
-										<option value="maker">제작사</option>
-								</select> 검색어: <label for="keyword"></label> <input name="keyword"
-									type="text" id="keyword" size="10"> <input
-									type="submit" name="btn" id="btn" value="검색">
-								</td>
-							</form>
-						</tr>
-					</table>
-				</c:if>
-			</div>
-		</section>
-
-
-
+	
 		<!-- ========== SECTION 3 : 콜라주 3장 (Editorial / Collage) ========== -->
 		<section class="collage-section">
 			<div class="collage-wrapper">
@@ -203,30 +132,47 @@ boolean isLogin = (userName != null);
 
 
 	<div class="login-panel" id="loginPanel">
-
-		<div class="login-header">
-			<h2>LOGIN</h2>
-			<button class="login-close" id="loginCloseBtn">CLOSE</button>
+		<div id="loginView">
+			<div class="login-header">
+				<h2>LOGIN</h2>
+				<button class="login-close" id="loginCloseBtn">CLOSE</button>
+			</div>
+			<form action="../user/login_proc.jsp" method="post" name="loginForm"
+				class="login-box">
+				<input type="text" name="userId" placeholder="ID"
+					class="login-input"> <input type="password" name="password"
+					placeholder="PASSWORD" class="login-input"> <input
+					type="button" value="LOGIN" class="login-btn black"
+					onclick="loginCheck()"> <input type="button"
+					value="CREATE ACCOUNT" class="login-btn gray"
+					onclick="showJoinMode()">
+			</form>
 		</div>
 
-		<form class="login-box">
-			<input type="text" placeholder="EMAIL" class="login-input"> <input
-				type="password" placeholder="PASSWORD" class="login-input">
 
-			<input type="button" value="LOGIN" class="login-btn black"> <input
-				type="button" value="CREATE ACCOUNT" class="login-btn gray"
-				onclick="location.href='join.html'">
-		</form>
+		<div id="joinView" style="display: none;">
+			<div class="login-header">
+				<h2>SIGN UP</h2>
+				<button class="login-close" id="joinCloseBtn">CLOSE</button>
+			</div>
 
-		<h3 class="social-title">SOCIAL LOGIN</h3>
+			<form action="user/join_proc.jsp" method="post" name="joinForm"
+				class="login-box">
+				<input type="text" name="userId" class="login-input"
+					placeholder="ID (EMAIL)"> <input type="text" name="name"
+					class="login-input" placeholder="NAME"> <input
+					type="password" name="password" class="login-input"
+					placeholder="PASSWORD"> <input type="password"
+					name="passwordConfirm" class="login-input"
+					placeholder="CONFIRM PASSWORD"> <input type="button"
+					value="CREATE ACCOUNT" class="login-btn gray" onclick="joinCheck()">
 
-		<div class="social-login">
-			<input type="button" value="GOOGLE" class="social-btn"> <input
-				type="button" value="KAKAO" class="social-btn"> <input
-				type="button" value="NAVER" class="social-btn">
+				<input type="button" value="BACK TO LOGIN" class="login-btn gray"
+					style="margin-top: 10px; background-color: black; color: white;"
+					onclick="showLoginMode()">
+			</form>
 		</div>
-
 	</div>
-	<script src="style.js"></script>
+	<script src="../style.js"></script>
 </body>
 </html>

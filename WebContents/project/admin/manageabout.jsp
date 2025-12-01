@@ -1,0 +1,100 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ page
+	import="java.sql.*, java.util.*, my.dao.*, my.model.*, my.util.*"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%
+// [1] 세션 확인
+String userName = (String) session.getAttribute("userName");
+boolean isLogin = (userName != null);
+%>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>ABOUT – MERCI</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<div id="login-container"></div>
+
+<body class="about-page">
+
+	<!-- ========== HEADER (OPTIONAL) ========== -->
+	<header class="header">
+	<div class="header-inner">
+		<div class="header-logo">
+			<a href="index.jsp"><img src="../images/mainlogo.png"
+				alt="logo"></a>
+		</div>
+
+		<nav class="header-nav"> <a href="index.jsp">HOME</a> <a
+			href="manageabout.jsp">MANAGE ABOUT</a> <a href="manageproduct.jsp">MANAGE
+			PRODUCT</a> <a href="manageorder.jsp">MANAGE ORDER</a> <%
+ if (isLogin) {
+ %><a href="../user/logout_proc.jsp">LOGOUT</a> <%
+ } else {
+ %> <a href="#" id="loginMenu">LOGIN</a> <%
+ }
+ %> </nav>
+	</div>
+	</header>
+
+
+
+	<!-- ========== ABOUT MAIN VISUAL ========== -->
+	<section class="about-visual">
+	<div class="about-text">
+		<h2>
+			MERCI BRINGS SUBURBAN VITALITY INTO THE CITY,<br> OFFERING WOMEN
+			AN ACTIVE LIFESTYLE AND FASHION<br> THAT FUSE EVERYDAY URBAN
+			LIFE WITH EXTRAORDINARY ENERGY.
+		</h2>
+
+		<p>MERCI는 도시에 사는 여성들에게 교외적인 생동감을 불어넣을 수 있는 새로운 라이프스타일과 패션을 제안합니다.
+			자연과 도시가 만나는 순간을 담아내며, 일상 속에서 편안하게 입을 수 있는 실루엣과 활동적인 에너지를 동시에 전달합니다.</p>
+	</div>
+	</section>
+
+	<main class="admin-main">
+		<div class="about-image-upload">
+			<h3>About 페이지 이미지 변경</h3>
+			<form action="upload_about_image.jsp" method="post" enctype="multipart/form-data">
+				<input type="file" name="aboutImage" accept="image/*" required>
+				<input type="submit" value="이미지 업로드">
+			</form>
+		</div>
+	</main>
+
+	<div class="login-panel" id="loginPanel">
+
+		<div class="login-header">
+			<h2>LOGIN</h2>
+			<button class="login-close" id="loginCloseBtn">CLOSE</button>
+		</div>
+
+		<form class="login-box">
+			<input type="text" placeholder="EMAIL" class="login-input"> <input
+				type="password" placeholder="PASSWORD" class="login-input">
+
+			<input type="button" value="LOGIN" class="login-btn black"> <input
+				type="button" value="CREATE ACCOUNT" class="login-btn gray"
+				onclick="location.href='joinform.html'">
+		</form>
+
+		<h3 class="social-title">SOCIAL LOGIN</h3>
+
+		<div class="social-login">
+			<input type="button" value="GOOGLE" class="social-btn"> <input
+				type="button" value="KAKAO" class="social-btn"> <input
+				type="button" value="NAVER" class="social-btn">
+		</div>
+
+	</div>
+
+
+
+
+</body>
+<script src="../style.js"></script>
+
+</html>
