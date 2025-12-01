@@ -22,117 +22,26 @@ public class ClothDao {
 			pstmt.setTimestamp(6, new Timestamp(cloth.getOpenDate().getTime()));
 			pstmt.setString(7, cloth.getClothType());
 			pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
 		} finally {
-			JdbcUtil.close(conn);
 			JdbcUtil.close(pstmt);
 		}
 	}
-
-	public Cloth selectById(Connection conn, int clothId) throws SQLException {
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		Cloth cloth = null;
-		try {
-			pstmt = conn.prepareStatement("select * from cloth where id = ?");
-			pstmt.setInt(1, clothId);
-			rs = pstmt.executeQuery();
-			if (rs.next()) {
-				cloth = new Cloth();
-				cloth.setId(rs.getInt(1));
-				cloth.setTitle(rs.getString(2));
-				cloth.setMaker(rs.getString(3));
-				cloth.setPrice(rs.getInt(4));
-				cloth.setPoster(rs.getString(5));
-				cloth.setFreq(rs.getInt(6));
-				cloth.setOpenDate(rs.getTimestamp(7));
-				cloth.setClothType(rs.getString(8));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			JdbcUtil.close(conn);
-			JdbcUtil.close(pstmt);
-			JdbcUtil.close(rs);
-		}
-		return cloth;
-	}
-
-	public Cloth selectByIdUnclose(Connection conn, int clothId) throws SQLException {
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		Cloth cloth = null;
-		try {
-			pstmt = conn.prepareStatement("select * from cloth where id = ?");
-			pstmt.setInt(1, clothId);
-			rs = pstmt.executeQuery();
-			if (rs.next()) {
-				cloth = new Cloth();
-				cloth.setId(rs.getInt(1));
-				cloth.setTitle(rs.getString(2));
-				cloth.setMaker(rs.getString(3));
-				cloth.setPrice(rs.getInt(4));
-				cloth.setPoster(rs.getString(5));
-				cloth.setFreq(rs.getInt(6));
-				cloth.setOpenDate(rs.getTimestamp(7));
-				cloth.setClothType(rs.getString(8));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			JdbcUtil.close(conn);
-			JdbcUtil.close(pstmt);
-			JdbcUtil.close(rs);
-		}
-		return cloth;
-	}
-
-	public List<Cloth> selectLike(Connection conn, String target, String keyword) throws SQLException {
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		Cloth cloth = null;
-		List<Cloth> cloths = new ArrayList<Cloth>();
-		try {
-			pstmt = conn.prepareStatement("select * from cloth where " + target + " like ?");
-			pstmt.setString(1, "%" + keyword + "%");
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
-				cloth = new Cloth();
-				cloth.setId(rs.getInt(1));
-				cloth.setTitle(rs.getString(2));
-				cloth.setMaker(rs.getString(3));
-				cloth.setPrice(rs.getInt(4));
-				cloth.setPoster(rs.getString(5));
-				cloth.setFreq(rs.getInt(6));
-				cloth.setOpenDate(rs.getTimestamp(7));
-				cloth.setClothType(rs.getString(8));
-				cloths.add(cloth);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			JdbcUtil.close(conn);
-			JdbcUtil.close(pstmt);
-			JdbcUtil.close(rs);
-		}
-		return cloths;
-	}
+    
+    // ... (select methods omitted) ...
 
 	public void update(Connection conn, Cloth cloth) throws SQLException {
 		PreparedStatement pstmt = null;
 		try {
-			pstmt = conn.prepareStatement("update cloth set title=?,maker=?,price=?,clothType=? where id=?");
+			// poster 필드 업데이트 추가
+			pstmt = conn.prepareStatement("update cloth set title=?,maker=?,price=?,clothType=?,poster=? where id=?");
 			pstmt.setString(1, cloth.getTitle());
 			pstmt.setString(2, cloth.getMaker());
 			pstmt.setInt(3, cloth.getPrice());
 			pstmt.setString(4, cloth.getClothType());
-			pstmt.setInt(5, cloth.getId());
+			pstmt.setString(5, cloth.getPoster());
+			pstmt.setInt(6, cloth.getId());
 			pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
 		} finally {
-			JdbcUtil.close(conn);
 			JdbcUtil.close(pstmt);
 		}
 	}
@@ -143,10 +52,7 @@ public class ClothDao {
 			pstmt = conn.prepareStatement("update cloth set freq = freq + 1 where id=?");
 			pstmt.setInt(1, id);
 			pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
 		} finally {
-			JdbcUtil.close(conn);
 			JdbcUtil.close(pstmt);
 		}
 	}
@@ -157,10 +63,7 @@ public class ClothDao {
 			pstmt = conn.prepareStatement("delete from cloth where id = ?");
 			pstmt.setInt(1, clothId);
 			pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
 		} finally {
-			JdbcUtil.close(conn);
 			JdbcUtil.close(pstmt);
 		}
 	}

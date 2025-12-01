@@ -212,7 +212,7 @@ body.about-page .header .header-nav a {
 .about-visual {
   width: 100%;
   height: 100vh;
-  /* background-image: url("images/about.png"); /* Removed */
+  background-image: url("images/about_custom.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -251,73 +251,110 @@ body.about-page .header .header-nav a {
 
 /* Styles for the admin main content area */
 main.admin-main {
-    padding: 40px;
-    background-color: #ffffff; /* Give it a white background to contrast with the about page's black bg */
-    color: #333; /* Dark text for readability */
+    padding: 60px 40px;
+    background-color: transparent; /* Remove white background */
+    color: #fff; /* White text for dark theme */
 }
 
 /* New styles for the upload form in manageabout.jsp */
 .about-image-upload {
-    max-width: 600px;
-    margin: 0 auto; /* Center the form in the new main section */
-    padding: 30px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 40px;
+    background-color: rgba(20, 20, 20, 0.8); /* Dark semi-transparent background */
+    border: 1px solid #333; /* Subtle dark border */
+    border-radius: 0; /* Sharper corners for modern look */
     text-align: center;
+    backdrop-filter: blur(10px); /* Glassmorphism effect */
 }
 
 .about-image-upload h3 {
-    font-size: 20px;
-    color: #333;
-    margin-bottom: 25px;
-    font-weight: 700;
+    font-size: 18px;
+    color: #fff;
+    margin-bottom: 30px;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+/* Custom File Input Styling */
+.file-input-wrapper {
+    position: relative;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
 }
 
 .about-image-upload input[type="file"] {
-    display: block;
-    width: calc(100% - 20px); /* Adjust width for padding */
-    margin: 0 auto 20px;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #fff;
+    display: none; /* Hide default input */
+}
+
+.file-input-label {
+    display: inline-block;
+    padding: 12px 24px;
+    border: 1px solid #fff;
+    background-color: transparent;
+    color: #fff;
+    font-size: 13px;
     cursor: pointer;
-    font-size: 15px;
-    color: #555;
-    text-align: left; /* Align text inside file input */
-}
-
-.about-image-upload input[type="file"]::file-selector-button {
-  border: none;
-  padding: 8px 15px;
-  border-radius: 4px;
-  background-color: #007bff;
-  color: white;
-  cursor: pointer;
-  margin-right: 10px;
-  transition: background-color 0.2s ease;
-}
-
-.about-image-upload input[type="file"]::file-selector-button:hover {
-  background-color: #0056b3;
-}
-
-
-.about-image-upload input[type="submit"] {
-    padding: 12px 30px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: all 0.3s ease;
+    letter-spacing: 0.05em;
     font-weight: 600;
 }
 
+.file-input-label:hover {
+    background-color: #fff;
+    color: #000;
+}
+
+.file-name-display {
+    font-size: 13px;
+    color: #aaa;
+    margin-left: 10px;
+    font-style: italic;
+}
+
+.about-image-upload input[type="submit"] {
+    padding: 14px 40px;
+    background-color: #fff;
+    color: #000;
+    border: none;
+    border-radius: 0;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    margin-top: 10px;
+}
+
 .about-image-upload input[type="submit"]:hover {
-    background-color: #218838;
+    background-color: #e0e0e0;
+    transform: translateY(-2px);
+}
+
+/* Manage About Preview Styles */
+.preview-section {
+    margin-bottom: 30px; 
+    text-align: center;
+}
+
+.preview-label {
+    margin-bottom: 10px; 
+    font-size: 12px; 
+    color: #aaa; 
+    letter-spacing: 0.05em;
+}
+
+.preview-image-box {
+    width: 100%; 
+    height: 300px; 
+    background-size: cover; 
+    background-position: center; 
+    border: 1px solid #333; 
+    margin: 0 auto;
 }
 
 /* =================================================================== */

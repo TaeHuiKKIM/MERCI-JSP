@@ -25,12 +25,9 @@
 		</div>
 	</header>
 
-
-
 	<!-- ========== ABOUT MAIN VISUAL ========== -->
-	<section class="about-visual">
-		<img src="images/about_custom.jpg" alt="About Us Main Image"
-			class="about-main-image">
+	<!-- 이미지는 CSS background로 처리됩니다 -->
+	<section class="about-visual" id="aboutVisualSection">
 		<div class="about-text">
 			<h2>
 				MERCI BRINGS SUBURBAN VITALITY INTO THE CITY,<br> OFFERING
@@ -43,6 +40,14 @@
 			</p>
 		</div>
 	</section>
+
+	<script>
+		// 브라우저 캐시 방지를 위해 배경 이미지 URL에 타임스탬프 추가
+		var bgUrl = "images/about_custom.png?t=" + new Date().getTime();
+		document.getElementById('aboutVisualSection').style.backgroundImage = "url('"
+				+ bgUrl + "')";
+	</script>
+
 	<!-- ========== FOOTER ========== -->
 	<footer class="footer">
 		<div class="footer-columns">
@@ -80,35 +85,24 @@
 	</footer>
 
 	<div class="login-panel" id="loginPanel">
-
 		<div class="login-header">
 			<h2>LOGIN</h2>
 			<button class="login-close" id="loginCloseBtn">CLOSE</button>
 		</div>
-
 		<form class="login-box">
 			<input type="text" placeholder="EMAIL" class="login-input"> <input
 				type="password" placeholder="PASSWORD" class="login-input">
-
 			<input type="button" value="LOGIN" class="login-btn black"> <input
 				type="button" value="CREATE ACCOUNT" class="login-btn gray"
 				onclick="location.href='joinform.html'">
 		</form>
-
 		<h3 class="social-title">SOCIAL LOGIN</h3>
-
 		<div class="social-login">
 			<input type="button" value="GOOGLE" class="social-btn"> <input
 				type="button" value="KAKAO" class="social-btn"> <input
 				type="button" value="NAVER" class="social-btn">
 		</div>
-
 	</div>
-
-
-
-
 </body>
 <script src="style.js"></script>
-
 </html>

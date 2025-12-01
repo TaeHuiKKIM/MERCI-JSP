@@ -8,11 +8,11 @@
 String userName = (String) session.getAttribute("userName");
 boolean isLogin = (userName != null);
 %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>PRODUCT - MERCI</title>
+<title>PRODUCT</title>
 <link rel="stylesheet" href="../style.css">
 </head>
 
@@ -39,8 +39,11 @@ boolean isLogin = (userName != null);
 	</header>
 
 	<main class="product-main"> <!-- TOP -->
-	<div class="product-top">
+	<div class="product-top" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
 		<h2>MANAGE PRODUCTS</h2>
+		<input type="button" value="REGISTER NEW PRODUCT" 
+		       onclick="location.href='product_insert_form.jsp'"
+		       style="padding: 12px 24px; background: #111; color: #fff; border: none; cursor: pointer; font-weight: 600;">
 	</div>
 	<%
 	Connection conn = ConnectionProvider.getConnection();
@@ -77,13 +80,13 @@ boolean isLogin = (userName != null);
 						<td>${cloth.maker}</td>
 						<td>${cloth.price}</td>
 						<td><a href="../catalogdetail.jsp?id=${cloth.id}"> <img
-								src="../uploadfile/${cloth.poster}" width="30" , height="35">
+								src="../uploadfile/${cloth.poster}?t=<%=new java.util.Date().getTime()%>" width="30" height="35">
 						</a></td>
 						<td>${cloth.clothType}</td>
 						<td><input type="button" value="수정"
-							onclick="location.href='updateForm.jsp?clothId=${cloth.id}'"></td>
+							onclick="location.href='product_update_form.jsp?clothId=${cloth.id}'"></td>
 						<td><input type="button" value="삭제"
-							onclick="location.href='delete.jsp?clothId=${cloth.id}'"></td>
+							onclick="if(confirm('정말로 삭제하시겠습니까?')) location.href='product_delete_proc.jsp?clothId=${cloth.id}'"></td>
 					</tr>
 				</c:forEach>
 				<tr>
