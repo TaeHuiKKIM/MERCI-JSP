@@ -14,6 +14,12 @@ boolean isLogin = (userName != null);
 <meta charset="UTF-8">
 <title>ABOUT – MERCI</title>
 <link rel="stylesheet" href="../style.css">
+<style>
+/* 인라인 스타일로 배경 이미지 동적 처리 */
+.about-visual {
+	background-image: url('../images/about_custom.png?t=<%=new java.util.Date().getTime()%>');
+}
+</style>
 </head>
 <div id="login-container"></div>
 
@@ -56,14 +62,43 @@ boolean isLogin = (userName != null);
 
 	<main class="admin-main">
 	<div class="about-image-upload">
-		<h3>About 페이지 이미지 변경</h3>
-		<form action="upload_about_image.jsp" method="post"
-			enctype="multipart/form-data">
-			<input type="file" name="aboutImage" accept="image/*" required>
-			<input type="submit" value="이미지 업로드">
+		<h3>UPDATE ABOUT IMAGE</h3>
+
+		<div style="margin-bottom: 30px; text-align: center;">
+			<p style="margin-bottom: 10px; font-size: 12px; color: #aaa; letter-spacing: 0.05em;">CURRENT IMAGE PREVIEW</p>
+			<!-- CSS background 스타일로 미리보기 -->
+			<div
+				style="width: 100%; height: 300px; 
+			            background-image: url('../images/about_custom.png?t=<%=new java.util.Date().getTime()%>'); 
+			            background-size: cover; background-position: center; 
+			            border: 1px solid #333; margin: 0 auto;">
+			</div>
+		</div>
+
+		<form action="upload_about_image.jsp" method="post" enctype="multipart/form-data">
+			
+			<div class="file-input-wrapper">
+				<input type="file" id="fileInput" name="aboutImage" accept="image/png" required onchange="displayFileName()">
+				<label for="fileInput" class="file-input-label">CHOOSE PNG IMAGE</label>
+				<span id="fileNameDisplay" class="file-name-display">NO FILE CHOSEN</span>
+			</div>
+			
+			<input type="submit" value="UPLOAD IMAGE">
 		</form>
 	</div>
 	</main>
+	
+	<script>
+		function displayFileName() {
+			var input = document.getElementById('fileInput');
+			var display = document.getElementById('fileNameDisplay');
+			if (input.files && input.files.length > 0) {
+				display.textContent = input.files[0].name;
+			} else {
+				display.textContent = "NO FILE CHOSEN";
+			}
+		}
+	</script>
 	<!-- ========== FOOTER ========== -->
 	<footer class="footer">
 	<div class="footer-columns">
