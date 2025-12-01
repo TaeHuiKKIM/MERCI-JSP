@@ -26,6 +26,32 @@ public class ClothDao {
 			JdbcUtil.close(pstmt);
 		}
 	}
+
+	public Cloth selectById(Connection conn, int clothId) throws SQLException {
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Cloth cloth = null;
+		try {
+			pstmt = conn.prepareStatement("select * from cloth where id = ?");
+			pstmt.setInt(1, clothId);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				cloth = new Cloth();
+				cloth.setId(rs.getInt(1));
+				cloth.setTitle(rs.getString(2));
+				cloth.setMaker(rs.getString(3));
+				cloth.setPrice(rs.getInt(4));
+				cloth.setPoster(rs.getString(5));
+				cloth.setFreq(rs.getInt(6));
+				cloth.setOpenDate(rs.getTimestamp(7));
+				cloth.setClothType(rs.getString(8));
+			}
+		} finally {
+			JdbcUtil.close(pstmt);
+			JdbcUtil.close(rs);
+		}
+		return cloth;
+	}
     
     // ... (select methods omitted) ...
 
