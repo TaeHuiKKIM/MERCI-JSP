@@ -12,15 +12,24 @@ public class ClothDao {
 	public void insert(Connection conn, Cloth cloth) throws SQLException {
 		PreparedStatement pstmt = null;
 		try {
-			pstmt = conn.prepareStatement(
-					"insert into cloth (title,maker,price,poster,freq,opendate,clothType)" + " values(?,?,?,?,?,?,?)");
+			String sql = "insert into cloth (title, maker, price, img_body, img_front, img_back, img_detail, "
+					+ "description, stock, sizes, colors, freq, opendate, clothType) "
+					+ "values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, cloth.getTitle());
 			pstmt.setString(2, cloth.getMaker());
 			pstmt.setInt(3, cloth.getPrice());
-			pstmt.setString(4, cloth.getPoster());
-			pstmt.setInt(5, cloth.getFreq());
-			pstmt.setTimestamp(6, new Timestamp(cloth.getOpenDate().getTime()));
-			pstmt.setString(7, cloth.getClothType());
+			pstmt.setString(4, cloth.getImgBody());
+			pstmt.setString(5, cloth.getImgFront());
+			pstmt.setString(6, cloth.getImgBack());
+			pstmt.setString(7, cloth.getImgDetail());
+			pstmt.setString(8, cloth.getDescription());
+			pstmt.setInt(9, cloth.getStock());
+			pstmt.setString(10, cloth.getSizes());
+			pstmt.setString(11, cloth.getColors());
+			pstmt.setInt(12, cloth.getFreq());
+			pstmt.setTimestamp(13, new Timestamp(cloth.getOpenDate().getTime()));
+			pstmt.setString(14, cloth.getClothType());
 			pstmt.executeUpdate();
 		} finally {
 			JdbcUtil.close(pstmt);
@@ -36,15 +45,7 @@ public class ClothDao {
 			pstmt.setInt(1, clothId);
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
-				cloth = new Cloth();
-				cloth.setId(rs.getInt(1));
-				cloth.setTitle(rs.getString(2));
-				cloth.setMaker(rs.getString(3));
-				cloth.setPrice(rs.getInt(4));
-				cloth.setPoster(rs.getString(5));
-				cloth.setFreq(rs.getInt(6));
-				cloth.setOpenDate(rs.getTimestamp(7));
-				cloth.setClothType(rs.getString(8));
+				cloth = mapResultSetToCloth(rs);
 			}
 		} finally {
 			JdbcUtil.close(pstmt);
@@ -62,16 +63,7 @@ public class ClothDao {
 			pstmt.setString(1, "%" + keyword + "%");
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				Cloth cloth = new Cloth();
-				cloth.setId(rs.getInt(1));
-				cloth.setTitle(rs.getString(2));
-				cloth.setMaker(rs.getString(3));
-				cloth.setPrice(rs.getInt(4));
-				cloth.setPoster(rs.getString(5));
-				cloth.setFreq(rs.getInt(6));
-				cloth.setOpenDate(rs.getTimestamp(7));
-				cloth.setClothType(rs.getString(8));
-				cloths.add(cloth);
+				cloths.add(mapResultSetToCloth(rs));
 			}
 		} finally {
 			JdbcUtil.close(pstmt);
@@ -79,20 +71,27 @@ public class ClothDao {
 		}
 		return cloths;
 	}
-    
-    // ... (select methods omitted) ...
 
 	public void update(Connection conn, Cloth cloth) throws SQLException {
 		PreparedStatement pstmt = null;
 		try {
-			// poster 필드 업데이트 추가
-			pstmt = conn.prepareStatement("update cloth set title=?,maker=?,price=?,clothType=?,poster=? where id=?");
+			String sql = "update cloth set title=?, maker=?, price=?, clothType=?, "
+					+ "img_body=?, img_front=?, img_back=?, img_detail=?, "
+					+ "description=?, stock=?, sizes=?, colors=? where id=?";
+			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, cloth.getTitle());
 			pstmt.setString(2, cloth.getMaker());
 			pstmt.setInt(3, cloth.getPrice());
 			pstmt.setString(4, cloth.getClothType());
-			pstmt.setString(5, cloth.getPoster());
-			pstmt.setInt(6, cloth.getId());
+			pstmt.setString(5, cloth.getImgBody());
+			pstmt.setString(6, cloth.getImgFront());
+			pstmt.setString(7, cloth.getImgBack());
+			pstmt.setString(8, cloth.getImgDetail());
+			pstmt.setString(9, cloth.getDescription());
+			pstmt.setInt(10, cloth.getStock());
+			pstmt.setString(11, cloth.getSizes());
+			pstmt.setString(12, cloth.getColors());
+			pstmt.setInt(13, cloth.getId());
 			pstmt.executeUpdate();
 		} finally {
 			JdbcUtil.close(pstmt);
@@ -138,50 +137,12 @@ public class ClothDao {
 	public List<Cloth> selectList(Connection conn) throws SQLException {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		List<Cloth> clothList = null;
+		List<Cloth> clothList = new ArrayList<Cloth>();
 		try {
-			pstmt = conn.prepareStatement("select * from cloth ");
+			pstmt = conn.prepareStatement("select * from cloth");
 			rs = pstmt.executeQuery();
-			clothList = new ArrayList<Cloth>();
 			while (rs.next()) {
-				Cloth cloth = new Cloth();
-				cloth.setId(rs.getInt(1));
-				cloth.setTitle(rs.getString(2));
-				cloth.setMaker(rs.getString(3));
-				cloth.setPrice(rs.getInt(4));
-				cloth.setPoster(rs.getString(5));
-				cloth.setFreq(rs.getInt(6));
-				cloth.setOpenDate(rs.getTimestamp(7));
-				cloth.setClothType(rs.getString(8));
-				clothList.add(cloth);
-			}
-		} finally {
-			JdbcUtil.close(conn);
-			JdbcUtil.close(rs);
-			JdbcUtil.close(pstmt);
-		}
-		return clothList;
-	}
-
-	public List<Cloth> selectListOrders(Connection conn, String target, String direct) throws SQLException {
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		List<Cloth> clothList = null;
-		try {
-			pstmt = conn.prepareStatement("select * from cloth order by " + target + " " + direct);
-			rs = pstmt.executeQuery();
-			clothList = new ArrayList<Cloth>();
-			while (rs.next()) {
-				Cloth cloth = new Cloth();
-				cloth.setId(rs.getInt(1));
-				cloth.setTitle(rs.getString(2));
-				cloth.setMaker(rs.getString(3));
-				cloth.setPrice(rs.getInt(4));
-				cloth.setPoster(rs.getString(5));
-				cloth.setFreq(rs.getInt(6));
-				cloth.setOpenDate(rs.getTimestamp(7));
-				cloth.setClothType(rs.getString(8));
-				clothList.add(cloth);
+				clothList.add(mapResultSetToCloth(rs));
 			}
 		} finally {
 			JdbcUtil.close(conn);
@@ -194,22 +155,32 @@ public class ClothDao {
 	public List<Cloth> selectListFreq(Connection conn, String target) throws SQLException {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		List<Cloth> clothList = null;
+		List<Cloth> clothList = new ArrayList<Cloth>();
 		try {
 			pstmt = conn.prepareStatement("select * from cloth order by " + target + " desc");
 			rs = pstmt.executeQuery();
-			clothList = new ArrayList<Cloth>();
 			while (rs.next()) {
-				Cloth cloth = new Cloth();
-				cloth.setId(rs.getInt(1));
-				cloth.setTitle(rs.getString(2));
-				cloth.setMaker(rs.getString(3));
-				cloth.setPrice(rs.getInt(4));
-				cloth.setPoster(rs.getString(5));
-				cloth.setFreq(rs.getInt(6));
-				cloth.setOpenDate(rs.getTimestamp(7));
-				cloth.setClothType(rs.getString(8));
-				clothList.add(cloth);
+				clothList.add(mapResultSetToCloth(rs));
+			}
+		} finally {
+			JdbcUtil.close(conn);
+			JdbcUtil.close(rs);
+			JdbcUtil.close(pstmt);
+		}
+		return clothList;
+	}
+    
+    public List<Cloth> selectListByClothType(Connection conn, String clothType) throws SQLException {
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<Cloth> clothList = new ArrayList<Cloth>();
+		try {
+			// Note: Using direct string concat here as per original code style, usually prepared statement params are safer
+			pstmt = conn.prepareStatement("select * from cloth where clothType = ?");
+            pstmt.setString(1, clothType);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				clothList.add(mapResultSetToCloth(rs));
 			}
 		} finally {
 			JdbcUtil.close(conn);
@@ -219,27 +190,45 @@ public class ClothDao {
 		return clothList;
 	}
 
-	public List<Cloth> selectListLimit(Connection conn, int offset, int count) throws SQLException {
+	public List<Cloth> selectListMulti(Connection conn, String category, String sort, String search) throws SQLException {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		List<Cloth> clothList = null;
+		List<Cloth> clothList = new ArrayList<>();
+		StringBuilder sql = new StringBuilder("select * from cloth where 1=1");
+
+		if (category != null && !category.isEmpty()) {
+			sql.append(" and clothType = ?");
+		}
+		if (search != null && !search.isEmpty()) {
+			sql.append(" and (title like ? or maker like ?)");
+		}
+
+		if ("price_asc".equals(sort)) {
+			sql.append(" order by price asc");
+		} else if ("price_desc".equals(sort)) {
+			sql.append(" order by price desc");
+		} else if ("freq".equals(sort)) {
+			sql.append(" order by freq desc");
+		} else {
+			sql.append(" order by opendate desc");
+		}
+
 		try {
-			pstmt = conn.prepareStatement("select * from cloth limit ?,?");
-			pstmt.setInt(1, offset);
-			pstmt.setInt(2, count);
+			pstmt = conn.prepareStatement(sql.toString());
+			int index = 1;
+			
+			if (category != null && !category.isEmpty()) {
+				pstmt.setString(index++, category);
+			}
+			if (search != null && !search.isEmpty()) {
+				String keyword = "%" + search + "%";
+				pstmt.setString(index++, keyword);
+				pstmt.setString(index++, keyword);
+			}
+
 			rs = pstmt.executeQuery();
-			clothList = new ArrayList<Cloth>();
 			while (rs.next()) {
-				Cloth cloth = new Cloth();
-				cloth.setId(rs.getInt(1));
-				cloth.setTitle(rs.getString(2));
-				cloth.setMaker(rs.getString(3));
-				cloth.setPrice(rs.getInt(4));
-				cloth.setPoster(rs.getString(5));
-				cloth.setFreq(rs.getInt(6));
-				cloth.setOpenDate(rs.getTimestamp(7));
-				cloth.setClothType(rs.getString(8));
-				clothList.add(cloth);
+				clothList.add(mapResultSetToCloth(rs));
 			}
 		} finally {
 			JdbcUtil.close(conn);
@@ -248,52 +237,25 @@ public class ClothDao {
 		}
 		return clothList;
 	}
-
-	public List<String> selectClothType(Connection conn) throws SQLException {
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		List<String> clothTypeList = new ArrayList<String>();
-		try {
-			pstmt = conn.prepareStatement(
-					"select clothType, count(*) as cnt from cloth2 group by clothType order by cnt desc");
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
-				String clothType = rs.getString("clothType");
-				clothTypeList.add(clothType);
-			}
-		} finally {
-			JdbcUtil.close(conn);
-			JdbcUtil.close(rs);
-			JdbcUtil.close(pstmt);
-		}
-		return clothTypeList;
-	}
-
-	public List<Cloth> selectListByClothType(Connection conn, String clothType) throws SQLException {
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		List<Cloth> clothList = null;
-		try {
-			pstmt = conn.prepareStatement("select * from cloth where clothType= " + clothType);
-			rs = pstmt.executeQuery();
-			clothList = new ArrayList<Cloth>();
-			while (rs.next()) {
-				Cloth cloth = new Cloth();
-				cloth.setId(rs.getInt(1));
-				cloth.setTitle(rs.getString(2));
-				cloth.setMaker(rs.getString(3));
-				cloth.setPrice(rs.getInt(4));
-				cloth.setPoster(rs.getString(5));
-				cloth.setFreq(rs.getInt(6));
-				cloth.setOpenDate(rs.getTimestamp(7));
-				cloth.setClothType(rs.getString(8));
-				clothList.add(cloth);
-			}
-		} finally {
-			JdbcUtil.close(conn);
-			JdbcUtil.close(rs);
-			JdbcUtil.close(pstmt);
-		}
-		return clothList;
+	
+	// Helper method to map ResultSet to Cloth object to avoid code duplication
+	private Cloth mapResultSetToCloth(ResultSet rs) throws SQLException {
+		Cloth cloth = new Cloth();
+		cloth.setId(rs.getInt("id"));
+		cloth.setTitle(rs.getString("title"));
+		cloth.setMaker(rs.getString("maker"));
+		cloth.setPrice(rs.getInt("price"));
+		cloth.setImgBody(rs.getString("img_body"));
+		cloth.setImgFront(rs.getString("img_front"));
+		cloth.setImgBack(rs.getString("img_back"));
+		cloth.setImgDetail(rs.getString("img_detail"));
+		cloth.setDescription(rs.getString("description"));
+		cloth.setStock(rs.getInt("stock"));
+		cloth.setSizes(rs.getString("sizes"));
+		cloth.setColors(rs.getString("colors"));
+		cloth.setFreq(rs.getInt("freq"));
+		cloth.setOpenDate(rs.getTimestamp("opendate"));
+		cloth.setClothType(rs.getString("clothType"));
+		return cloth;
 	}
 }

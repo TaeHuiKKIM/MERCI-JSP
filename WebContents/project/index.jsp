@@ -26,8 +26,7 @@ boolean isLogin = (userName != null);
 			</div>
 
 			<nav class="header-nav">
-				<a href="index.jsp">HOME</a> <a href="about.html">ABOUT</a> <a
-					href="product.html">PRODUCT</a>
+				<a href="index.jsp">HOME</a> <a href="about.html">ABOUT</a> <a href="product.jsp">PRODUCT</a>
 				<%
 				if (isLogin) {
 				%>
@@ -90,20 +89,52 @@ boolean isLogin = (userName != null);
 		%>
 		<section class="product-section">
 			<h2 class="section-title">PRODUCTS</h2>
-			<div class="product-grid main-grid">
-				<c:set var="list" value="<%=list%>" />
-				<c:if test="${list != null}">
-					<c:forEach var="cloth" items="${list}">
-						<div class="product-item">
-							<a href="catalogdetail.jsp?clothId=${cloth.id}"> <img
-								src="uploadfile/${cloth.poster}" width="200" height="250">
-							</a>
-							<h3>${cloth.title}</h3>
-							<p>₩ ${cloth.price}</p>
+			
+			<% 
+			if (list != null && list.size() >= 10) { 
+			%>
+				<!-- Carousel View for >= 10 items -->
+				<div class="carousel-container">
+					<button class="slider-btn prev" id="prevBtn">&#10094;</button>
+					
+					<div class="slider-window">
+						<div class="product-slider-track" id="track">
+							<c:set var="list" value="<%=list%>" />
+							<c:forEach var="cloth" items="${list}">
+								<div class="product-item slide-item">
+									<a href="catalogdetail.jsp?clothId=${cloth.id}"> 
+										<img src="uploadfile/${cloth.imgBody}" width="200" height="250">
+									</a>
+									<h3>${cloth.title}</h3>
+									<p>₩ ${cloth.price}</p>
+								</div>
+							</c:forEach>
 						</div>
-					</c:forEach>
-				</c:if>
-			</div>
+					</div>
+					
+					<button class="slider-btn next" id="nextBtn">&#10095;</button>
+				</div>
+			<% 
+			} else { 
+			%>
+				<!-- Grid View for <= 10 items -->
+				<div class="product-grid main-grid">
+					<c:set var="list" value="<%=list%>" />
+					<c:if test="${list != null}">
+						<c:forEach var="cloth" items="${list}">
+							<div class="product-item">
+								<a href="catalogdetail.jsp?clothId=${cloth.id}"> 
+									<img src="uploadfile/${cloth.imgBody}" width="200" height="250">
+								</a>
+								<h3>${cloth.title}</h3>
+								<p>₩ ${cloth.price}</p>
+							</div>
+						</c:forEach>
+					</c:if>
+				</div>
+			<% 
+			} 
+			%>
 		</section>
 
 

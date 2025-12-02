@@ -1,72 +1,80 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import="com.oreilly.servlet.MultipartRequest" %>
-<%@ page import="com.oreilly.servlet.multipart.DefaultFileRenamePolicy" %>
-<%@ page import="java.sql.*, my.dao.*, my.model.*, my.util.*" %>
-<%@ page import="java.io.File" %>
+<%@ page import="com.oreilly.servlet.MultipartRequest"%>
+<%@ page import="com.oreilly.servlet.multipart.DefaultFileRenamePolicy"%>
+<%@ page import="java.util.*, java.io.*, java.sql.*, my.dao.*, my.model.*, my.util.*"%>
 
-<%    String savePath = application.getRealPath("/project/uploadfile");
-    String localSourcePath = "C:\\webProgramming\\ws\\ShoppingAddict\\WebContents\\project\\uploadfile"; 
-    
-    File dir = new File(savePath);
-    if(!dir.exists()) dir.mkdirs();
-    
-    int sizeLimit = 10 * 1024 * 1024; 
-    String encoding = "UTF-8";
-    
-    Connection conn = null;
+<%
+    request.setCharacterEncoding("UTF-8");
+
+    String realFolder = "";
+    String saveFolder = "project/uploadfile";
+    String encType = "UTF-8";
+    int maxSize = 10 * 1024 * 1024;
+
+    ServletContext context = getServletContext();
+    realFolder = context.getRealPath(saveFolder);
+
+    File dir = new File(realFolder);
+    if (!dir.exists()) dir.mkdirs();
 
     try {
-        MultipartRequest multi = new MultipartRequest(
-                request,
-                savePath,
-                sizeLimit,
-                encoding,
-                new DefaultFileRenamePolicy()
-        );
-        
+        MultipartRequest multi = null;
+        multi = new MultipartRequest(request, realFolder, maxSize, encType, new DefaultFileRenamePolicy());
+
         int id = Integer.parseInt(multi.getParameter("id"));
         String title = multi.getParameter("title");
         String maker = multi.getParameter("maker");
         int price = Integer.parseInt(multi.getParameter("price"));
+        int stock = Integer.parseInt(multi.getParameter("stock"));
+        String sizes = multi.getParameter("sizes");
+        String colors = multi.getParameter("colors");
         String clothType = multi.getParameter("clothType");
-        String existingPoster = multi.getParameter("existingPoster");
-        
-        String newFileName = multi.getFilesystemName("newPoster");
-        String finalPoster = (newFileName != null) ? newFileName : existingPoster;
-        
-        if(newFileName != null) {
-            try {
-                File srcFile = new File(savePath, newFileName);
-                File destFile = new File(localSourcePath, newFileName);
-                java.nio.file.Files.copy(srcFile.toPath(), destFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-            } catch(Exception e) {}
-        }
-        
+        String description = multi.getParameter("description");
+
+        // 기존 파일명
+        String oldImgBody = multi.getParameter("oldImgBody");
+        String oldImgFront = multi.getParameter("oldImgFront");
+        String oldImgBack = multi.getParameter("oldImgBack");
+        String oldImgDetail = multi.getParameter("oldImgDetail");
+
+        // 새 파일명
+        String newImgBody = multi.getFilesystemName("imgBody");
+        String newImgFront = multi.getFilesystemName("imgFront");
+        String newImgBack = multi.getFilesystemName("imgBack");
+        String newImgDetail = multi.getFilesystemName("imgDetail");
+
+        // 변경 없으면 기존값 유지
+        String imgBody = (newImgBody != null) ? newImgBody : oldImgBody;
+        String imgFront = (newImgFront != null) ? newImgFront : oldImgFront;
+        String imgBack = (newImgBack != null) ? newImgBack : oldImgBack;
+        String imgDetail = (newImgDetail != null) ? newImgDetail : oldImgDetail;
+
         Cloth cloth = new Cloth();
         cloth.setId(id);
         cloth.setTitle(title);
         cloth.setMaker(maker);
         cloth.setPrice(price);
+        cloth.setStock(stock);
+        cloth.setSizes(sizes);
+        cloth.setColors(colors);
         cloth.setClothType(clothType);
-        cloth.setPoster(finalPoster);
+        cloth.setDescription(description);
         
-        conn = ConnectionProvider.getConnection();
-        // conn.setAutoCommit(false);
-        
+        cloth.setImgBody(imgBody);
+        cloth.setImgFront(imgFront);
+        cloth.setImgBack(imgBack);
+        cloth.setImgDetail(imgDetail);
+
+        Connection conn = ConnectionProvider.getConnection();
         ClothDao dao = new ClothDao();
-        dao.update(conn, cloth); // 이제 conn을 닫지 않고 예외를 던짐
-        
-        // conn.commit();
-        
-        out.println("<script>alert('수정이 완료되었습니다.'); location.href='manageproduct.jsp';</script>");
-        
-    } catch(Exception e) {
-        // if(conn != null) try{ conn.rollback(); } catch(Exception ex){}
+        dao.update(conn, cloth);
+        JdbcUtil.close(conn);
+
+        out.println("<script>alert('수정되었습니다.'); location.href='manageproduct.jsp';</script>");
+
+    } catch (Exception e) {
         e.printStackTrace();
-        String msg = e.getMessage().replace("'", "\\'").replace("\n", " ");
-        out.println("<script>alert('수정 실패: " + msg + "'); history.back();</script>");
-    } finally {
-        JdbcUtil.close(conn); // 필수
+        out.println("<script>alert('상품 수정 중 오류가 발생했습니다.'); history.back();</script>");
     }
 %>

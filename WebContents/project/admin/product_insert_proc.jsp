@@ -1,72 +1,83 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import="com.oreilly.servlet.MultipartRequest" %>
-<%@ page import="com.oreilly.servlet.multipart.DefaultFileRenamePolicy" %>
-<%@ page import="java.sql.*, my.dao.*, my.model.*, my.util.*" %>
-<%@ page import="java.io.File" %>
-<%@ page import="java.util.Date" %>
+<%@ page import="com.oreilly.servlet.MultipartRequest"%>
+<%@ page import="com.oreilly.servlet.multipart.DefaultFileRenamePolicy"%>
+<%@ page import="java.util.*, java.io.*, java.sql.*, my.dao.*, my.model.*, my.util.*"%>
 
 <%
-    // 1. 업로드 설정
-    String savePath = application.getRealPath("/project/uploadfile");
-    String localSourcePath = "C:\\webProgramming\\ws\\ShoppingAddict\\WebContents\\project\\uploadfile"; 
-    
-    File dir = new File(savePath);
-    if(!dir.exists()) dir.mkdirs();
-    
-    int sizeLimit = 10 * 1024 * 1024;
-    String encoding = "UTF-8";
-    
-    Connection conn = null;
-    
+    request.setCharacterEncoding("UTF-8");
+
+    // 1. 업로드 경로 설정
+    String realFolder = "";
+    String saveFolder = "project/uploadfile";
+    String encType = "UTF-8";
+    int maxSize = 10 * 1024 * 1024; // 10MB
+
+    ServletContext context = getServletContext();
+    realFolder = context.getRealPath(saveFolder);
+
+    // 폴더 없으면 생성 (옵션)
+    File dir = new File(realFolder);
+    if (!dir.exists()) {
+        dir.mkdirs();
+    }
+
     try {
-        MultipartRequest multi = new MultipartRequest(
-                request,
-                savePath,
-                sizeLimit,
-                encoding,
-                new DefaultFileRenamePolicy()
-        );
-        
+        MultipartRequest multi = null;
+        multi = new MultipartRequest(request, realFolder, maxSize, encType, new DefaultFileRenamePolicy());
+
+        // 2. 파라미터 수신
         String title = multi.getParameter("title");
         String maker = multi.getParameter("maker");
         int price = Integer.parseInt(multi.getParameter("price"));
+        int stock = Integer.parseInt(multi.getParameter("stock"));
+        String sizes = multi.getParameter("sizes");
+        String colors = multi.getParameter("colors");
         String clothType = multi.getParameter("clothType");
-        String poster = multi.getFilesystemName("poster");
-        
-        if(poster != null) {
-            try {
-                File srcFile = new File(savePath, poster);
-                File destFile = new File(localSourcePath, poster);
-                java.nio.file.Files.copy(srcFile.toPath(), destFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-            } catch(Exception e) {}
-        }
-        
+        String description = multi.getParameter("description");
+
+        // 3. 파일명 수신
+        String imgBody = multi.getFilesystemName("imgBody");
+        String imgFront = multi.getFilesystemName("imgFront");
+        String imgBack = multi.getFilesystemName("imgBack");
+        String imgDetail = multi.getFilesystemName("imgDetail");
+
+        // 파일이 업로드되지 않았을 경우 처리 (null 방지 혹은 기본값)
+        // 여기서는 업로드 안하면 null로 들어감. 보여줄 때 처리하거나 필수로 강제.
+        // imgBody는 form에서 required였음.
+        if (imgFront == null) imgFront = imgBody; // 없으면 메인 사진으로 대체 (선택사항)
+        if (imgBack == null) imgBack = imgBody;
+        if (imgDetail == null) imgDetail = imgBody;
+
+        // 4. 객체 생성
         Cloth cloth = new Cloth();
         cloth.setTitle(title);
         cloth.setMaker(maker);
         cloth.setPrice(price);
+        cloth.setStock(stock);
+        cloth.setSizes(sizes);
+        cloth.setColors(colors);
         cloth.setClothType(clothType);
-        cloth.setPoster(poster);
+        cloth.setDescription(description);
+        
+        cloth.setImgBody(imgBody);
+        cloth.setImgFront(imgFront);
+        cloth.setImgBack(imgBack);
+        cloth.setImgDetail(imgDetail);
+        
         cloth.setFreq(0);
-        cloth.setOpenDate(new Date());
-        
-        conn = ConnectionProvider.getConnection();
-        // conn.setAutoCommit(false); // 필요시 주석 해제
-        
+        cloth.setOpenDate(new java.util.Date());
+
+        // 5. DB 저장
+        Connection conn = ConnectionProvider.getConnection();
         ClothDao dao = new ClothDao();
-        dao.insert(conn, cloth); // 이제 conn을 닫지 않고 예외를 던짐
-        
-        // conn.commit(); // 필요시 주석 해제
-        
-        out.println("<script>alert('상품이 등록되었습니다.'); location.href='manageproduct.jsp';</script>");
-        
-    } catch(Exception e) {
-        // if(conn != null) try{ conn.rollback(); } catch(Exception ex){}
+        dao.insert(conn, cloth);
+        JdbcUtil.close(conn);
+
+        response.sendRedirect("manageproduct.jsp");
+
+    } catch (Exception e) {
         e.printStackTrace();
-        String msg = e.getMessage().replace("'", "\\'").replace("\n", " ");
-        out.println("<script>alert('등록 실패: " + msg + "'); history.back();</script>");
-    } finally {
-        JdbcUtil.close(conn); // 필수
+        out.println("<script>alert('상품 등록 중 오류가 발생했습니다.'); history.back();</script>");
     }
 %>

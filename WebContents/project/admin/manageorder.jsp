@@ -210,7 +210,7 @@ boolean isLogin = (userName != null);
 						<td>${cloth.maker}</td>
 						<td>${cloth.price}</td>
 						<td><a href="../catalogdetail.jsp?id=${cloth.id}"> <img
-								src="../uploadfile/${cloth.poster}" width="30" , height="35">
+								src="../uploadfile/${cloth.imgBody}" width="30" , height="35">
 						</a></td>
 						<td><input type="button" value="수정"
 							onclick="location.href='updateForm.jsp?clothId=${cloth.id}'"></td>

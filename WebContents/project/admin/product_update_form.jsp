@@ -3,14 +3,12 @@
 <%@ page import="java.sql.*, my.dao.*, my.model.*, my.util.*"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
-    // [1] 세션 체크
     String userName = (String) session.getAttribute("userName");
     if (userName == null) {
         out.println("<script>alert('로그인이 필요합니다.'); location.href='../index.jsp';</script>");
         return;
     }
 
-    // [2] 파라미터 수신 및 데이터 조회
     int id = Integer.parseInt(request.getParameter("clothId"));
     Cloth cloth = null;
     Connection conn = ConnectionProvider.getConnection();
@@ -35,7 +33,6 @@
 <title>PRODUCT UPDATE - MERCI</title>
 <link rel="stylesheet" href="../style.css">
 <style>
-    /* 간단한 폼 스타일 (기존 admin 스타일과 통일감 유지) */
     .update-container {
         max-width: 800px;
         margin: 120px auto;
@@ -59,18 +56,34 @@
         font-size: 13px;
     }
     .form-group input[type="text"],
-    .form-group input[type="number"], 
-    .form-group select {
+    .form-group input[type="number"],
+    .form-group textarea {
         width: 100%;
         padding: 12px;
         border: 1px solid #ddd;
         font-size: 13px;
     }
-    .current-img {
-        margin: 10px 0;
-        max-width: 150px;
-        border: 1px solid #ccc;
-        display: block;
+    .form-group textarea {
+        height: 150px;
+        resize: vertical;
+    }
+    .current-img-box {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 10px;
+        background: #f9f9f9;
+        padding: 10px;
+    }
+    .current-img-box img {
+        width: 60px;
+        height: 80px;
+        object-fit: cover;
+        border: 1px solid #ddd;
+    }
+    .current-img-info {
+        font-size: 12px;
+        color: #666;
     }
     .btn-submit {
         width: 100%;
@@ -91,6 +104,12 @@
         font-weight: 600;
         cursor: pointer;
         margin-top: 10px;
+    }
+    .radio-group label {
+        display: inline-block;
+        margin-right: 15px;
+        font-weight: normal;
+        cursor: pointer;
     }
 </style>
 </head>
@@ -116,7 +135,12 @@
         <h2>상품 정보 수정</h2>
         <form action="product_update_proc.jsp" method="post" enctype="multipart/form-data">
             <input type="hidden" name="id" value="<%=cloth.getId()%>">
-            <input type="hidden" name="existingPoster" value="<%=cloth.getPoster()%>">
+            
+            <!-- 기존 이미지 파일명 보존 (변경 안할 시 사용) -->
+            <input type="hidden" name="oldImgBody" value="<%=cloth.getImgBody()%>">
+            <input type="hidden" name="oldImgFront" value="<%=cloth.getImgFront()%>">
+            <input type="hidden" name="oldImgBack" value="<%=cloth.getImgBack()%>">
+            <input type="hidden" name="oldImgDetail" value="<%=cloth.getImgDetail()%>">
             
             <div class="form-group">
                 <label>상품명 (Title)</label>
@@ -132,21 +156,72 @@
                 <label>가격 (Price)</label>
                 <input type="number" name="price" value="<%=cloth.getPrice()%>" required>
             </div>
-            
+
             <div class="form-group">
-                <label>카테고리 (Type)</label>
-                <!-- 예시 카테고리, 실제 DB에 맞게 수정 가능 -->
-                <input type="text" name="clothType" value="<%=cloth.getClothType()%>" required>
+                <label>재고 (Stock)</label>
+                <input type="number" name="stock" value="<%=cloth.getStock()%>" required>
             </div>
             
             <div class="form-group">
-                <label>상품 이미지</label>
-                <% if(cloth.getPoster() != null && !cloth.getPoster().isEmpty()) { %>
-                    <img src="../uploadfile/<%=cloth.getPoster()%>" class="current-img" alt="현재 이미지">
-                    <p style="font-size: 12px; color: #888;">현재 파일: <%=cloth.getPoster()%></p>
-                <% } %>
-                <input type="file" name="newPoster" accept="image/*">
-                <p style="font-size: 11px; color: #aaa; margin-top: 5px;">이미지를 변경하지 않으려면 비워두세요.</p>
+                <label>사이즈 (Sizes)</label>
+                <input type="text" name="sizes" value="<%=cloth.getSizes()%>">
+            </div>
+
+            <div class="form-group">
+                <label>색상 (Colors)</label>
+                <input type="text" name="colors" value="<%=cloth.getColors()%>">
+            </div>
+            
+            <div class="form-group">
+                <label>카테고리 (Type)</label>
+                <div class="radio-group" style="margin-top: 5px;">
+                    <label><input type="radio" name="clothType" value="Outer" <%= "Outer".equalsIgnoreCase(cloth.getClothType()) ? "checked" : "" %>> Outer</label>
+                    <label><input type="radio" name="clothType" value="Top" <%= "Top".equalsIgnoreCase(cloth.getClothType()) ? "checked" : "" %>> Top</label>
+                    <label><input type="radio" name="clothType" value="Bottom" <%= "Bottom".equalsIgnoreCase(cloth.getClothType()) ? "checked" : "" %>> Bottom</label>
+                    <label><input type="radio" name="clothType" value="Acc" <%= "Acc".equalsIgnoreCase(cloth.getClothType()) ? "checked" : "" %>> Acc</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>상품 설명 (Description)</label>
+                <textarea name="description"><%=cloth.getDescription() != null ? cloth.getDescription() : ""%></textarea>
+            </div>
+            
+            <!-- Image Update -->
+            <div class="form-group">
+                <label>전신 사진 (Main Body)</label>
+                <div class="current-img-box">
+                    <img src="../uploadfile/<%=cloth.getImgBody()%>" alt="Current">
+                    <span class="current-img-info">현재: <%=cloth.getImgBody()%></span>
+                </div>
+                <input type="file" name="imgBody" accept="image/*">
+            </div>
+
+            <div class="form-group">
+                <label>정면 사진 (Front)</label>
+                <div class="current-img-box">
+                    <img src="../uploadfile/<%=cloth.getImgFront()%>" alt="Current">
+                    <span class="current-img-info">현재: <%=cloth.getImgFront()%></span>
+                </div>
+                <input type="file" name="imgFront" accept="image/*">
+            </div>
+
+            <div class="form-group">
+                <label>뒷면 사진 (Back)</label>
+                <div class="current-img-box">
+                    <img src="../uploadfile/<%=cloth.getImgBack()%>" alt="Current">
+                    <span class="current-img-info">현재: <%=cloth.getImgBack()%></span>
+                </div>
+                <input type="file" name="imgBack" accept="image/*">
+            </div>
+
+            <div class="form-group">
+                <label>디테일 사진 (Detail)</label>
+                <div class="current-img-box">
+                    <img src="../uploadfile/<%=cloth.getImgDetail()%>" alt="Current">
+                    <span class="current-img-info">현재: <%=cloth.getImgDetail()%></span>
+                </div>
+                <input type="file" name="imgDetail" accept="image/*">
             </div>
             
             <button type="submit" class="btn-submit">수정 완료</button>

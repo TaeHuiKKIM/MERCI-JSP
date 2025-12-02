@@ -99,7 +99,7 @@ boolean isLogin = (userName != null);
 						<td>${cloth.maker}</td>
 						<td>${cloth.price}</td>
 						<td><a href="../catalogdetail.jsp?id=${cloth.id}"> <img
-								src="../uploadfile/${cloth.poster}?t=<%=new java.util.Date().getTime()%>" width="30" height="35">
+								src="../uploadfile/${cloth.imgBody}?t=<%=new java.util.Date().getTime()%>" width="30" height="35">
 						</a></td>
 						<td>${cloth.clothType}</td>
 						<td><input type="button" value="수정"

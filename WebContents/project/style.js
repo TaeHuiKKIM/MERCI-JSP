@@ -180,6 +180,59 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 100);
         }
     }
+
+    // [6] Product Carousel Logic (Added)
+    const track = document.getElementById('track');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    if (track && prevBtn && nextBtn) {
+        let currentIndex = 0;
+        const items = document.querySelectorAll('.slide-item');
+        const totalItems = items.length;
+        const itemsVisible = 5; // Show 5 items at a time
+        
+        function updateCarousel() {
+             const translateX = -(currentIndex * 20); // 20% per item
+             track.style.transform = `translateX(${translateX}%)`;
+             
+             // Disable buttons at limits
+             if (currentIndex === 0) {
+                 prevBtn.style.opacity = "0.5";
+                 prevBtn.style.pointerEvents = "none";
+             } else {
+                 prevBtn.style.opacity = "1";
+                 prevBtn.style.pointerEvents = "auto";
+             }
+             
+             const maxIndex = totalItems - itemsVisible;
+             if (currentIndex >= maxIndex) {
+                 nextBtn.style.opacity = "0.5";
+                 nextBtn.style.pointerEvents = "none";
+             } else {
+                 nextBtn.style.opacity = "1";
+                 nextBtn.style.pointerEvents = "auto";
+             }
+        }
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCarousel();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+             const maxIndex = totalItems - itemsVisible;
+             if (currentIndex < maxIndex) {
+                 currentIndex++;
+                 updateCarousel();
+             }
+        });
+        
+        // Initial call to set button states
+        updateCarousel();
+    }
 });
 /* ================= 배송지 모달 기능 ================= */
 function openAddrModal() {

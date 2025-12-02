@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%
-    // [1] 세션 체크
     String userName = (String) session.getAttribute("userName");
     if (userName == null) {
         out.println("<script>alert('로그인이 필요합니다.'); location.href='../index.jsp';</script>");
@@ -15,7 +14,6 @@
 <title>PRODUCT REGISTRATION - MERCI</title>
 <link rel="stylesheet" href="../style.css">
 <style>
-    /* product_update_form.jsp와 동일한 스타일 */
     .update-container {
         max-width: 800px;
         margin: 120px auto;
@@ -39,12 +37,20 @@
         font-size: 13px;
     }
     .form-group input[type="text"],
-    .form-group input[type="number"], 
-    .form-group select {
+    .form-group input[type="number"],
+    .form-group textarea {
         width: 100%;
         padding: 12px;
         border: 1px solid #ddd;
         font-size: 13px;
+    }
+    .form-group textarea {
+        height: 150px;
+        resize: vertical;
+    }
+    .form-group input[type="file"] {
+        margin-top: 5px;
+        font-size: 12px;
     }
     .btn-submit {
         width: 100%;
@@ -65,6 +71,12 @@
         font-weight: 600;
         cursor: pointer;
         margin-top: 10px;
+    }
+    .radio-group label {
+        display: inline-block;
+        margin-right: 15px;
+        font-weight: normal;
+        cursor: pointer;
     }
 </style>
 </head>
@@ -92,27 +104,65 @@
             
             <div class="form-group">
                 <label>상품명 (Title)</label>
-                <input type="text" name="title" required placeholder="상품명을 입력하세요">
+                <input type="text" name="title" required>
             </div>
             
             <div class="form-group">
                 <label>제작사 (Maker)</label>
-                <input type="text" name="maker" required placeholder="제작사를 입력하세요">
+                <input type="text" name="maker" required>
             </div>
             
             <div class="form-group">
                 <label>가격 (Price)</label>
-                <input type="number" name="price" required placeholder="가격을 입력하세요">
+                <input type="number" name="price" required>
+            </div>
+
+            <div class="form-group">
+                <label>재고 (Stock)</label>
+                <input type="number" name="stock" value="0" required>
+            </div>
+            
+            <div class="form-group">
+                <label>사이즈 (Sizes - 콤마로 구분, 예: S,M,L)</label>
+                <input type="text" name="sizes" value="FREE">
+            </div>
+
+            <div class="form-group">
+                <label>색상 (Colors - 콤마로 구분, 예: Black,White)</label>
+                <input type="text" name="colors">
             </div>
             
             <div class="form-group">
                 <label>카테고리 (Type)</label>
-                <input type="text" name="clothType" required placeholder="예: outer, top, pants...">
+                <div class="radio-group" style="margin-top: 5px;">
+                    <label><input type="radio" name="clothType" value="Outer" required> Outer</label>
+                    <label><input type="radio" name="clothType" value="Top"> Top</label>
+                    <label><input type="radio" name="clothType" value="Bottom"> Bottom</label>
+                    <label><input type="radio" name="clothType" value="Acc"> Acc</label>
+                </div>
             </div>
             
             <div class="form-group">
-                <label>상품 이미지 (필수)</label>
-                <input type="file" name="poster" accept="image/*" required>
+                <label>상품 설명 (Description)</label>
+                <textarea name="description"></textarea>
+            </div>
+            
+            <!-- Image Uploads -->
+            <div class="form-group">
+                <label>전신 사진 (Main Body) *필수</label>
+                <input type="file" name="imgBody" accept="image/*" required>
+            </div>
+            <div class="form-group">
+                <label>정면 사진 (Front)</label>
+                <input type="file" name="imgFront" accept="image/*">
+            </div>
+            <div class="form-group">
+                <label>뒷면 사진 (Back)</label>
+                <input type="file" name="imgBack" accept="image/*">
+            </div>
+            <div class="form-group">
+                <label>디테일 사진 (Detail)</label>
+                <input type="file" name="imgDetail" accept="image/*">
             </div>
             
             <button type="submit" class="btn-submit">등록 하기</button>
