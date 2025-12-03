@@ -40,7 +40,6 @@ try {
     JdbcUtil.close(conn);
 }
 %>
-%>
 <!DOCTYPE html>
 <html>
 <head>

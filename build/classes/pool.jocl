@@ -2,7 +2,7 @@
 		xmlns="http://apache.org/xml/xmlns/jakarta/commons/jocl">
 
 	<object class="org.apache.commons.dbcp.DriverManagerConnectionFactory">
-		<string value="jdbc:mysql://localhost:3306/shoppingaddict?useSSL=false"/>
+		<string value="jdbc:mysql://localhost:3306/web?useSSL=false"/>
 		<string value="root"/>
 		<string value="0000"/>
 	</object>

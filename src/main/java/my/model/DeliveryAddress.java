@@ -4,15 +4,14 @@ public class DeliveryAddress {
 
 	private int addrId;
 	private String userId;
-	private String addrName; // 배송지 별칭 (집, 회사 등)
+	private String addrName;      // 배송지 별칭
 	private String recipientName; // 수령인
 	private String phone;
 	private String addrRoad;
 	private String addrDetail;
-	private int isDefault;
+	private int isDefault; 
 
-	public DeliveryAddress() {
-	}
+	public DeliveryAddress() {}
 
 	public DeliveryAddress(int addrId, String userId, String addrName, String recipientName, String phone,
 			String addrRoad, String addrDetail, int isDefault) {
@@ -24,15 +23,6 @@ public class DeliveryAddress {
 		this.phone = phone;
 		this.addrRoad = addrRoad;
 		this.addrDetail = addrDetail;
-		this.isDefault = isDefault;
-
-	}
-
-	public int getIsDefault() {
-		return isDefault;
-	}
-
-	public void setIsDefault(int isDefault) {
 		this.isDefault = isDefault;
 	}
 
@@ -90,6 +80,14 @@ public class DeliveryAddress {
 
 	public void setAddrDetail(String addrDetail) {
 		this.addrDetail = addrDetail;
+	}
+
+	public int getIsDefault() {
+		return isDefault;
+	}
+
+	public void setIsDefault(int isDefault) {
+		this.isDefault = isDefault;
 	}
 
 }
