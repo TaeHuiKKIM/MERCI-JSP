@@ -27,7 +27,7 @@ boolean isLogin = (userName != null);
 
 			<nav class="header-nav">
 				<a href="index.jsp">HOME</a> <a href="about.html">ABOUT</a> <a
-					href="product.html">PRODUCT</a>
+					href="product.jsp">PRODUCT</a>
 				<%
 				if (isLogin) {
 				%>

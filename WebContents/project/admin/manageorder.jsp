@@ -8,7 +8,7 @@
 String userName = (String) session.getAttribute("userName");
 boolean isLogin = (userName != null);
 %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
@@ -210,7 +210,7 @@ boolean isLogin = (userName != null);
 						<td>${cloth.maker}</td>
 						<td>${cloth.price}</td>
 						<td><a href="../catalogdetail.jsp?id=${cloth.id}"> <img
-								src="../uploadfile/${cloth.poster}" width="30" , height="35">
+								src="../uploadfile/${cloth.imgBody}" width="30" , height="35">
 						</a></td>
 						<td><input type="button" value="수정"
 							onclick="location.href='updateForm.jsp?clothId=${cloth.id}'"></td>

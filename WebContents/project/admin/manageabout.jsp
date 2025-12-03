@@ -8,11 +8,11 @@
 String userName = (String) session.getAttribute("userName");
 boolean isLogin = (userName != null);
 %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>ABOUT – MERCI</title>
+<title>ABOUT</title>
 <link rel="stylesheet" href="../style.css">
 <style>
 /* 인라인 스타일로 배경 이미지 동적 처리 */
@@ -64,14 +64,11 @@ boolean isLogin = (userName != null);
 	<div class="about-image-upload">
 		<h3>UPDATE ABOUT IMAGE</h3>
 
-		<div style="margin-bottom: 30px; text-align: center;">
-			<p style="margin-bottom: 10px; font-size: 12px; color: #aaa; letter-spacing: 0.05em;">CURRENT IMAGE PREVIEW</p>
+		<div class="preview-section">
+			<p class="preview-label">CURRENT IMAGE PREVIEW</p>
 			<!-- CSS background 스타일로 미리보기 -->
-			<div
-				style="width: 100%; height: 300px; 
-			            background-image: url('../images/about_custom.png?t=<%=new java.util.Date().getTime()%>'); 
-			            background-size: cover; background-position: center; 
-			            border: 1px solid #333; margin: 0 auto;">
+			<div class="preview-image-box"
+				style="background-image: url('../images/about_custom.png?t=<%=new java.util.Date().getTime()%>');">
 			</div>
 		</div>
 
