@@ -4,51 +4,60 @@
 	import="java.sql.*, java.util.*, my.dao.*, my.model.*, my.util.*"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
-// [1] 세션 확인 및 초기화
+// [1] 세션 확인
 String userId = (String) session.getAttribute("userId");
 String userName = (String) session.getAttribute("userName");
 boolean isLogin = (userName != null);
 
 if (userName == null) {
-	userName = "고객";
+    userName = "고객";
 }
 
-// [2] 배송지 목록 가져오기 (수정됨)
+// [2] 배송지 가져오기
 DeliveryAddressDao deliveryDao = new DeliveryAddressDao();
-List<DeliveryAddress> addrList = null;
-DeliveryAddress defaultAddr = null; // [추가] 기본 배송지 변수
+DeliveryAddress defaultAddr = null;
+List<DeliveryAddress> addrList = null; // ★ 이 줄이 빠져 있었습니다. 추가해주세요!
 
+Connection conn = null;
 try {
-	if (userId != null) {
-		Connection conn = ConnectionProvider.getConnection();
-
-		// 1. 기본 배송지 1개 조회
-		defaultAddr = deliveryDao.selectDefault(conn, userId);
-		// 2. 전체 목록 조회 (팝업창용)
-		addrList = deliveryDao.selectList(conn, userId);
-
-		conn.close();
-	}
+    if (userId != null) {
+        conn = ConnectionProvider.getConnection();
+        
+        // 1. 기본 배송지 조회
+        defaultAddr = deliveryDao.selectDefault(conn, userId);
+        
+        // 2. 전체 목록 조회 (fallback 용도)
+        addrList = deliveryDao.selectList(conn, userId);
+        
+        // 3. 기본 배송지가 없는데 목록은 있다면? -> 첫 번째 주소를 보여줌
+        if (defaultAddr == null && addrList != null && !addrList.isEmpty()) {
+            defaultAddr = addrList.get(0);
+        }
+    }
 } catch (Exception e) {
-	e.printStackTrace();
+    e.printStackTrace();
+} finally {
+    JdbcUtil.close(conn);
 }
+%>
 %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>MYPAGE</title>
-<link rel="stylesheet" type="text/css" href="style.css">
+<link rel="stylesheet" type="text/css" href="../style.css">
 </head>
 <body>
 	<header class="header">
 		<div class="header-inner">
 			<div class="header-logo">
-				<a href="../index.jsp"><img src="images/mainlogo.png" alt="logo"></a>
+				<a href="../index.jsp"><img src="../images/mainlogo.png"
+					alt="logo"></a>
 			</div>
 			<nav class="header-nav">
-				<a href="../index.jsp">HOME</a> <a href="../about.html">ABOUT</a> <a
-					href="../product.html">PRODUCT</a>
+				<a href="../index.jsp">HOME</a> <a href="../about.jsp">ABOUT</a> <a
+					href="../product.jsp">PRODUCT</a>
 				<%
 				if (isLogin) {
 				%>
@@ -65,7 +74,7 @@ try {
 	</header>
 
 	<div class="mypage-banner">
-		<img src="images/banner.jpg" alt="banner">
+		<img src="../images/banner.jpg" alt="banner">
 	</div>
 
 	<div class="mypage-container">
@@ -76,50 +85,49 @@ try {
 			<h3 class="section-title"
 				style="display: flex; justify-content: space-between; align-items: center;">
 				기본 배송지
-				<button type="button" onclick="openAddrModal()"
+				<button type="button" onclick="location.href='address_list.jsp'"
 					style="font-size: 12px; background: none; border: none; cursor: pointer; text-decoration: underline; color: #555;">
 					배송지 관리 ></button>
 			</h3>
 
 			<%
-			// [중요] 기본 배송지 정보가 있는지 확인
+			// defaultAddr가 있으면 카드 표시 (위에서 로직을 추가해서 주소가 하나라도 있으면 null이 아님)
 			if (defaultAddr != null) {
 			%>
-			<div class="address-card"
-				style="border: 1px solid #000; padding: 20px; background: #fff;">
-				<div class="addr-info">
-					<span class="badge"
-						style="background: #eee; padding: 2px 6px; font-size: 11px; margin-right: 5px;">
-						<%=defaultAddr.getAddrName()%>
-					</span> <strong class="recipient" style="font-size: 15px;"> <%=defaultAddr.getRecipientName()%>
-					</strong>
+			<div class="address-card">
+				<div class="addr-info" style="text-align: left;">
 
-					<p class="phone"
-						style="font-size: 13px; color: #666; margin: 5px 0;">
+					<div style="margin-bottom: 10px;">
+						<span class="badge"><%=defaultAddr.getAddrName()%></span>
+					</div>
+
+					<div style="margin-bottom: 5px;">
+						<strong class="recipient">수령인 : </strong><%=defaultAddr.getRecipientName()%>
+					</div>
+
+					<p class="phone" style="margin-bottom: 8px;">
+						전화번호 :
 						<%=defaultAddr.getPhone()%>
 					</p>
 
-					<p class="address-text"
-						style="font-size: 14px; color: #333; margin-top: 10px;">
+					<p class="address-text">
+						주소 :
 						<%=defaultAddr.getAddrRoad()%>
-						<br>
-						<%=defaultAddr.getAddrDetail()%>
+						(<%=defaultAddr.getAddrDetail()%>)
 					</p>
 				</div>
 			</div>
-
 			<%
 			} else {
 			%>
-			<div class="no-address" style="text-align: center; padding: 30px 0;">
-				<p style="margin-bottom: 15px; color: #888;">등록된 기본 배송지가 없습니다.</p>
+			<div class="no-address">
+				<p style="margin-bottom: 15px; color: #888;">등록된 배송지가 없습니다.</p>
 				<a href="address.jsp" class="btn address-btn">새 배송지 등록</a>
 			</div>
 			<%
 			}
 			%>
 		</div>
-
 
 		<h3 class="section-title">비밀번호 변경</h3>
 		<form action="pswChange_proc.jsp" method="post" name="pwForm"
@@ -128,59 +136,15 @@ try {
 				placeholder="현재 사용중인 비밀번호"> <label>새 비밀번호</label> <input
 				type="password" name="newPw" placeholder="변경할 비밀번호"> <label>비밀번호
 				확인</label> <input type="password" name="confirmPw" placeholder="변경할 비밀번호 확인">
-
 			<button type="button" class="btn change-btn"
 				onclick="checkPasswordChange()">비밀번호 변경</button>
 		</form>
 
 		<h3 class="section-title">계정 삭제</h3>
-		<button class="btn delete-btn">DELETE ACCOUNT</button>
+		<button type="button" class="btn delete-btn" onclick="deleteAccount()">DELETE ACCOUNT</button>
 	</div>
-	<div id="addrModal" class="modal-overlay">
-		<div class="modal-window">
 
-			<div class="addr-list-scroll"
-				style="max-height: 60vh; overflow-y: auto;">
-				<%
-				if (addrList != null) {
-					for (DeliveryAddress addr : addrList) {
-						// 현재 이 주소가 기본 배송지인지 확인
-						boolean isDef = (defaultAddr != null && addr.getAddrId() == defaultAddr.getAddrId());
-				%>
-				<div class="addr-item <%=isDef ? "default" : ""%>">
-					<div class="info">
-						<span class="badge"><%=addr.getAddrName()%></span> <strong><%=addr.getRecipientName()%></strong>
-						<%
-						if (isDef) {
-						%><span class="badge-default">기본</span>
-						<%
-						}
-						%>
-						<br> <span style="font-size: 13px; color: #666;"><%=addr.getAddrRoad()%>
-							<%=addr.getAddrDetail()%></span> <br> <span
-							style="font-size: 12px; color: #888;"><%=addr.getPhone()%></span>
-					</div>
-					<div class="addr-actions-small"
-						style="margin-top: 10px; text-align: right;">
-						<%
-						if (!isDef) {
-						%>
-						<a href="address_action.jsp?mode=default&id=<%=addr.getAddrId()%>">기본설정</a>
-						<%
-						}
-						%>
-						<a href="address_edit.jsp?id=<%=addr.getAddrId()%>">수정</a> <a
-							href="address_action.jsp?mode=delete&id=<%=addr.getAddrId()%>"
-							onclick="return confirm('정말 삭제하시겠습니까?')">삭제</a>
-					</div>
-				</div>
-				<%
-				}
-				}
-				%>
-			</div>
-		</div>
-	</div>
+
 	<script src="style.js"></script>
 </body>
 </html>

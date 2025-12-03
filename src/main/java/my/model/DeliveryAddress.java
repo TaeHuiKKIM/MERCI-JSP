@@ -10,7 +10,9 @@ public class DeliveryAddress {
 	private String addrRoad;
 	private String addrDetail;
 	private int isDefault;
-	public DeliveryAddress() {}
+
+	public DeliveryAddress() {
+	}
 
 	public DeliveryAddress(int addrId, String userId, String addrName, String recipientName, String phone,
 			String addrRoad, String addrDetail, int isDefault) {
@@ -23,7 +25,7 @@ public class DeliveryAddress {
 		this.addrRoad = addrRoad;
 		this.addrDetail = addrDetail;
 		this.isDefault = isDefault;
-		
+
 	}
 
 	public int getIsDefault() {

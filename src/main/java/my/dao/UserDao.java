@@ -21,7 +21,7 @@ public class UserDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-		//	JdbcUtil.close(conn);
+			// JdbcUtil.close(conn);
 			JdbcUtil.close(pstmt);
 		}
 	}
@@ -44,7 +44,7 @@ public class UserDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-		//	JdbcUtil.close(conn);
+			// JdbcUtil.close(conn);
 			JdbcUtil.close(pstmt);
 			JdbcUtil.close(rs);
 		}
@@ -74,7 +74,7 @@ public class UserDao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-		//	JdbcUtil.close(conn);
+			// JdbcUtil.close(conn);
 			JdbcUtil.close(ps);
 			JdbcUtil.close(rs);
 		}
@@ -102,7 +102,7 @@ public class UserDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-		//	JdbcUtil.close(conn);
+			// JdbcUtil.close(conn);
 			JdbcUtil.close(pstmt);
 			JdbcUtil.close(rs);
 		}
@@ -120,21 +120,22 @@ public class UserDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-		//	JdbcUtil.close(conn);
+			// JdbcUtil.close(conn);
 			JdbcUtil.close(pstmt);
 		}
 	}
 
-	public void deleteById(Connection conn, String userId) throws SQLException {
+	// [추가] 회원 탈퇴 (삭제)
+	public int deleteUser(Connection conn, String userId) throws SQLException {
 		PreparedStatement pstmt = null;
 		try {
-			pstmt = conn.prepareStatement("delete from user where userId = ?");
+			// 외래키 설정(CASCADE)이 되어 있다면, 회원만 지워도 배송지까지 싹 지워집니다.
+			String sql = "DELETE FROM user WHERE userId = ?";
+			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, userId);
-			pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
+
+			return pstmt.executeUpdate(); // 성공 시 1 반환
 		} finally {
-		//	JdbcUtil.close(conn);
 			JdbcUtil.close(pstmt);
 		}
 	}
@@ -148,7 +149,7 @@ public class UserDao {
 			rs.next();
 			return rs.getInt(1);
 		} finally {
-		//	JdbcUtil.close(conn);
+			// JdbcUtil.close(conn);
 			JdbcUtil.close(rs);
 		}
 	}
@@ -170,27 +171,28 @@ public class UserDao {
 				userList.add(user);
 			}
 		} finally {
-		//	JdbcUtil.close(conn);
+			// JdbcUtil.close(conn);
 			JdbcUtil.close(rs);
 			JdbcUtil.close(pstmt);
 		}
 		return userList;
 	}
+
 	// [추가] 비밀번호 변경 메소드
 	public int updatePassword(Connection conn, String userId, String newPassword) throws SQLException {
-	    PreparedStatement pstmt = null;
-	    int result = 0;
-	    try {
-	        // user 테이블의 password 컬럼을 업데이트합니다.
-	        String sql = "UPDATE user SET password = ? WHERE userId = ?";
-	        pstmt = conn.prepareStatement(sql);
-	        pstmt.setString(1, newPassword);
-	        pstmt.setString(2, userId);
-	        
-	        result = pstmt.executeUpdate(); // 성공하면 1 반환
-	    } finally {
-	        JdbcUtil.close(pstmt);
-	    }
-	    return result;
+		PreparedStatement pstmt = null;
+		int result = 0;
+		try {
+			// user 테이블의 password 컬럼을 업데이트합니다.
+			String sql = "UPDATE user SET password = ? WHERE userId = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, newPassword);
+			pstmt.setString(2, userId);
+
+			result = pstmt.executeUpdate(); // 성공하면 1 반환
+		} finally {
+			JdbcUtil.close(pstmt);
+		}
+		return result;
 	}
 }

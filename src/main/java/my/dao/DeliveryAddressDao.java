@@ -14,7 +14,7 @@ public class DeliveryAddressDao {
 		PreparedStatement pstmt = null;
 		try {
 			// DB컬럼명: userId, addrName, recipient, phone, addrRoad, addrDetail
-			String sql = "INSERT INTO deliveryaddr (userId, addrName, recipient, phone, addrRoad, addrDetail) VALUES (?, ?, ?, ?, ?, ?)";
+			String sql = "INSERT INTO deliveryaddr (userId, addrName, recipient, phone, addrRoad, addrDetail, isDefault) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, addr.getUserId());
@@ -23,6 +23,7 @@ public class DeliveryAddressDao {
 			pstmt.setString(4, addr.getPhone());
 			pstmt.setString(5, addr.getAddrRoad());
 			pstmt.setString(6, addr.getAddrDetail());
+			pstmt.setInt(7, addr.getIsDefault());
 
 			pstmt.executeUpdate();
 
@@ -94,6 +95,7 @@ public class DeliveryAddressDao {
 			pstmt.setString(3, addr.getPhone());
 			pstmt.setString(4, addr.getAddrRoad());
 			pstmt.setString(5, addr.getAddrDetail());
+			pstmt.setInt(6, addr.getIsDefault());
 
 			// WHERE 조건절 (수정할 대상)
 			pstmt.setInt(6, addr.getAddrId());
@@ -126,6 +128,7 @@ public class DeliveryAddressDao {
 				addr.setPhone(rs.getString("phone"));
 				addr.setAddrRoad(rs.getString("addrRoad"));
 				addr.setAddrDetail(rs.getString("addrDetail"));
+				addr.setIsDefault(rs.getInt("isDefault"));
 			}
 		} finally {
 			JdbcUtil.close(rs);
@@ -135,54 +138,57 @@ public class DeliveryAddressDao {
 	}
 
 //[추가] 6. 기본 배송지 1건 조회 (없으면 null 반환)
-	public DeliveryAddress selectDefault(Connection conn, String userId) throws SQLException {
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		DeliveryAddress addr = null;
-		try {
-			// is_default가 1인 주소 가져오기
-			String sql = "SELECT * FROM deliveryaddr WHERE userId = ? AND is_default = 1";
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, userId);
-			rs = pstmt.executeQuery();
-			if (rs.next()) {
-				addr = new DeliveryAddress();
-				addr.setAddrId(rs.getInt("addrId"));
-				addr.setUserId(rs.getString("userId"));
-				addr.setAddrName(rs.getString("addrName"));
-				addr.setRecipientName(rs.getString("recipient"));
-				addr.setPhone(rs.getString("phone"));
-				addr.setAddrRoad(rs.getString("addrRoad"));
-				addr.setAddrDetail(rs.getString("addrDetail"));
-				// addr.setIsDefault(rs.getInt("is_default")); // 모델에 필드가 있다면
-			}
-		} finally {
-			JdbcUtil.close(rs);
-			JdbcUtil.close(pstmt);
-		}
-		return addr;
-	}
+	// [수정됨] 6. 기본 배송지 1건 조회
+    public DeliveryAddress selectDefault(Connection conn, String userId) throws SQLException {
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        DeliveryAddress addr = null;
+        try {
+            // [수정 포인트] is_default -> isDefault (DB 컬럼명과 일치해야 함)
+            String sql = "SELECT * FROM deliveryaddr WHERE userId = ? AND isDefault = 1";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, userId);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                addr = new DeliveryAddress();
+                addr.setAddrId(rs.getInt("addrId"));
+                addr.setUserId(rs.getString("userId"));
+                addr.setAddrName(rs.getString("addrName"));
+                addr.setRecipientName(rs.getString("recipient"));
+                addr.setPhone(rs.getString("phone"));
+                addr.setAddrRoad(rs.getString("addrRoad"));
+                addr.setAddrDetail(rs.getString("addrDetail"));
+                // 모델에 값 넣기
+                addr.setIsDefault(rs.getInt("isDefault")); 
+            }
+        } finally {
+            JdbcUtil.close(rs);
+            JdbcUtil.close(pstmt);
+        }
+        return addr;
+    }
 
-// [추가] 7. 기본 배송지 변경 (Transaction 처리)
-	public void setDefault(Connection conn, String userId, int addrId) throws SQLException {
-		PreparedStatement pstmt = null;
-		try {
-			// 1단계: 해당 유저의 모든 배송지를 일반(0)으로 초기화
-			String sqlReset = "UPDATE deliveryaddr SET is_default = 0 WHERE userId = ?";
-			pstmt = conn.prepareStatement(sqlReset);
-			pstmt.setString(1, userId);
-			pstmt.executeUpdate();
-			pstmt.close(); // 닫고 다시 씀
+    // [수정됨] 7. 기본 배송지 변경
+    public void setDefault(Connection conn, String userId, int addrId) throws SQLException {
+        PreparedStatement pstmt = null;
+        try {
+            // [수정 포인트] is_default -> isDefault
+            // 1단계: 기존 것 초기화
+            String sqlReset = "UPDATE deliveryaddr SET isDefault = 0 WHERE userId = ?";
+            pstmt = conn.prepareStatement(sqlReset);
+            pstmt.setString(1, userId);
+            pstmt.executeUpdate();
+            pstmt.close();
 
-			// 2단계: 선택한 배송지만 기본(1)로 설정
-			String sqlSet = "UPDATE deliveryaddr SET is_default = 1 WHERE userId = ? AND addrId = ?";
-			pstmt = conn.prepareStatement(sqlSet);
-			pstmt.setString(1, userId);
-			pstmt.setInt(2, addrId);
-			pstmt.executeUpdate();
-
-		} finally {
-			JdbcUtil.close(pstmt);
-		}
-	}
-}
+            // 2단계: 선택한 것 설정
+            String sqlSet = "UPDATE deliveryaddr SET isDefault = 1 WHERE userId = ? AND addrId = ?";
+            pstmt = conn.prepareStatement(sqlSet);
+            pstmt.setString(1, userId);
+            pstmt.setInt(2, addrId);
+            pstmt.executeUpdate();
+            
+        } finally {
+            JdbcUtil.close(pstmt);
+        }
+    }
+} // 클래스 끝

@@ -97,8 +97,8 @@ boolean isLogin = (userName != null);
 				<c:if test="${list != null}">
 					<c:forEach var="cloth" items="${list}">
 						<div class="product-item">
-							<a href="catalogdetail.jsp?clothId=${cloth.id}"> <img
-								src="uploadfile/${cloth.poster}" width="200" height="250">
+							<a href="catalogdetail.html?clothId=${cloth.id}"> <img
+								src="uploadfile/${cloth.img_body}" width="200" height="250">
 							</a>
 							<h3>${cloth.title}</h3>
 							<p>₩ ${cloth.price}</p>

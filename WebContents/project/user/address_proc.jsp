@@ -46,7 +46,7 @@
 %>
         <script>
             alert("배송지가 성공적으로 등록되었습니다.");
-            location.href = "account.jsp"; // 마이페이지로 이동
+            location.href = "address_list.jsp"; 
         </script>
 <%
     } catch (Exception e) {

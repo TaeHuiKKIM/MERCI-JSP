@@ -82,16 +82,27 @@
             <label>전화번호</label>
             <input type="text" name="phone" value="<%=addr.getPhone()%>" required>
 
-            <label>도로명 주소</label>
-            <input type="text" name="roadAddress" value="<%=addr.getAddrRoad()%>" required>
+            <label>주소</label>
+            <div class="address-input-group" style="display: flex; gap: 10px; margin-bottom: 10px;">
+                <input type="text" id="postcode" placeholder="우편번호" style="width: 150px;" readonly>
+                <input type="button" onclick="execDaumPostcode()" value="우편번호 찾기" 
+                       style="width: 120px; background: #333; color: #fff; border: none; cursor: pointer;">
+            </div>
+
+            <input type="text" id="roadAddress" name="roadAddress" value="<%=addr.getAddrRoad()%>" readonly required>
+            
+            <input type="hidden" id="extraAddress" placeholder="참고항목">
 
             <label>상세주소</label>
-            <input type="text" name="detailAddress" value="<%=addr.getAddrDetail()%>">
+            <input type="text" id="detailAddress" name="detailAddress" value="<%=addr.getAddrDetail()%>">
 
             <button type="submit" class="btn save-btn">수정 완료</button>
         </form>
     </div>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     
+
+
     <script src="style.js"></script>
 </body>
 </html>

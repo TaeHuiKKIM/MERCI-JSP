@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-   pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
 <%@ page
-   import="java.sql.*, java.util.*, my.dao.*, my.model.*, my.util.*"%>
+	import="java.sql.*, java.util.*, my.dao.*, my.model.*, my.util.*"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
 // [1] 세션 확인
@@ -18,7 +18,7 @@ boolean isLogin = (userName != null);
 
 <body class="address-page">
 
-    <!-- 공통 HEADER -->
+	<!-- 공통 HEADER -->
 	<header class="header">
 		<div class="header-inner">
 			<div class="header-logo">
@@ -31,8 +31,7 @@ boolean isLogin = (userName != null);
 				<%
 				if (isLogin) {
 				%>
-				<a href="account.jsp">MY PAGE</a> <a
-					href="logout_proc.jsp">LOGOUT</a>
+				<a href="account.jsp">MY PAGE</a> <a href="logout_proc.jsp">LOGOUT</a>
 				<%
 				} else {
 				%>
@@ -44,58 +43,65 @@ boolean isLogin = (userName != null);
 		</div>
 	</header>
 
-    <!-- 배송지 입력 폼 -->
-    <div class="address-container">
+	<!-- 배송지 입력 폼 -->
+	<div class="address-container">
 
-        <h2>배송지 정보 입력</h2>
+		<h2>배송지 정보 입력</h2>
 
-        <form action="address_proc.jsp" method="post" class="address-form">
+		<form action="address_proc.jsp" method="post" class="address-form">
 
-            <label>주소명</label>
-            <input type="text" name="addressName" placeholder="예: 집, 회사" required>
+			<label>주소명</label> <input type="text" name="addressName"
+				placeholder="예: 집, 회사" required> <label>받는 사람</label> <input
+				type="text" name="receiver" required> <label>전화번호</label> <input
+				type="text" name="phone" placeholder="010-0000-0000" required>
 
-            <label>받는 사람</label>
-            <input type="text" name="receiver" required>
+			<label>주소</label>
+			<div class="address-input-group"
+				style="display: flex; gap: 10px; margin-bottom: 10px;">
+				<input type="text" id="postcode" placeholder="우편번호"
+					style="width: 150px;" readonly> <input type="button"
+					onclick="execDaumPostcode()" value="우편번호 찾기"
+					style="width: 120px; background: #333; color: #fff; border: none; cursor: pointer;">
+			</div>
 
-            <label>전화번호</label>
-            <input type="text" name="phone" placeholder="010-0000-0000" required>
+			<input type="text" id="roadAddress" name="roadAddress"
+				placeholder="도로명주소" readonly required> <input type="hidden"
+				id="extraAddress" placeholder="참고항목"> <label>상세주소</label> <input
+				type="text" id="detailAddress" name="detailAddress"
+				placeholder="상세주소를 입력하세요 (예: 101동 101호)">
 
-            <label>도로명 주소</label>
-            <input type="text" name="roadAddress" required>
+			<button type="submit" class="btn save-btn">저장하기</button>
+		</form>
 
-            <label>상세주소</label>
-            <input type="text" name="detailAddress">
+	</div>
 
-            <button type="submit" class="btn save-btn">저장하기</button>
-        </form>
+	<div class="login-panel" id="loginPanel">
 
-    </div>
+		<div class="login-header">
+			<h2>LOGIN</h2>
+			<button class="login-close" id="loginCloseBtn">CLOSE</button>
+		</div>
 
-   <div class="login-panel" id="loginPanel">
+		<form class="login-box">
+			<input type="text" placeholder="EMAIL" class="login-input"> <input
+				type="password" placeholder="PASSWORD" class="login-input">
 
-      <div class="login-header">
-         <h2>LOGIN</h2>
-         <button class="login-close" id="loginCloseBtn">CLOSE</button>
-      </div>
+			<input type="button" value="LOGIN" class="login-btn black"> <input
+				type="button" value="CREATE ACCOUNT" class="login-btn gray"
+				onclick="location.href='joinform1.html'">
+		</form>
 
-      <form class="login-box">
-         <input type="text" placeholder="EMAIL" class="login-input"> <input
-            type="password" placeholder="PASSWORD" class="login-input">
+		<h3 class="social-title">SOCIAL LOGIN</h3>
 
-         <input type="button" value="LOGIN" class="login-btn black"> <input
-            type="button" value="CREATE ACCOUNT" class="login-btn gray"
-            onclick="location.href='joinform1.html'">
-      </form>
+		<div class="social-login">
+			<input type="button" value="GOOGLE" class="social-btn"> <input
+				type="button" value="KAKAO" class="social-btn"> <input
+				type="button" value="NAVER" class="social-btn">
+		</div>
 
-      <h3 class="social-title">SOCIAL LOGIN</h3>
-
-      <div class="social-login">
-         <input type="button" value="GOOGLE" class="social-btn"> <input
-            type="button" value="KAKAO" class="social-btn"> <input
-            type="button" value="NAVER" class="social-btn">
-      </div>
-
-   </div>
+	</div>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+ 
     <script src="style.js"></script>
 </body>
 </html>

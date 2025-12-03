@@ -9,335 +9,165 @@ import my.util.JdbcUtil;
 
 public class ClothDao {
 
-	public void insert(Connection conn, Cloth cloth) throws SQLException {
-		PreparedStatement pstmt = null;
-		try {
-			pstmt = conn.prepareStatement(
-					"insert into cloth (title,maker,price,poster,freq,opendate,clothType)" + " values(?,?,?,?,?,?,?)");
-			pstmt.setString(1, cloth.getTitle());
-			pstmt.setString(2, cloth.getMaker());
-			pstmt.setInt(3, cloth.getPrice());
-			pstmt.setString(4, cloth.getPoster());
-			pstmt.setInt(5, cloth.getFreq());
-			pstmt.setTimestamp(6, new Timestamp(cloth.getOpenDate().getTime()));
-			pstmt.setString(7, cloth.getClothType());
-			pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			JdbcUtil.close(conn);
-			JdbcUtil.close(pstmt);
-		}
-	}
+    // 1. 옷 등록 (insert) - 모든 필드 포함
+    public void insert(Connection conn, Cloth cloth) throws SQLException {
+        PreparedStatement pstmt = null;
+        try {
+            // DB 컬럼명: title, maker, price, img_body, img_front, img_back, img_detail, description, stock, sizes, colors, clothType, freq, opendate
+            String sql = "INSERT INTO cloth (title, maker, price, img_body, img_front, img_back, img_detail, description, stock, sizes, colors, clothType, freq, opendate) "
+                       + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, cloth.getTitle());
+            pstmt.setString(2, cloth.getMaker());
+            pstmt.setInt(3, cloth.getPrice());
+            pstmt.setString(4, cloth.getImg_body());
+            pstmt.setString(5, cloth.getImg_front());
+            pstmt.setString(6, cloth.getImg_back());
+            pstmt.setString(7, cloth.getImg_detail());
+            pstmt.setString(8, cloth.getDescription());
+            pstmt.setInt(9, cloth.getStock());
+            pstmt.setString(10, cloth.getSizes());
+            pstmt.setString(11, cloth.getColors());
+            pstmt.setString(12, cloth.getClothType());
+            pstmt.setInt(13, cloth.getFreq());
+            pstmt.setTimestamp(14, new Timestamp(cloth.getOpenDate().getTime()));
+            
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        } finally {
+            JdbcUtil.close(pstmt);
+        }
+    }
 
-	public Cloth selectById(Connection conn, int clothId) throws SQLException {
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		Cloth cloth = null;
-		try {
-			pstmt = conn.prepareStatement("select * from cloth where id = ?");
-			pstmt.setInt(1, clothId);
-			rs = pstmt.executeQuery();
-			if (rs.next()) {
-				cloth = new Cloth();
-				cloth.setId(rs.getInt(1));
-				cloth.setTitle(rs.getString(2));
-				cloth.setMaker(rs.getString(3));
-				cloth.setPrice(rs.getInt(4));
-				cloth.setPoster(rs.getString(5));
-				cloth.setFreq(rs.getInt(6));
-				cloth.setOpenDate(rs.getTimestamp(7));
-				cloth.setClothType(rs.getString(8));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			JdbcUtil.close(conn);
-			JdbcUtil.close(pstmt);
-			JdbcUtil.close(rs);
-		}
-		return cloth;
-	}
+    // 2. ID로 조회 (selectById)
+    public Cloth selectById(Connection conn, int clothId) throws SQLException {
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Cloth cloth = null;
+        try {
+            pstmt = conn.prepareStatement("SELECT * FROM cloth WHERE id = ?");
+            pstmt.setInt(1, clothId);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                cloth = makeClothFromResultSet(rs); // 중복 코드 제거용 메서드 호출
+            }
+        } finally {
+            JdbcUtil.close(rs);
+            JdbcUtil.close(pstmt);
+        }
+        return cloth;
+    }
 
-	public Cloth selectByIdUnclose(Connection conn, int clothId) throws SQLException {
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		Cloth cloth = null;
-		try {
-			pstmt = conn.prepareStatement("select * from cloth where id = ?");
-			pstmt.setInt(1, clothId);
-			rs = pstmt.executeQuery();
-			if (rs.next()) {
-				cloth = new Cloth();
-				cloth.setId(rs.getInt(1));
-				cloth.setTitle(rs.getString(2));
-				cloth.setMaker(rs.getString(3));
-				cloth.setPrice(rs.getInt(4));
-				cloth.setPoster(rs.getString(5));
-				cloth.setFreq(rs.getInt(6));
-				cloth.setOpenDate(rs.getTimestamp(7));
-				cloth.setClothType(rs.getString(8));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			JdbcUtil.close(conn);
-			JdbcUtil.close(pstmt);
-			JdbcUtil.close(rs);
-		}
-		return cloth;
-	}
+    // 3. 전체 목록 조회 (selectList)
+    public List<Cloth> selectList(Connection conn) throws SQLException {
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        List<Cloth> clothList = new ArrayList<>();
+        try {
+            pstmt = conn.prepareStatement("SELECT * FROM cloth ORDER BY id DESC");
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                clothList.add(makeClothFromResultSet(rs));
+            }
+        } finally {
+            JdbcUtil.close(rs);
+            JdbcUtil.close(pstmt);
+        }
+        return clothList;
+    }
+    
+    // 4. 카테고리별 조회 (selectListByClothType)
+    public List<Cloth> selectListByClothType(Connection conn, String clothType) throws SQLException {
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        List<Cloth> clothList = new ArrayList<>();
+        try {
+            // 문자열은 홑따옴표(')로 감싸야 함
+            pstmt = conn.prepareStatement("SELECT * FROM cloth WHERE clothType = ?");
+            pstmt.setString(1, clothType);
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                clothList.add(makeClothFromResultSet(rs));
+            }
+        } finally {
+            JdbcUtil.close(rs);
+            JdbcUtil.close(pstmt);
+        }
+        return clothList;
+    }
 
-	public List<Cloth> selectLike(Connection conn, String target, String keyword) throws SQLException {
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		Cloth cloth = null;
-		List<Cloth> cloths = new ArrayList<Cloth>();
-		try {
-			pstmt = conn.prepareStatement("select * from cloth where " + target + " like ?");
-			pstmt.setString(1, "%" + keyword + "%");
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
-				cloth = new Cloth();
-				cloth.setId(rs.getInt(1));
-				cloth.setTitle(rs.getString(2));
-				cloth.setMaker(rs.getString(3));
-				cloth.setPrice(rs.getInt(4));
-				cloth.setPoster(rs.getString(5));
-				cloth.setFreq(rs.getInt(6));
-				cloth.setOpenDate(rs.getTimestamp(7));
-				cloth.setClothType(rs.getString(8));
-				cloths.add(cloth);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			JdbcUtil.close(conn);
-			JdbcUtil.close(pstmt);
-			JdbcUtil.close(rs);
-		}
-		return cloths;
-	}
+    // [헬퍼 메서드] ResultSet에서 Cloth 객체 생성 (중복 제거용)
+    private Cloth makeClothFromResultSet(ResultSet rs) throws SQLException {
+        Cloth cloth = new Cloth();
+        cloth.setId(rs.getInt("id"));
+        cloth.setTitle(rs.getString("title"));
+        cloth.setMaker(rs.getString("maker"));
+        cloth.setPrice(rs.getInt("price"));
+        cloth.setImg_body(rs.getString("img_body"));
+        cloth.setImg_front(rs.getString("img_front"));
+        cloth.setImg_back(rs.getString("img_back"));
+        cloth.setImg_detail(rs.getString("img_detail"));
+        cloth.setDescription(rs.getString("description"));
+        cloth.setStock(rs.getInt("stock"));
+        cloth.setSizes(rs.getString("sizes"));
+        cloth.setColors(rs.getString("colors"));
+        cloth.setClothType(rs.getString("clothType"));
+        cloth.setFreq(rs.getInt("freq"));
+        cloth.setOpenDate(rs.getTimestamp("opendate"));
+        return cloth;
+    }
 
-	public void update(Connection conn, Cloth cloth) throws SQLException {
-		PreparedStatement pstmt = null;
-		try {
-			pstmt = conn.prepareStatement("update cloth set title=?,maker=?,price=?,clothType=? where id=?");
-			pstmt.setString(1, cloth.getTitle());
-			pstmt.setString(2, cloth.getMaker());
-			pstmt.setInt(3, cloth.getPrice());
-			pstmt.setString(4, cloth.getClothType());
-			pstmt.setInt(5, cloth.getId());
-			pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			JdbcUtil.close(conn);
-			JdbcUtil.close(pstmt);
-		}
-	}
+    // 5. 검색 (selectLike)
+    public List<Cloth> selectLike(Connection conn, String target, String keyword) throws SQLException {
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        List<Cloth> cloths = new ArrayList<>();
+        try {
+            pstmt = conn.prepareStatement("SELECT * FROM cloth WHERE " + target + " LIKE ?");
+            pstmt.setString(1, "%" + keyword + "%");
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                cloths.add(makeClothFromResultSet(rs));
+            }
+        } finally {
+            JdbcUtil.close(rs);
+            JdbcUtil.close(pstmt);
+        }
+        return cloths;
+    }
 
-	public void updateFreq(Connection conn, int id) throws SQLException {
-		PreparedStatement pstmt = null;
-		try {
-			pstmt = conn.prepareStatement("update cloth set freq = freq + 1 where id=?");
-			pstmt.setInt(1, id);
-			pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			JdbcUtil.close(conn);
-			JdbcUtil.close(pstmt);
-		}
-	}
-
-	public void deleteById(Connection conn, int clothId) throws SQLException {
-		PreparedStatement pstmt = null;
-		try {
-			pstmt = conn.prepareStatement("delete from cloth where id = ?");
-			pstmt.setInt(1, clothId);
-			pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			JdbcUtil.close(conn);
-			JdbcUtil.close(pstmt);
-		}
-	}
-
-	public int selectCount(Connection conn) throws SQLException {
-		Statement stmt = null;
-		ResultSet rs = null;
-		try {
-			stmt = conn.createStatement();
-			rs = stmt.executeQuery("select count(*) from cloth");
-			rs.next();
-			return rs.getInt(1);
-		} finally {
-			JdbcUtil.close(conn);
-			JdbcUtil.close(rs);
-		}
-	}
-
-	public List<Cloth> selectList(Connection conn) throws SQLException {
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		List<Cloth> clothList = null;
-		try {
-			pstmt = conn.prepareStatement("select * from cloth ");
-			rs = pstmt.executeQuery();
-			clothList = new ArrayList<Cloth>();
-			while (rs.next()) {
-				Cloth cloth = new Cloth();
-				cloth.setId(rs.getInt(1));
-				cloth.setTitle(rs.getString(2));
-				cloth.setMaker(rs.getString(3));
-				cloth.setPrice(rs.getInt(4));
-				cloth.setPoster(rs.getString(5));
-				cloth.setFreq(rs.getInt(6));
-				cloth.setOpenDate(rs.getTimestamp(7));
-				cloth.setClothType(rs.getString(8));
-				clothList.add(cloth);
-			}
-		} finally {
-			JdbcUtil.close(conn);
-			JdbcUtil.close(rs);
-			JdbcUtil.close(pstmt);
-		}
-		return clothList;
-	}
-
-	public List<Cloth> selectListOrders(Connection conn, String target, String direct) throws SQLException {
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		List<Cloth> clothList = null;
-		try {
-			pstmt = conn.prepareStatement("select * from cloth order by " + target + " " + direct);
-			rs = pstmt.executeQuery();
-			clothList = new ArrayList<Cloth>();
-			while (rs.next()) {
-				Cloth cloth = new Cloth();
-				cloth.setId(rs.getInt(1));
-				cloth.setTitle(rs.getString(2));
-				cloth.setMaker(rs.getString(3));
-				cloth.setPrice(rs.getInt(4));
-				cloth.setPoster(rs.getString(5));
-				cloth.setFreq(rs.getInt(6));
-				cloth.setOpenDate(rs.getTimestamp(7));
-				cloth.setClothType(rs.getString(8));
-				clothList.add(cloth);
-			}
-		} finally {
-			JdbcUtil.close(conn);
-			JdbcUtil.close(rs);
-			JdbcUtil.close(pstmt);
-		}
-		return clothList;
-	}
-
-	public List<Cloth> selectListFreq(Connection conn, String target) throws SQLException {
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		List<Cloth> clothList = null;
-		try {
-			pstmt = conn.prepareStatement("select * from cloth order by " + target + " desc");
-			rs = pstmt.executeQuery();
-			clothList = new ArrayList<Cloth>();
-			while (rs.next()) {
-				Cloth cloth = new Cloth();
-				cloth.setId(rs.getInt(1));
-				cloth.setTitle(rs.getString(2));
-				cloth.setMaker(rs.getString(3));
-				cloth.setPrice(rs.getInt(4));
-				cloth.setPoster(rs.getString(5));
-				cloth.setFreq(rs.getInt(6));
-				cloth.setOpenDate(rs.getTimestamp(7));
-				cloth.setClothType(rs.getString(8));
-				clothList.add(cloth);
-			}
-		} finally {
-			JdbcUtil.close(conn);
-			JdbcUtil.close(rs);
-			JdbcUtil.close(pstmt);
-		}
-		return clothList;
-	}
-
-	public List<Cloth> selectListLimit(Connection conn, int offset, int count) throws SQLException {
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		List<Cloth> clothList = null;
-		try {
-			pstmt = conn.prepareStatement("select * from cloth limit ?,?");
-			pstmt.setInt(1, offset);
-			pstmt.setInt(2, count);
-			rs = pstmt.executeQuery();
-			clothList = new ArrayList<Cloth>();
-			while (rs.next()) {
-				Cloth cloth = new Cloth();
-				cloth.setId(rs.getInt(1));
-				cloth.setTitle(rs.getString(2));
-				cloth.setMaker(rs.getString(3));
-				cloth.setPrice(rs.getInt(4));
-				cloth.setPoster(rs.getString(5));
-				cloth.setFreq(rs.getInt(6));
-				cloth.setOpenDate(rs.getTimestamp(7));
-				cloth.setClothType(rs.getString(8));
-				clothList.add(cloth);
-			}
-		} finally {
-			JdbcUtil.close(conn);
-			JdbcUtil.close(rs);
-			JdbcUtil.close(pstmt);
-		}
-		return clothList;
-	}
-
-	public List<String> selectClothType(Connection conn) throws SQLException {
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		List<String> clothTypeList = new ArrayList<String>();
-		try {
-			pstmt = conn.prepareStatement(
-					"select clothType, count(*) as cnt from cloth2 group by clothType order by cnt desc");
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
-				String clothType = rs.getString("clothType");
-				clothTypeList.add(clothType);
-			}
-		} finally {
-			JdbcUtil.close(conn);
-			JdbcUtil.close(rs);
-			JdbcUtil.close(pstmt);
-		}
-		return clothTypeList;
-	}
-
-	public List<Cloth> selectListByClothType(Connection conn, String clothType) throws SQLException {
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		List<Cloth> clothList = null;
-		try {
-			pstmt = conn.prepareStatement("select * from cloth where clothType= " + clothType);
-			rs = pstmt.executeQuery();
-			clothList = new ArrayList<Cloth>();
-			while (rs.next()) {
-				Cloth cloth = new Cloth();
-				cloth.setId(rs.getInt(1));
-				cloth.setTitle(rs.getString(2));
-				cloth.setMaker(rs.getString(3));
-				cloth.setPrice(rs.getInt(4));
-				cloth.setPoster(rs.getString(5));
-				cloth.setFreq(rs.getInt(6));
-				cloth.setOpenDate(rs.getTimestamp(7));
-				cloth.setClothType(rs.getString(8));
-				clothList.add(cloth);
-			}
-		} finally {
-			JdbcUtil.close(conn);
-			JdbcUtil.close(rs);
-			JdbcUtil.close(pstmt);
-		}
-		return clothList;
-	}
+    // 6. 조회수 증가 (updateFreq)
+    public void updateFreq(Connection conn, int id) throws SQLException {
+        PreparedStatement pstmt = null;
+        try {
+            pstmt = conn.prepareStatement("UPDATE cloth SET freq = freq + 1 WHERE id = ?");
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+        } finally {
+            JdbcUtil.close(pstmt);
+        }
+    }
+    
+    // 7. 인기순 정렬 조회 (selectListFreq)
+    public List<Cloth> selectListFreq(Connection conn, String target) throws SQLException {
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        List<Cloth> clothList = new ArrayList<>();
+        try {
+            // target 컬럼 기준으로 내림차순 정렬 (freq, price 등)
+            // SQL Injection 방지를 위해 target 검증 로직이 있으면 더 좋음
+            pstmt = conn.prepareStatement("SELECT * FROM cloth ORDER BY " + target + " DESC");
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                clothList.add(makeClothFromResultSet(rs));
+            }
+        } finally {
+            JdbcUtil.close(rs);
+            JdbcUtil.close(pstmt);
+        }
+        return clothList;
+    }
 }

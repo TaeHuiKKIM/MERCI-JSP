@@ -212,12 +212,11 @@ body.about-page .header .header-nav a {
 .about-visual {
   width: 100%;
   height: 100vh;
-  /* background-image: url("images/about.png"); /* Removed */
+  background-image: url("images/about.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   position: relative;
-  overflow: hidden; /* Ensure image doesn't overflow */
 }
 .about-text {
   position: absolute;
@@ -237,87 +236,6 @@ body.about-page .header .header-nav a {
   font-size: 14px;
   line-height: 1.8;
   opacity: 0.9;
-}
-
-.about-visual .about-main-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* Cover the entire container */
-  position: absolute; /* Position absolutely within about-visual */
-  top: 0;
-  left: 0;
-  z-index: 1; /* Ensure it's behind about-text */
-}
-
-/* Styles for the admin main content area */
-main.admin-main {
-    padding: 40px;
-    background-color: #ffffff; /* Give it a white background to contrast with the about page's black bg */
-    color: #333; /* Dark text for readability */
-}
-
-/* New styles for the upload form in manageabout.jsp */
-.about-image-upload {
-    max-width: 600px;
-    margin: 0 auto; /* Center the form in the new main section */
-    padding: 30px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    text-align: center;
-}
-
-.about-image-upload h3 {
-    font-size: 20px;
-    color: #333;
-    margin-bottom: 25px;
-    font-weight: 700;
-}
-
-.about-image-upload input[type="file"] {
-    display: block;
-    width: calc(100% - 20px); /* Adjust width for padding */
-    margin: 0 auto 20px;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #fff;
-    cursor: pointer;
-    font-size: 15px;
-    color: #555;
-    text-align: left; /* Align text inside file input */
-}
-
-.about-image-upload input[type="file"]::file-selector-button {
-  border: none;
-  padding: 8px 15px;
-  border-radius: 4px;
-  background-color: #007bff;
-  color: white;
-  cursor: pointer;
-  margin-right: 10px;
-  transition: background-color 0.2s ease;
-}
-
-.about-image-upload input[type="file"]::file-selector-button:hover {
-  background-color: #0056b3;
-}
-
-
-.about-image-upload input[type="submit"] {
-    padding: 12px 30px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    font-weight: 600;
-}
-
-.about-image-upload input[type="submit"]:hover {
-    background-color: #218838;
 }
 
 /* =================================================================== */
@@ -832,73 +750,130 @@ main.product-main {
     cursor: pointer;
 }
 .save-btn:hover { background: #000; }
-
 /* =================================================================== */
-/* ==================== MANAGE PRODUCT TABLE STYLES ================== */
+/* ==================== ADDRESS LIST PAGE STYLES ===================== */
 /* =================================================================== */
-.manage-product-section table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-  background-color: #fff;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  border-radius: 6px;
-  overflow: hidden; /* To make border-radius work on table */
+.addr-list-container {
+    width: 600px;
+    margin: 120px auto;
 }
-
-.manage-product-section th,
-.manage-product-section td {
-  padding: 15px 20px;
-  text-align: left;
-  font-size: 14px;
-  border-bottom: 1px solid #f0f0f0;
+.page-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 30px;
+    text-align: center;
 }
-
-.manage-product-section th {
-  background-color: #f9f9f9;
-  font-weight: 600;
-  color: #333;
+.addr-item {
+    border: 1px solid #ddd;
+    padding: 20px;
+    margin-bottom: 15px;
+    position: relative;
 }
-
-.manage-product-section tr:last-child td {
-  border-bottom: none;
+.addr-item.default {
+    border: 1px solid #000;
+    background-color: #fafafa;
 }
-
-.manage-product-section tr:hover {
-  background-color: #f5f5f5;
+.badge-default {
+    background: #000;
+    color: #fff;
+    font-size: 11px;
+    padding: 2px 6px;
+    margin-left: 5px;
 }
-
-.manage-product-section td img {
-  border-radius: 4px;
+.addr-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 15px;
 }
-
-.manage-product-section input[type="button"],
-.manage-product-section input[type="submit"] {
-    padding: 8px 18px;
+.btn-small {
+    padding: 5px 10px;
+    font-size: 12px;
     border: 1px solid #ccc;
     background: #fff;
     cursor: pointer;
-    font-size: 12px;
-    border-radius: 4px;
-    transition: all 0.2s ease;
+    text-decoration: none;
+    color: #333;
+}
+.btn-small:hover {
+    background: #f0f0f0;
 }
 
-.manage-product-section input[type="button"]:hover,
-.manage-product-section input[type="submit"]:hover {
-    background: #e9e9e9;
-    border-color: #aaa;
+/* ================= 배송지 관리 리스트 (최종 수정) ================= */
+/* 전체 레이아웃 */
+.addr-list-container {
+    width: 600px;
+    margin: 120px auto 100px; /* 상하 여백, 좌우 중앙 정렬(auto) */
+    padding: 0;               /* 내부 패딩 제거 */
 }
 
-.manage-product-section form td {
-    padding-top: 20px;
-    padding-bottom: 20px;
+/* 페이지 제목 */
+.page-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 40px;
 }
 
-.manage-product-section select,
-.manage-product-section input[type="text"] {
-    padding: 8px 12px;
+/* 개별 주소 박스 */
+.addr-item {
+    display: flex;
+    align-items: flex-start;
+    border: 1px solid #ddd;   /* 회색 테두리 (박스 구분용) */
+    padding: 25px;
+    margin-bottom: 15px;      /* 박스 사이 간격 */
+    cursor: pointer;
+    background: #fff;
+    transition: all 0.2s;
+    border-radius: 4px;       /* 모서리 둥글게 */
+}
+
+.addr-item:hover {
+    background-color: #f9f9f9;
+}
+
+/* ★ 선택되었을 때 (두꺼운 테두리) */
+.addr-item.selected {
+    border: 2px solid #000;   /* 검은색 두꺼운 테두리 */
+    background-color: #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15); /* 그림자 효과 */
+}
+
+/* 번호 */
+.addr-num {
+    font-size: 18px;
+    font-weight: 800;
+    margin-right: 25px;
+    color: #333;
+    min-width: 25px;
+}
+
+/* 내용 */
+.addr-content p {
+    line-height: 1.5;
+}
+
+/* 하단 고정 바 */
+.bottom-action-bar {
+    position: fixed;
+    bottom: 0; left: 0; width: 100%;
+    background: #fff;
+    border-top: 1px solid #eee;
+    padding: 20px 0;
+    text-align: center;
+    box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+    z-index: 999;
+}
+
+.action-btn {
+    padding: 12px 24px;
+    margin: 0 5px;
+    font-size: 13px;
+    font-weight: 600;
     border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 12px;
+    background: #fff;
+    cursor: pointer;
 }
-
+.action-btn.black {
+    background: #000; color: #fff; border: 1px solid #000;
+}
