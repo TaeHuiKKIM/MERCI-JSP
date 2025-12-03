@@ -86,6 +86,8 @@ boolean isLogin = (userName != null);
 			else
 				list = dao.selectListFreq(conn, target);
 		} catch (SQLException e) {
+		} finally{
+			JdbcUtil.close(conn);
 		}
 		%>
 		<section class="product-section">

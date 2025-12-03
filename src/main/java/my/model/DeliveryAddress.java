@@ -9,11 +9,11 @@ public class DeliveryAddress {
 	private String phone;
 	private String addrRoad;
 	private String addrDetail;
-
+	private int isDefault;
 	public DeliveryAddress() {}
 
 	public DeliveryAddress(int addrId, String userId, String addrName, String recipientName, String phone,
-			String addrRoad, String addrDetail) {
+			String addrRoad, String addrDetail, int isDefault) {
 		super();
 		this.addrId = addrId;
 		this.userId = userId;
@@ -22,6 +22,16 @@ public class DeliveryAddress {
 		this.phone = phone;
 		this.addrRoad = addrRoad;
 		this.addrDetail = addrDetail;
+		this.isDefault = isDefault;
+		
+	}
+
+	public int getIsDefault() {
+		return isDefault;
+	}
+
+	public void setIsDefault(int isDefault) {
+		this.isDefault = isDefault;
 	}
 
 	public int getAddrId() {

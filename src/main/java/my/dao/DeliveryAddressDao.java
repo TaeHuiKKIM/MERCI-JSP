@@ -57,6 +57,7 @@ public class DeliveryAddressDao {
 				addr.setPhone(rs.getString("phone"));
 				addr.setAddrRoad(rs.getString("addrRoad"));
 				addr.setAddrDetail(rs.getString("addrDetail"));
+				addr.setIsDefault(rs.getInt("isDefault"));
 
 				list.add(addr);
 			}

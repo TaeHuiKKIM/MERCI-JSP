@@ -82,24 +82,36 @@ try {
 			</h3>
 
 			<%
+			// [중요] 기본 배송지 정보가 있는지 확인
 			if (defaultAddr != null) {
 			%>
-			<div class="address-card">
+			<div class="address-card"
+				style="border: 1px solid #000; padding: 20px; background: #fff;">
 				<div class="addr-info">
-					<span class="badge"><%=defaultAddr.getAddrName()%></span> <strong
-						class="recipient"><%=defaultAddr.getRecipientName()%></strong>
-					<p class="phone"><%=defaultAddr.getPhone()%></p>
-					<p class="address-text">
+					<span class="badge"
+						style="background: #eee; padding: 2px 6px; font-size: 11px; margin-right: 5px;">
+						<%=defaultAddr.getAddrName()%>
+					</span> <strong class="recipient" style="font-size: 15px;"> <%=defaultAddr.getRecipientName()%>
+					</strong>
+
+					<p class="phone"
+						style="font-size: 13px; color: #666; margin: 5px 0;">
+						<%=defaultAddr.getPhone()%>
+					</p>
+
+					<p class="address-text"
+						style="font-size: 14px; color: #333; margin-top: 10px;">
 						<%=defaultAddr.getAddrRoad()%>
 						<br>
 						<%=defaultAddr.getAddrDetail()%>
 					</p>
 				</div>
 			</div>
+
 			<%
 			} else {
 			%>
-			<div class="no-address">
+			<div class="no-address" style="text-align: center; padding: 30px 0;">
 				<p style="margin-bottom: 15px; color: #888;">등록된 기본 배송지가 없습니다.</p>
 				<a href="address.jsp" class="btn address-btn">새 배송지 등록</a>
 			</div>
@@ -107,6 +119,7 @@ try {
 			}
 			%>
 		</div>
+
 
 		<h3 class="section-title">비밀번호 변경</h3>
 		<form action="pswChange_proc.jsp" method="post" name="pwForm"
@@ -125,16 +138,6 @@ try {
 	</div>
 	<div id="addrModal" class="modal-overlay">
 		<div class="modal-window">
-			<div
-				style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #222; padding-bottom: 10px;">
-				<h3 class="modal-title" style="margin: 0; border: none;">배송지 관리</h3>
-				<button class="close-modal-btn" onclick="closeAddrModal()"
-					style="font-size: 24px; border: none; background: none; cursor: pointer;">×</button>
-			</div>
-
-			<button onclick="location.href='address.jsp'" class="btn"
-				style="margin-bottom: 20px; background: #333; color: #fff;">+
-				새 배송지 추가</button>
 
 			<div class="addr-list-scroll"
 				style="max-height: 60vh; overflow-y: auto;">
@@ -162,8 +165,7 @@ try {
 						<%
 						if (!isDef) {
 						%>
-						<a
-							href="address_action.jsp?mode=default&id=<%=addr.getAddrId()%>">기본설정</a>
+						<a href="address_action.jsp?mode=default&id=<%=addr.getAddrId()%>">기본설정</a>
 						<%
 						}
 						%>
