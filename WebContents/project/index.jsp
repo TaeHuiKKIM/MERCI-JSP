@@ -3,46 +3,20 @@
 <%@ page
 	import="java.sql.*, java.util.*, my.dao.*, my.model.*, my.util.*"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%
-// [1] 세션 확인
-String userName = (String) session.getAttribute("userName");
-boolean isLogin = (userName != null);
-%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <title>MERCI</title>
 <link rel="stylesheet" href="style.css">
+<link rel="icon" href="images/favicon.ico">
 </head>
 
 <body>
 
 	<!-- ========== HEADER ========== -->
-	<header class="header">
-		<div class="header-inner">
-			<div class="header-logo">
-				<a href="index.jsp"><img src="images/mainlogo.png" alt="logo"></a>
-			</div>
-
-			<nav class="header-nav">
-				<a href="index.jsp">HOME</a> <a href="about.html">ABOUT</a> <a
-					href="product.html">PRODUCT</a>
-				<%
-				if (isLogin) {
-				%>
-				<a href="user/account.jsp">MY PAGE</a> <a
-					href="user/logout_proc.jsp">LOGOUT</a>
-				<%
-				} else {
-				%>
-				<a href="#" id="loginMenu">LOGIN</a>
-				<%
-				}
-				%>
-			</nav>
-		</div>
-	</header>
+	<jsp:include page="header.jsp" />
 
 	<main>
 
@@ -70,42 +44,66 @@ boolean isLogin = (userName != null);
 		</section>
 
 
-
-
-
-		<!-- ========== SECTION 2 : 상품 5개 (옷 리스트) ========== -->
+		<!-- ========== SECTION 2 : 상품 슬라이더 (옷 리스트) ========== -->
 
 		<%
-		Connection conn = ConnectionProvider.getConnection();
+		Connection conn = null;
 		List<Cloth> list = null;
 		String target = request.getParameter("target");
+		String errorMsg = null;
 		try {
+			conn = ConnectionProvider.getConnection();
 			ClothDao dao = new ClothDao();
-			if (target == null)
-				list = dao.selectList(conn); //모든 옷 목록 가져오기
-			else
-				list = dao.selectListFreq(conn, target);
-		} catch (SQLException e) {
+			// 메인에서는 인기순 혹은 최신순으로 가져오는 것이 일반적이지만, 여기서는 기본 리스트 사용
+			list = dao.selectList(conn); 
+		} catch (Exception e) {
+			e.printStackTrace(); // 콘솔 로그
+			errorMsg = e.getMessage(); // 화면 출력용 메시지
 		} finally{
-			JdbcUtil.close(conn);
+			if (conn != null) {
+				try { conn.close(); } catch(SQLException ex) {}
+			}
 		}
 		%>
 		<section class="product-section">
 			<h2 class="section-title">PRODUCTS</h2>
-			<div class="product-grid main-grid">
-				<c:set var="list" value="<%=list%>" />
-				<c:if test="${list != null}">
-					<c:forEach var="cloth" items="${list}">
-						<div class="product-item">
-							<a href="catalogdetail.html?clothId=${cloth.id}"> <img
-								src="uploadfile/${cloth.img_body}" width="200" height="250">
-							</a>
-							<h3>${cloth.title}</h3>
-							<p>₩ ${cloth.price}</p>
+			
+			<c:set var="list" value="<%=list%>" />
+			<c:set var="errorMsg" value="<%=errorMsg%>" />
+			
+			<c:choose>
+				<c:when test="${list != null && not empty list}">
+					<div class="product-slider-wrapper">
+						<!-- 왼쪽 화살표 -->
+						<button class="slider-btn prev-btn" onclick="moveSlide(-1)">❮</button>
+						
+						<!-- 슬라이더 트랙 -->
+						<div class="product-slider-track" id="sliderTrack">
+							<c:forEach var="cloth" items="${list}">
+								<div class="slider-item product-item">
+									<a href="catalogdetail.jsp?clothId=${cloth.id}"> 
+										<img src="uploadfile/${cloth.imgBody}" width="200" height="250">
+									</a>
+									<h3>${cloth.title}</h3>
+									<p>₩ <fmt:formatNumber value="${cloth.price}" type="number"/></p>
+								</div>
+							</c:forEach>
 						</div>
-					</c:forEach>
-				</c:if>
-			</div>
+
+						<!-- 오른쪽 화살표 -->
+						<button class="slider-btn next-btn" onclick="moveSlide(1)">❯</button>
+					</div>
+				</c:when>
+				<c:otherwise>
+					<div style="text-align: center; width: 100%; padding: 50px 0;">
+						<p style="color: red;">데이터를 불러올 수 없습니다.</p>
+						<c:if test="${not empty errorMsg}">
+							<p style="color: #999; font-size: 12px;">(Error: ${errorMsg})</p>
+						</c:if>
+						<p><a href="setup_db.jsp" style="text-decoration: underline; font-weight: bold;">[DB 초기화 페이지로 이동]</a></p>
+					</div>
+				</c:otherwise>
+			</c:choose>
 		</section>
 
 
@@ -134,84 +132,51 @@ boolean isLogin = (userName != null);
 
 
 	<!-- ========== FOOTER ========== -->
-	<footer class="footer">
-		<div class="footer-columns">
-
-			<div class="footer-col">
-				<h3>CUSTOMER SERVICE</h3>
-				<p>MEMBERSHIP</p>
-				<p>CONTACT</p>
-				<p>SHIPPING & RETURNS</p>
-			</div>
-
-			<div class="footer-col">
-				<h3>COMPANY</h3>
-				<p>MERCI</p>
-				<p>대표 : 김태희, 김소희, 방현익 | 사업자등록번호 : 123-45-67890</p>
-				<p>주소 : 경기도 시흥시 산기대학로</p>
-				<p>이메일 :MERCI@gmail.com</p>
-				<p>고객센터 : 070-1234-5678</p>
-			</div>
-
-			<div class="footer-col">
-				<h3>LEGAL</h3>
-				<p>PRIVACY POLICY</p>
-
-				<h3 style="margin-top: 30px;">SOCIAL</h3>
-				<p>INSTAGRAM</p>
-				<p>KAKAOTALK</p>
-			</div>
-
-		</div>
-
-		<div class="footer-bottom">
-			<span>© MERCI 2025</span>
-		</div>
-	</footer>
-
-
-	<div class="login-panel" id="loginPanel">
-		<div id="loginView">
-			<div class="login-header">
-				<h2>LOGIN</h2>
-				<button class="login-close" id="loginCloseBtn">CLOSE</button>
-			</div>
-			<form action="user/login_proc.jsp" method="post" name="loginForm"
-				class="login-box">
-				<input type="text" name="userId" placeholder="ID"
-					class="login-input"> <input type="password" name="password"
-					placeholder="PASSWORD" class="login-input"> <input
-					type="button" value="LOGIN" class="login-btn black"
-					onclick="loginCheck()"> <input type="button"
-					value="CREATE ACCOUNT" class="login-btn gray"
-					onclick="showJoinMode()">
-			</form>
-		</div>
-
-
-		<div id="joinView" style="display: none;">
-			<div class="login-header">
-				<h2>SIGN UP</h2>
-				<button class="login-close" id="joinCloseBtn">CLOSE</button>
-			</div>
-
-			<form action="user/join_proc.jsp" method="post" name="joinForm"
-				class="login-box">
-				<input type="text" name="userId" class="login-input"
-					placeholder="ID (EMAIL)"> <input type="text" name="name"
-					class="login-input" placeholder="NAME"> <input
-					type="password" name="password" class="login-input"
-					placeholder="PASSWORD"> <input type="password"
-					name="passwordConfirm" class="login-input"
-					placeholder="CONFIRM PASSWORD"> <input type="button"
-					value="CREATE ACCOUNT" class="login-btn gray" onclick="joinCheck()">
-
-				<input type="button" value="BACK TO LOGIN" class="login-btn gray"
-					style="margin-top: 10px; background-color: black; color: white;"
-					onclick="showLoginMode()">
-			</form>
-		</div>
-	</div>
+	<jsp:include page="footer.jsp" />
+	
+	<!-- 장바구니 팝업 포함 -->
+    <jsp:include page="cart_popup.jsp" />
+    
 	<script src="style.js"></script>
+	<script>
+        // 슬라이더 로직
+        let currentIdx = 0;
+        
+        function moveSlide(dir) {
+            const track = document.getElementById('sliderTrack');
+            const items = document.querySelectorAll('.slider-item');
+            const totalItems = items.length;
+            
+            // 화면 너비에 따라 보여지는 아이템 개수 계산 (CSS와 맞춰야 함)
+            let itemsToShow = 5;
+            const w = window.innerWidth;
+            if(w <= 900) itemsToShow = 3;
+            else if(w <= 1200) itemsToShow = 4;
+            
+            // 이동할 최대 인덱스
+            const maxIndex = totalItems - itemsToShow;
+            if (maxIndex < 0) return; // 아이템이 보여줄 개수보다 적으면 이동 안함
+
+            // 인덱스 변경
+            currentIdx += dir;
+            
+            // 경계 처리
+            if(currentIdx < 0) currentIdx = 0;
+            if(currentIdx > maxIndex) currentIdx = maxIndex;
+            
+            // 이동 거리 계산 (아이템 너비 + 간격 20px)
+            // 정확한 계산을 위해 첫 번째 아이템의 너비를 가져옴
+            const itemWidth = items[0].getBoundingClientRect().width;
+            const gap = 20; 
+            const moveDist = (itemWidth + gap) * currentIdx;
+            
+            track.style.transform = 'translateX(' + (-moveDist) + 'px)';
+        }
+        
+        // 리사이즈 시 위치 초기화 (반응형 대응)
+        window.addEventListener('resize', () => {
+             moveSlide(0); 
+        });
+    </script>
 </body>
 </html>

@@ -3,176 +3,132 @@
 <%@ page
 	import="java.sql.*, java.util.*, my.dao.*, my.model.*, my.util.*"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
-// [1] 세션 확인
-String userName = (String) session.getAttribute("userName");
-boolean isLogin = (userName != null);
+    String userName = (String) session.getAttribute("userName");
+    String userId = (String) session.getAttribute("userId");
+    // Admin Check
+    if (userId == null || !"admin".equals(userId)) {
+        response.sendRedirect("../index.jsp");
+        return;
+    }
+    String root = request.getContextPath() + "/project";
 %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>PRODUCT</title>
-<link rel="stylesheet" href="../style.css">
+<title>MANAGE PRODUCTS - MERCI ADMIN</title>
+<link rel="icon" href="../images/favicon.ico">
+<link rel="stylesheet" href="<%=root%>/style.css">
+<style>
+    /* Additional styles for product management */
+    .search-area {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+    }
+    .search-form { display: flex; gap: 10px; align-items: center; }
+</style>
 </head>
 
-<body class="product-page">
+<body class="admin-body">
 
 	<!-- HEADER -->
-	<header class="header">
-	<div class="header-inner">
-		<div class="header-logo">
-			<a href="index.jsp"><img src="../images/mainlogo.png"
-				alt="logo"></a>
-		</div>
+	<jsp:include page="header.jsp" />
 
-		<nav class="header-nav"> <a href="index.jsp">HOME</a> <a
-			href="manageabout.jsp">MANAGE ABOUT</a> <a href="manageproduct.jsp">MANAGE
-			PRODUCT</a> <a href="manageorder.jsp">MANAGE ORDER</a> <%
- if (isLogin) {
- %><a href="../user/logout_proc.jsp">LOGOUT</a> <%
- } else {
- %> <a href="#" id="loginMenu">LOGIN</a> <%
- }
- %> </nav>
-	</div>
-	</header>
-
-	<main class="product-main"> <!-- TOP -->
-	<div class="product-top" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-		<h2>MANAGE PRODUCTS</h2>
-		<input type="button" value="REGISTER NEW PRODUCT" 
-		       onclick="location.href='product_insert_form.jsp'"
-		       style="padding: 12px 24px; background: #111; color: #fff; border: none; cursor: pointer; font-weight: 600;">
-	</div>
+	<div class="admin-container">
+        
+        <div class="admin-page-title">
+            <span>MANAGE PRODUCTS</span>
+            <a href="product_insert_form.jsp" class="btn-admin btn-admin-primary">+ NEW PRODUCT</a>
+        </div>
 	
-	<div class="product-search-bar" style="margin-bottom: 20px; text-align: center; padding: 15px; background: #222; border-radius: 5px;">
-	    <form action="manageproduct.jsp" method="post" style="display: inline-block;">
-	        <span style="font-weight:bold; margin-right:10px; color: #fff;">SEARCH:</span>
-	        <select name="target" id="target" style="padding: 8px; border: 1px solid #555; background: #333; color: #fff;">
-	            <option value="title">이름</option>
-	            <option value="maker">제작사</option>
-	        </select>
-	        <input name="keyword" type="text" id="keyword" size="20" placeholder="검색어를 입력하세요" style="padding: 8px; border: 1px solid #555; background: #333; color: #fff;"> 
-	        <input type="submit" value="검색" style="padding: 8px 20px; background: #fff; color: #111; border: none; cursor: pointer; font-weight: 600;">
-	    </form>
-	</div>
+        <div class="search-area">
+            <h3 style="margin:0; font-size: 16px;">Product List</h3>
+            <form action="manageproduct.jsp" method="post" class="search-form">
+                <select name="target" class="admin-select" style="width: auto;">
+                    <option value="title">Product Name</option>
+                    <option value="maker">Manufacturer</option>
+                </select>
+                <input name="keyword" type="text" class="admin-input" placeholder="Keyword..." style="width: 200px;"> 
+                <button type="submit" class="btn-admin btn-admin-dark">SEARCH</button>
+            </form>
+        </div>
 	
-	<%
-	Connection conn = ConnectionProvider.getConnection();
-	List<Cloth> list = null;
-	String target = request.getParameter("target");
-	String keyword = request.getParameter("keyword");
-	
-	try {
-		ClothDao dao = new ClothDao();
-		if (keyword != null && !keyword.trim().isEmpty()) {
-			// 검색어가 있는 경우 검색 수행
-			list = dao.selectLike(conn, target, keyword);
-		} else {
-			// 검색어가 없는 경우 전체 목록 조회
-			list = dao.selectList(conn); 
-		}
-	} catch (SQLException e) {
-		e.printStackTrace();
-	}
-	%> <!-- product-grid --> <section class="manage-product-section">
-	<div class="manage-product-grid main-grid">
-
-		<c:set var="list" value="<%=list%>" />
-		<c:if test="${list != null}">
-			<table>
-				<tr>
-					<th scope="col">아이디</th>
-					<th scope="col">이름</th>
-					<th scope="col">제작사</th>
-					<th scope="col">가격</th>
-					<th scope="col">사진</th>
-					<th scope="col">종류</th>
-					<th scope="col">수정</th>
-					<th scope="col">삭제</th>
-				</tr>
-				<c:forEach var="cloth" items="${list}">
-					<tr>
-						<td>${cloth.id}</td>
-						<td>${cloth.title}</td>
-						<td>${cloth.maker}</td>
-						<td>${cloth.price}</td>
-						<td><a href="../catalogdetail.jsp?id=${cloth.id}"> <img
-								src="../uploadfile/${cloth.imgBody}?t=<%=new java.util.Date().getTime()%>" width="30" height="35">
-						</a></td>
-						<td>${cloth.clothType}</td>
-						<td><input type="button" value="수정"
-							onclick="location.href='product_update_form.jsp?clothId=${cloth.id}'"></td>
-						<td><input type="button" value="삭제"
-							onclick="if(confirm('정말로 삭제하시겠습니까?')) location.href='product_delete_proc.jsp?clothId=${cloth.id}'"></td>
-					</tr>
-				</c:forEach>
-			</table>
-		</c:if>
-	</div>
-	</section> </main>
-	<!-- ========== FOOTER ========== -->
-	<footer class="footer">
-	<div class="footer-columns">
-
-		<div class="footer-col">
-			<h3>CUSTOMER SERVICE</h3>
-			<p>MEMBERSHIP</p>
-			<p>CONTACT</p>
-			<p>SHIPPING & RETURNS</p>
-		</div>
-
-		<div class="footer-col">
-			<h3>COMPANY</h3>
-			<p>MERCI</p>
-			<p>대표 : 김태희, 김소희, 방현익 | 사업자등록번호 : 123-45-67890</p>
-			<p>주소 : 경기도 시흥시 산기대학로</p>
-			<p>이메일 :MERCI@gmail.com</p>
-			<p>고객센터 : 070-1234-5678</p>
-		</div>
-
-		<div class="footer-col">
-			<h3>LEGAL</h3>
-			<p>PRIVACY POLICY</p>
-
-			<h3 style="margin-top: 30px;">SOCIAL</h3>
-			<p>INSTAGRAM</p>
-			<p>KAKAOTALK</p>
-		</div>
-
+        <%
+        Connection conn = ConnectionProvider.getConnection();
+        List<Cloth> list = null;
+        String target = request.getParameter("target");
+        String keyword = request.getParameter("keyword");
+        
+        try {
+            ClothDao dao = new ClothDao();
+            if (keyword != null && !keyword.trim().isEmpty()) {
+                list = dao.selectLike(conn, target, keyword);
+            } else {
+                list = dao.selectList(conn); 
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JdbcUtil.close(conn);
+        }
+        %> 
+        
+        <div class="admin-card">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th width="50">ID</th>
+                        <th width="80">Image</th>
+                        <th>Name</th>
+                        <th width="120">Category</th>
+                        <th width="120">Price</th>
+                        <th width="120">Manufacturer</th>
+                        <th width="150">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <c:set var="list" value="<%=list%>" />
+                <c:choose>
+                    <c:when test="${not empty list}">
+                        <c:forEach var="cloth" items="${list}">
+                            <tr>
+                                <td>${cloth.id}</td>
+                                <td>
+                                    <img src="../uploadfile/${cloth.imgBody}?t=<%=new java.util.Date().getTime()%>" 
+                                         width="40" height="40" style="object-fit: cover; border-radius: 4px;">
+                                </td>
+                                <td style="font-weight: 600;">${cloth.title}</td>
+                                <td><span class="badge badge-dark">${cloth.clothType}</span></td>
+                                <td>₩ <fmt:formatNumber value="${cloth.price}" type="number"/></td>
+                                <td>${cloth.maker}</td>
+                                <td>
+                                    <button class="btn-admin btn-admin-outline" 
+                                            onclick="location.href='product_update_form.jsp?clothId=${cloth.id}'">Edit</button>
+                                    <button class="btn-admin btn-admin-outline" style="color: #dc3545; border-color: #dc3545;"
+                                            onclick="if(confirm('Are you sure you want to delete this product?')) location.href='product_delete_proc.jsp?clothId=${cloth.id}'">Del</button>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </c:when>
+                    <c:otherwise>
+                        <tr><td colspan="7" style="text-align: center; padding: 50px; color: #999;">No products found.</td></tr>
+                    </c:otherwise>
+                </c:choose>
+                </tbody>
+            </table>
+        </div>
 	</div>
 
-	<div class="footer-bottom">
-		<span>© MERCI 2025</span>
-	</div>
-	</footer>
+	<!-- FOOTER -->
+	<jsp:include page="../footer.jsp" />
 
-	<div class="login-panel" id="loginPanel">
-
-		<div class="login-header">
-			<h2>LOGIN</h2>
-			<button class="login-close" id="loginCloseBtn">CLOSE</button>
-		</div>
-
-		<form class="login-box">
-			<input type="text" placeholder="EMAIL" class="login-input"> <input
-				type="password" placeholder="PASSWORD" class="login-input">
-
-			<input type="button" value="LOGIN" class="login-btn black"> <input
-				type="button" value="CREATE ACCOUNT" class="login-btn gray"
-				onclick="location.href='join.html'">
-		</form>
-
-		<h3 class="social-title">SOCIAL LOGIN</h3>
-
-		<div class="social-login">
-			<input type="button" value="GOOGLE" class="social-btn"> <input
-				type="button" value="KAKAO" class="social-btn"> <input
-				type="button" value="NAVER" class="social-btn">
-		</div>
-
-	</div>
-	<script src="../style.js"></script>
 </body>
 </html>

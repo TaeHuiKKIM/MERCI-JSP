@@ -3,10 +3,17 @@
 <%@ page import="java.sql.*, java.util.*, my.dao.*, my.model.*, my.util.*"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
-    // 에러 디버깅을 위한 변수
     String errorMessage = null;
     Cloth cloth = null;
+    List<Review> reviewList = null;
+    double avgRating = 0.0;
+    boolean isWished = false; // 찜 여부
+
+    String userName = (String) session.getAttribute("userName");
+    String userId = (String) session.getAttribute("userId");
+    boolean isLogin = (userName != null);
 
     try {
         String idStr = request.getParameter("clothId");
@@ -21,8 +28,19 @@
             ClothDao dao = new ClothDao();
             dao.updateFreq(conn, id);
             cloth = dao.selectById(conn, id);
+            
+            // 리뷰 가져오기
+            ReviewDao reviewDao = new ReviewDao();
+            reviewList = reviewDao.selectListByClothId(conn, id);
+            avgRating = reviewDao.getAverageRating(conn, id);
+            
+            // 찜 여부 확인
+            if(isLogin) {
+                WishlistDao wishDao = new WishlistDao();
+                isWished = wishDao.isWished(conn, userId, id);
+            }
         } catch(Exception ex) {
-            errorMessage = ex.getMessage(); // 에러 메시지 저장
+            errorMessage = ex.getMessage();
             ex.printStackTrace();
         } finally {
             JdbcUtil.close(conn);
@@ -30,10 +48,9 @@
     } catch(Exception e) {
         errorMessage = "Request Error: " + e.getMessage();
     }
-
-    // 로그인 체크
-    String userName = (String) session.getAttribute("userName");
-    boolean isLogin = (userName != null);
+    
+    // 장바구니 추가 성공 여부 확인
+    boolean cartAdded = "added".equals(request.getParameter("cart"));
 %>
 <!DOCTYPE html>
 <html lang="ko">
@@ -41,104 +58,128 @@
     <meta charset="UTF-8">
     <title><%= (cloth != null) ? cloth.getTitle() : "Error" %> - MERCI</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="images/favicon.ico">
     <style>
-        /* 레이아웃 스타일 */
-        body {
-            background-color: #fff;
-            color: #333;
-        }
         .container {
-            width: 50%; /* 양옆 25%씩 여백 확보 */
-            max-width: 700px; /* 너무 작아지지 않도록 최소 너비 제한 추가 (예상치) */
-            min-width: 600px; /* 너무 작아지지 않도록 최소 너비 제한 (예상치) */
+            width: 90%;
+            max-width: 1400px;
+            min-width: 600px;
             margin: 0 auto;
-            padding-top: 70px; /* 헤더 높이만큼 여백 */
+            padding-top: 100px; /* 헤더와 겹치지 않게 여백 조정 */
             padding-bottom: 80px;
             display: flex;
-            gap: 40px; /* 섹션 간격 */
+            gap: 40px;
         }
-        
-        /* 왼쪽: 큰 메인 사진 */
-        .left-section {
-            width: 50%; /* 왼쪽 이미지 영역 너비 재조정 */
-        }
-        .main-img {
-            width: 100%;
-            height: auto;
-            display: block;
-            object-fit: cover;
-        }
-
-        /* 오른쪽: 작은 사진들 + 정보 */
-        .right-section {
-            width: 50%; /* 오른쪽 정보 영역 너비 재조정 */
-            display: flex;
-            gap: 30px; /* 작은 사진과 정보 사이 간격 */
-        }
-
-        /* 상세 이미지 리스트 (작게 세로로) */
-        .sub-images {
-            width: 90px; /* 작은 썸네일 너비 추가 축소 */
-            display: flex;
-            flex-direction: column;
-            gap: 10px; /* 썸네일 간 간격 */
-            flex-shrink: 0;
-        }
-        .sub-images img {
-            width: 100%;
-            height: auto;
-            cursor: pointer;
-            opacity: 0.8;
-            transition: opacity 0.2s;
-            border: 1px solid #eee;
-        }
+        /* ... (기존 스타일 유지) ... */
+        .left-section { width: 50%; }
+        .main-img { width: 100%; height: auto; display: block; object-fit: cover; }
+        .right-section { width: 50%; display: flex; gap: 30px; }
+        .sub-images { width: 90px; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
+        .sub-images img { width: 100%; height: auto; cursor: pointer; opacity: 0.8; border: 1px solid #eee; }
         .sub-images img:hover { opacity: 1; border-color: #000; }
-
-        /* 상품 정보 영역 */
-        .product-info {
-            flex-grow: 1;
-            padding: 0 40px 0 0; /* 오른쪽에 40px 여백 추가 */
-        }
-
-        .p-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; margin-top: 0;} /* 제목 글씨 크기 추가 축소 */
-        .p-price { font-size: 15px; font-weight: 600; margin-bottom: 15px; color: #111; } /* 가격 글씨 크기 추가 축소 */
-        .p-desc { font-size: 12.5px; line-height: 1.5; color: #555; margin-bottom: 25px; white-space: pre-line; padding-bottom: 15px; border-bottom: 1px solid #eee;} /* 설명 글씨 크기 및 여백 추가 축소 */
-
-        /* 옵션 스타일 */
-        .opt-label { font-size: 12px; font-weight: 700; margin-bottom: 8px; display: block; margin-top: 15px;} /* 옵션 라벨 글씨 크기 및 여백 유지 */
-        .opt-row { display: flex; flex-wrap: wrap; gap: 6px; } /* 옵션 버튼 간격 유지 */
-        .opt-btn {
-            padding: 8px 12px; /* 옵션 버튼 패딩 유지 */
-            background: #fff;
-            border: 1px solid #ddd;
-            font-size: 12px; /* 옵션 버튼 글씨 크기 추가 축소 */
-            cursor: pointer;
-        }
+        .product-info { flex-grow: 1; padding: 0 40px 0 0; }
+        
+        /* Title with Wish Button */
+        .title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; margin-top: 0; }
+        .p-title { font-size: 20px; font-weight: 700; margin: 0; }
+        .btn-wish { background: none; border: none; font-size: 24px; cursor: pointer; color: #ccc; transition: color 0.2s; padding: 0; }
+        .btn-wish.active { color: #e74c3c; } /* Red heart */
+        
+        .p-price { font-size: 15px; font-weight: 600; margin-bottom: 15px; color: #111; }
+        .p-desc { font-size: 12.5px; line-height: 1.5; color: #555; margin-bottom: 25px; white-space: pre-line; padding-bottom: 15px; border-bottom: 1px solid #eee;}
+        .opt-label { font-size: 12px; font-weight: 700; margin-bottom: 8px; display: block; margin-top: 15px;}
+        .opt-row { display: flex; flex-wrap: wrap; gap: 6px; }
+        .opt-btn { padding: 8px 12px; background: #fff; border: 1px solid #ddd; font-size: 12px; cursor: pointer; }
         .opt-btn.selected { background: #000; color: #fff; border-color: #000; }
+        .cart-btn { width: 100%; padding: 12px 15px; background: #111; color: #fff; border: none; font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 30px; }
+        .error-box { width: 80%; margin: 150px auto; padding: 20px; border: 2px solid red; background: #fff0f0; color: red; text-align: center; }
+        
+        .qty-row { display: flex; align-items: center; margin-top: 15px; gap: 10px; }
+        .qty-input { width: 50px; padding: 5px; text-align: center; border: 1px solid #ddd; }
+        
+        /* Review Section */
+        .review-section { width: 90%; max-width: 1400px; min-width: 600px; margin: 0 auto; padding-top: 50px; border-top: 1px solid #eee; padding-bottom: 100px; }
+        .review-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .review-avg { font-size: 18px; font-weight: bold; }
+        .review-form { background: #f9f9f9; padding: 20px; margin-bottom: 30px; border: 1px solid #eee; }
+        .review-form textarea { width: 100%; height: 80px; padding: 10px; border: 1px solid #ddd; resize: vertical; margin-bottom: 10px; font-size: 13px; }
+        .review-list { list-style: none; padding: 0; }
+        .review-item { border-bottom: 1px solid #eee; padding: 15px 0; }
+        .review-meta { font-size: 12px; color: #888; margin-bottom: 5px; }
+        .star-rating { color: #f5a623; font-weight: bold; }
 
-        .cart-btn {
-            width: 100%;
-            padding: 12px 15px; /* 장바구니 버튼 패딩 유지 */
-            background: #111;
-            color: #fff;
-            border: none;
-            font-size: 13px; /* 장바구니 버튼 글씨 크기 유지 */
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 30px; /* 장바구니 버튼 상단 여백 유지 */
+        /* Custom Cart Added Popup */
+        .cart-added-popup-backdrop {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
         }
-
-        /* 에러 메시지 박스 */
-        .error-box {
-            width: 80%;
-            margin: 150px auto;
-            padding: 20px;
-            border: 2px solid red;
-            background: #fff0f0;
-            color: red;
+        .cart-added-popup-backdrop.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .cart-added-popup {
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
             text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            width: 350px;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .cart-added-popup-backdrop.show .cart-added-popup {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .cart-added-popup h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .cart-added-popup p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 25px;
+        }
+        .cart-added-popup-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        .cart-added-popup-buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .cart-added-popup-buttons .btn-continue {
+            background: #eee;
+            color: #333;
+        }
+        .cart-added-popup-buttons .btn-continue:hover {
+            background: #e0e0e0;
+        }
+        .cart-added-popup-buttons .btn-view-cart {
+            background: #000;
+            color: #fff;
+        }
+        .cart-added-popup-buttons .btn-view-cart:hover {
+            background: #333;
         }
     </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         function selectSize(btn, val) {
             document.querySelectorAll('.size-group .opt-btn').forEach(b => b.classList.remove('selected'));
@@ -154,56 +195,94 @@
             var f = document.cartForm;
             if(!f.size.value) { alert("사이즈를 선택해주세요."); return; }
             if(!f.color.value) { alert("색상을 선택해주세요."); return; }
-            alert("장바구니에 담았습니다.");
+            if(f.quantity.value < 1) { alert("수량은 1개 이상이어야 합니다."); return; }
+            
+            f.action = "cart_proc.jsp";
+            f.submit();
         }
         function changeMainImage(src) {
             document.getElementById('mainImage').src = src;
         }
+        function checkReviewForm() {
+            var f = document.reviewForm;
+            if(!f.rating.value) { alert("별점을 선택해주세요."); return false; }
+            if(!f.content.value) { alert("내용을 입력해주세요."); return false; }
+            return true;
+        }
+        function toggleWish(clothId) {
+            <% if(!isLogin) { %>
+                alert("로그인이 필요합니다.");
+                showLoginMode();
+                return;
+            <% } else { %>
+                $.ajax({
+                    url: 'wishlist_proc_ajax.jsp',
+                    type: 'POST',
+                    data: { clothId: clothId },
+                    dataType: 'json',
+                    success: function(res) {
+                        if(res.status === 'success') {
+                            var btn = $('#btnWish');
+                            if(res.added) {
+                                btn.addClass('active');
+                                btn.html('♥'); // Filled heart logic or same char
+                                alert("위시리스트에 추가되었습니다.");
+                            } else {
+                                btn.removeClass('active');
+                                btn.html('♥'); 
+                                alert("위시리스트에서 삭제되었습니다.");
+                            }
+                        } else {
+                            alert(res.message);
+                        }
+                    },
+                    error: function() { alert("오류가 발생했습니다."); }
+                });
+            <% } %>
+        }
+        
+        // Custom Cart Added Popup Logic
+        $(document).ready(function() {
+            <% if (cartAdded) { %>
+                $('#cartAddedPopupBackdrop').addClass('show');
+                // Optional: Automatically hide after a few seconds
+                // setTimeout(function() {
+                //     $('#cartAddedPopupBackdrop').removeClass('show');
+                // }, 3000); 
+            <% } %>
+
+            $('#popupCloseBtn').click(function() {
+                $('#cartAddedPopupBackdrop').removeClass('show');
+            });
+
+            $('#viewCartBtn').click(function() {
+                // Assuming cart_popup.jsp is the actual cart popup.
+                // If it's a separate page, redirect: location.href = 'cart.jsp';
+                $('#stickyCartBtn').click(); // Simulate click on the floating cart button
+                $('#cartAddedPopupBackdrop').removeClass('show');
+            });
+        });
     </script>
 </head>
 <body>
 
     <!-- HEADER -->
-    <header class="header">
-        <div class="header-inner">
-            <div class="header-logo">
-                <a href="index.jsp"><img src="images/mainlogo.png" alt="logo"></a>
-            </div>
-            <nav class="header-nav">
-                <a href="index.jsp">HOME</a>
-                <a href="about.html">ABOUT</a>
-                <a href="product.jsp">PRODUCT</a>
-                <% if (isLogin) { %>
-                    <a href="user/account.jsp">MY PAGE</a> <a href="user/logout_proc.jsp">LOGOUT</a>
-                <% } else { %>
-                    <a href="#" id="loginMenu">LOGIN</a>
-                <% } %>
-            </nav>
-        </div>
-    </header>
+    <jsp:include page="header.jsp" />
 
     <% if (errorMessage != null || cloth == null) { %>
-        <!-- 에러 발생 시 출력되는 영역 -->
         <div class="error-box">
             <h3>상품을 불러오지 못했습니다.</h3>
             <p>원인: <%= errorMessage %></p>
-            <p>팁: DB 컬럼(img_body 등)이 존재하는지 확인하거나, <a href="setup_db.jsp">DB 초기화(setup_db.jsp)</a>를 실행해보세요.</p>
             <button onclick="history.back()">돌아가기</button>
         </div>
     <% } else { %>
-        <!-- 정상 출력 영역 -->
         <div class="container">
-            <!-- 1. 왼쪽: 큰 메인 사진 -->
             <div class="left-section">
                 <img src="uploadfile/<%=cloth.getImgBody()%>" id="mainImage" class="main-img" alt="Main">
             </div>
 
-            <!-- 2. 오른쪽: 상세 이미지 + 정보 -->
             <div class="right-section">
-                
-                <!-- 2-1. 작은 썸네일들 -->
                 <div class="sub-images">
-                    <!-- 클릭하면 메인 이미지 변경됨 -->
                     <img src="uploadfile/<%=cloth.getImgBody()%>" onclick="changeMainImage(this.src)">
                     <% if(cloth.getImgFront() != null && !cloth.getImgFront().isEmpty()) { %>
                         <img src="uploadfile/<%=cloth.getImgFront()%>" onclick="changeMainImage(this.src)">
@@ -216,13 +295,21 @@
                     <% } %>
                 </div>
 
-                <!-- 2-2. 상품 정보 -->
                 <div class="product-info">
-                    <h1 class="p-title"><%=cloth.getTitle()%></h1>
-                    <p class="p-price">₩ <%=cloth.getPrice()%></p>
+                    <div class="title-row">
+                        <h1 class="p-title"><%=cloth.getTitle()%></h1>
+                        <button id="btnWish" class="btn-wish <%= isWished ? "active" : "" %>" onclick="toggleWish(<%=cloth.getId()%>)">♥</button>
+                    </div>
+                    <p class="p-price">₩ <fmt:formatNumber value="<%=cloth.getPrice()%>" type="number"/></p>
                     <div class="p-desc"><%=cloth.getDescription()%></div>
 
-                    <form name="cartForm">
+                    <form name="cartForm" method="post">
+                        <input type="hidden" name="action" value="add">
+                        <input type="hidden" name="id" value="<%=cloth.getId()%>">
+                        <input type="hidden" name="title" value="<%=cloth.getTitle()%>">
+                        <input type="hidden" name="img" value="<%=cloth.getImgBody()%>">
+                        <input type="hidden" name="price" value="<%=cloth.getPrice()%>">
+                        
                         <input type="hidden" name="size" value="">
                         <input type="hidden" name="color" value="">
                         
@@ -241,6 +328,11 @@
                                 <button type="button" class="opt-btn" onclick="selectColor(this, '${c.trim()}')">${c.trim()}</button>
                             </c:forEach>
                         </div>
+                        
+                        <span class="opt-label">QUANTITY (Stock: <%=cloth.getStock()%>)</span>
+                        <div class="qty-row">
+                            <input type="number" name="quantity" class="qty-input" value="1" min="1" max="<%=cloth.getStock()%>">
+                        </div>
 
                         <button type="button" class="cart-btn" onclick="addToCart()">ADD TO CART</button>
                     </form>
@@ -249,29 +341,79 @@
         </div>
     <% } %>
 
-    <!-- FOOTER -->
-    <footer class="footer">
-        <div class="footer-columns">
-            <div class="footer-col">
-                <h3>CUSTOMER SERVICE</h3> <p>MEMBERSHIP</p> <p>CONTACT</p>
-            </div>
-            <div class="footer-col">
-                <h3>COMPANY</h3> <p>MERCI</p>
-            </div>
-            <div class="footer-col">
-                <h3>SOCIAL</h3> <p>INSTAGRAM</p>
-            </div>
+    <!-- REVIEW SECTION -->
+    <% if (cloth != null) { %>
+    <section class="review-section">
+        <div class="review-header">
+            <h3>REVIEWS</h3>
+            <span class="review-avg">Average Rating: <span class="star-rating">★ <%= String.format("%.1f", avgRating) %></span></span>
         </div>
-        <div class="footer-bottom"><span>© MERCI 2025</span></div>
-    </footer>
+
+        <% if (isLogin) { %>
+            <div class="review-form">
+                <form action="review_proc.jsp" method="post" name="reviewForm" onsubmit="return checkReviewForm()">
+                    <input type="hidden" name="clothId" value="<%=cloth.getId()%>">
+                    <div style="margin-bottom: 10px;">
+                        <strong>Rating: </strong>
+                        <label><input type="radio" name="rating" value="5" checked> 5</label>
+                        <label><input type="radio" name="rating" value="4"> 4</label>
+                        <label><input type="radio" name="rating" value="3"> 3</label>
+                        <label><input type="radio" name="rating" value="2"> 2</label>
+                        <label><input type="radio" name="rating" value="1"> 1</label>
+                    </div>
+                    <textarea name="content" placeholder="Write your review here..."></textarea>
+                    <button type="submit" style="padding: 8px 16px; background: #000; color: #fff; border: none; cursor: pointer;">Submit Review</button>
+                </form>
+            </div>
+        <% } else { %>
+            <div style="background: #f9f9f9; padding: 20px; text-align: center; margin-bottom: 30px; color: #666;">
+                Please <a href="#" onclick="showLoginMode()" style="text-decoration: underline; font-weight: bold;">Login</a> to write a review.
+            </div>
+        <% } %>
+
+        <ul class="review-list">
+            <c:set var="reviews" value="<%=reviewList%>" />
+            <c:choose>
+                <c:when test="${not empty reviews}">
+                    <c:forEach var="r" items="${reviews}">
+                        <li class="review-item">
+                            <div class="review-meta">
+                                <strong>${r.userId}</strong> | <fmt:formatDate value="${r.regdate}" pattern="yyyy-MM-dd"/>
+                            </div>
+                            <div style="margin-bottom: 5px;">
+                                <span class="star-rating">
+                                    <c:forEach begin="1" end="${r.rating}">★</c:forEach>
+                                </span>
+                            </div>
+                            <div>${fn:replace(r.content, "
+", "<br>")}</div>
+                        </li>
+                    </c:forEach>
+                </c:when>
+                <c:otherwise>
+                    <li style="text-align: center; padding: 30px; color: #999;">No reviews yet. Be the first to write a review!</li>
+                </c:otherwise>
+            </c:choose>
+        </ul>
+    </section>
+    <% } %>
+
+    <!-- FOOTER & POPUPS -->
+    <jsp:include page="footer.jsp" />
     
-    <!-- 로그인 패널 포함 (style.js 필요) -->
-    <div class="login-panel" id="loginPanel">
-        <div id="loginView">
-            <div class="login-header"><h2>LOGIN</h2><button class="login-close" id="loginCloseBtn">CLOSE</button></div>
-            <form class="login-box"><input type="button" value="LOGIN" class="login-btn black" onclick="loginCheck()"></form>
+    <jsp:include page="cart_popup.jsp" />
+    <script src="style.js"></script>
+
+    <!-- Custom Cart Added Popup HTML -->
+    <div class="cart-added-popup-backdrop" id="cartAddedPopupBackdrop">
+        <div class="cart-added-popup">
+            <h3>Item Added to Cart!</h3>
+            <p>Your item has been successfully added to your shopping cart.</p>
+            <div class="cart-added-popup-buttons">
+                <button class="btn-continue" id="popupCloseBtn">Continue Shopping</button>
+                <button class="btn-view-cart" id="viewCartBtn">View Cart</button>
+            </div>
         </div>
     </div>
-    <script src="style.js"></script>
 </body>
 </html>

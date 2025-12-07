@@ -7,6 +7,7 @@
 // [1] 세션 확인
 String userName = (String) session.getAttribute("userName");
 boolean isLogin = (userName != null);
+String root = request.getContextPath() + "/project";
 %>
 <!DOCTYPE html>
 <html lang="ko">
@@ -18,30 +19,8 @@ boolean isLogin = (userName != null);
 
 <body class="address-page">
 
-	<!-- 공통 HEADER -->
-	<header class="header">
-		<div class="header-inner">
-			<div class="header-logo">
-				<a href="index.jsp"><img src="images/mainlogo.png" alt="logo"></a>
-			</div>
-
-			<nav class="header-nav">
-				<a href="index.jsp">HOME</a> <a href="about.html">ABOUT</a> <a
-					href="product.jsp">PRODUCT</a>
-				<%
-				if (isLogin) {
-				%>
-				<a href="account.jsp">MY PAGE</a> <a href="logout_proc.jsp">LOGOUT</a>
-				<%
-				} else {
-				%>
-				<a href="#" id="loginMenu">LOGIN</a>
-				<%
-				}
-				%>
-			</nav>
-		</div>
-	</header>
+    <!-- HEADER -->
+    <jsp:include page="../header.jsp" />
 
 	<!-- 배송지 입력 폼 -->
 	<div class="address-container">
@@ -75,33 +54,10 @@ boolean isLogin = (userName != null);
 
 	</div>
 
-	<div class="login-panel" id="loginPanel">
-
-		<div class="login-header">
-			<h2>LOGIN</h2>
-			<button class="login-close" id="loginCloseBtn">CLOSE</button>
-		</div>
-
-		<form class="login-box">
-			<input type="text" placeholder="EMAIL" class="login-input"> <input
-				type="password" placeholder="PASSWORD" class="login-input">
-
-			<input type="button" value="LOGIN" class="login-btn black"> <input
-				type="button" value="CREATE ACCOUNT" class="login-btn gray"
-				onclick="location.href='joinform1.html'">
-		</form>
-
-		<h3 class="social-title">SOCIAL LOGIN</h3>
-
-		<div class="social-login">
-			<input type="button" value="GOOGLE" class="social-btn"> <input
-				type="button" value="KAKAO" class="social-btn"> <input
-				type="button" value="NAVER" class="social-btn">
-		</div>
-
-	</div>
-<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
- 
+    <!-- FOOTER -->
+    <jsp:include page="../footer.jsp" />
+    
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <script src="style.js"></script>
 </body>
 </html>

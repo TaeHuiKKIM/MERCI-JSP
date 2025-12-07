@@ -2,17 +2,20 @@
     pageEncoding="UTF-8"%>
 <%
     String userName = (String) session.getAttribute("userName");
-    if (userName == null) {
-        out.println("<script>alert('로그인이 필요합니다.'); location.href='../index.jsp';</script>");
+    String userId = (String) session.getAttribute("userId");
+    // Admin Check
+    if (userId == null || !"admin".equals(userId)) {
+        out.println("<script>alert('관리자 권한이 필요합니다.'); location.href='../index.jsp';</script>");
         return;
     }
+    String root = request.getContextPath() + "/project";
 %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <title>PRODUCT REGISTRATION - MERCI</title>
-<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="<%=root%>/style.css">
 <style>
     .update-container {
         max-width: 800px;
@@ -83,20 +86,7 @@
 <body>
 
     <!-- HEADER -->
-    <header class="header">
-        <div class="header-inner">
-            <div class="header-logo">
-                <a href="index.jsp"><img src="../images/mainlogo.png" alt="logo"></a>
-            </div>
-            <nav class="header-nav">
-                <a href="index.jsp">HOME</a>
-                <a href="manageabout.jsp">MANAGE ABOUT</a>
-                <a href="manageproduct.jsp">MANAGE PRODUCT</a>
-                <a href="manageorder.jsp">MANAGE ORDER</a>
-                <a href="../user/logout_proc.jsp">LOGOUT</a>
-            </nav>
-        </div>
-    </header>
+    <jsp:include page="header.jsp" />
 
     <div class="update-container">
         <h2>새 상품 등록</h2>
@@ -169,6 +159,9 @@
             <button type="button" class="btn-cancel" onclick="history.back()">취소</button>
         </form>
     </div>
+
+    <!-- FOOTER -->
+    <jsp:include page="../footer.jsp" />
 
 </body>
 </html>

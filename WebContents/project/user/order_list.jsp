@@ -1,0 +1,107 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page import="java.sql.*, java.util.*, my.dao.*, my.model.*, my.util.*"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%
+    String userId = (String) session.getAttribute("userId");
+    if (userId == null) {
+        out.println("<script>alert('로그인이 필요합니다.'); location.href='../index.jsp?login=open';</script>");
+        return;
+    }
+
+    List<Order> list = null;
+    Connection conn = null;
+    try {
+        conn = ConnectionProvider.getConnection();
+        OrderDao dao = new OrderDao();
+        list = dao.selectListByUserId(conn, userId);
+    } catch(Exception e) {
+        e.printStackTrace();
+    } finally {
+        JdbcUtil.close(conn);
+    }
+%>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>MY ORDERS - MERCI</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+    .order-container { max-width: 1000px; margin: 80px auto; padding: 20px; min-height: 500px; }
+    .page-title { font-size: 24px; font-weight: bold; margin-bottom: 30px; border-bottom: 2px solid #333; padding-bottom: 10px; }
+    
+    .order-item { border: 1px solid #eee; padding: 20px; margin-bottom: 20px; }
+    .order-header { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px; }
+    .order-date { font-weight: bold; font-size: 14px; }
+    .order-status { font-weight: bold; color: #e74c3c; }
+    
+    .order-info { font-size: 13px; line-height: 1.6; }
+    .info-label { display: inline-block; width: 100px; color: #888; }
+    
+    .tracking-box { margin-top: 15px; padding: 10px; background: #f9f9f9; border-radius: 4px; font-size: 13px; }
+    .payment-msg { margin-top: 15px; padding: 15px; background: #fff8f8; border: 1px solid #ffcccc; color: #d63031; font-size: 13px; }
+</style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <jsp:include page="../header.jsp" />
+
+    <div class="order-container">
+        <h2 class="page-title">MY ORDERS</h2>
+        
+        <c:set var="list" value="<%=list%>" />
+        <c:choose>
+            <c:when test="${not empty list}">
+                <c:forEach var="o" items="${list}">
+                    <div class="order-item">
+                        <div class="order-header">
+                            <span class="order-date">
+                                <fmt:formatDate value="${o.orderDate}" pattern="yyyy.MM.dd"/> 
+                                (Order ID: ${o.orderId})
+                            </span>
+                            <span class="order-status">${o.status}</span>
+                        </div>
+                        
+                        <div class="order-info">
+                            <div><span class="info-label">Receiver</span> ${o.receiverName}</div>
+                            <div><span class="info-label">Address</span> ${o.address}</div>
+                            <div><span class="info-label">Total</span> ₩ <fmt:formatNumber value="${o.totalAmount}" type="number"/></div>
+                        </div>
+
+                        <!-- Status Messages -->
+                        <c:if test="${o.status == '결제대기'}">
+                            <div class="payment-msg">
+                                <strong>[Payment Required]</strong><br>
+                                Please deposit <strong>₩ <fmt:formatNumber value="${o.totalAmount}" type="number"/></strong> to:<br>
+                                Bank: KB Kookmin Bank 123-456-7890<br>
+                                Account Holder: MERCI<br>
+                                Depositor Name: ${o.depositor}
+                            </div>
+                        </c:if>
+
+                        <c:if test="${o.status == '배송중' || o.status == '배송완료'}">
+                            <div class="tracking-box">
+                                <strong>[Tracking Information]</strong><br>
+                                Carrier: ${o.trackingCarrier != null ? o.trackingCarrier : 'Not Available'}<br>
+                                Tracking No: ${o.trackingNum != null ? o.trackingNum : 'Not Available'}
+                            </div>
+                        </c:if>
+                    </div>
+                </c:forEach>
+            </c:when>
+            <c:otherwise>
+                <div style="text-align: center; padding: 50px; color: #999;">
+                    No order history found.
+                </div>
+            </c:otherwise>
+        </c:choose>
+    </div>
+
+    <!-- FOOTER -->
+    <jsp:include page="../footer.jsp" />
+
+</body>
+</html>

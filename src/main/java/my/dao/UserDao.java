@@ -195,4 +195,22 @@ public class UserDao {
 		}
 		return result;
 	}
+
+	// [추가] 카카오 로그인 전용 회원가입
+	public void insertKakaoUser(Connection conn, String kakaoId, String nickname) throws SQLException {
+		PreparedStatement pstmt = null;
+		try {
+			// userId를 kakaoId로, 비밀번호는 임의의 값(kakao_user), 이름은 닉네임 사용
+			pstmt = conn.prepareStatement("insert into user values(?,?,?,?)");
+			pstmt.setString(1, kakaoId);
+			pstmt.setString(2, "kakao_user"); // 비밀번호는 더미값
+			pstmt.setString(3, nickname);
+			pstmt.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			JdbcUtil.close(pstmt);
+		}
+	}
 }

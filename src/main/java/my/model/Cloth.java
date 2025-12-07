@@ -7,10 +7,10 @@ public class Cloth {
 	private String title;
 	private String maker;
 	private int price;
-	private String img_body;
-	private String img_front;
-	private String img_back;
-	private String img_detail;
+	private String imgBody;
+	private String imgFront;
+	private String imgBack;
+	private String imgDetail;
 	private String description;
 	private int stock;
 	private String sizes;
@@ -22,17 +22,17 @@ public class Cloth {
 	public Cloth() {
 	} // 기본생성자
 
-	public Cloth(String title, String maker, int price, int freq, Date openDate, String clothType, String img_body,
-			String img_front, String img_back, String description, String img_detail, int stock, String sizes,
+	public Cloth(String title, String maker, int price, int freq, Date openDate, String clothType, String imgBody,
+			String imgFront, String imgBack, String description, String imgDetail, int stock, String sizes,
 			String colors) {
 		super();
 		this.title = title;
 		this.maker = maker;
 		this.price = price;
-		this.img_body = img_body;
-		this.img_front = img_front;
-		this.img_back = img_back;
-		this.img_detail = img_detail;
+		this.imgBody = imgBody;
+		this.imgFront = imgFront;
+		this.imgBack = imgBack;
+		this.imgDetail = imgDetail;
 		this.description = description;
 		this.stock = stock;
 		this.sizes = sizes;
@@ -42,36 +42,36 @@ public class Cloth {
 		this.clothType = clothType;
 	}
 
-	public String getImg_body() {
-		return img_body;
+	public String getImgBody() {
+		return imgBody;
 	}
 
-	public void setImg_body(String img_body) {
-		this.img_body = img_body;
+	public void setImgBody(String imgBody) {
+		this.imgBody = imgBody;
 	}
 
-	public String getImg_front() {
-		return img_front;
+	public String getImgFront() {
+		return imgFront;
 	}
 
-	public void setImg_front(String img_front) {
-		this.img_front = img_front;
+	public void setImgFront(String imgFront) {
+		this.imgFront = imgFront;
 	}
 
-	public String getImg_back() {
-		return img_back;
+	public String getImgBack() {
+		return imgBack;
 	}
 
-	public void setImg_back(String img_back) {
-		this.img_back = img_back;
+	public void setImgBack(String imgBack) {
+		this.imgBack = imgBack;
 	}
 
-	public String getImg_detail() {
-		return img_detail;
+	public String getImgDetail() {
+		return imgDetail;
 	}
 
-	public void setImg_detail(String img_detail) {
-		this.img_detail = img_detail;
+	public void setImgDetail(String imgDetail) {
+		this.imgDetail = imgDetail;
 	}
 
 	public String getDescription() {

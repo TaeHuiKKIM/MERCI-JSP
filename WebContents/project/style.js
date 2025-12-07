@@ -307,3 +307,13 @@ function deleteAccount() {
     }
     // 취소를 누르면 아무 일도 일어나지 않습니다.
 }
+
+/* =========================================
+   8. 장바구니 팝업 토글
+   ========================================= */
+function toggleCartPopup() {
+    var popup = document.getElementById('cartPopup');
+    if(popup) {
+        popup.classList.toggle('show');
+    }
+}

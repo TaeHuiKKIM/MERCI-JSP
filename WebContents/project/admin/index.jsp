@@ -1,178 +1,156 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<%@ page
-	import="java.sql.*, java.util.*, my.dao.*, my.model.*, my.util.*"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.sql.*, java.util.*, my.dao.*, my.util.*"%>
 <%
-// [1] 세션 확인
-String userName = (String) session.getAttribute("userName");
-boolean isLogin = (userName != null);
+    String userName = (String) session.getAttribute("userName");
+    String userId = (String) session.getAttribute("userId");
+    if (userId == null || !"admin".equals(userId)) {
+        response.sendRedirect("../index.jsp");
+        return;
+    }
+
+    // 데이터 조회
+    Map<String, Integer> dailySales = new LinkedHashMap<>();
+    Map<String, Integer> categoryCount = new HashMap<>();
+    
+    Connection conn = null;
+    try {
+        conn = ConnectionProvider.getConnection();
+        OrderDao orderDao = new OrderDao();
+        dailySales = orderDao.getDailySales(conn);
+        
+        ClothDao clothDao = new ClothDao();
+        categoryCount = clothDao.getCategoryCount(conn);
+    } catch(Exception e) {
+        e.printStackTrace();
+    } finally {
+        JdbcUtil.close(conn);
+    }
+    
+    // JSON 변환
+    StringBuilder dateLabels = new StringBuilder("[");
+    StringBuilder salesData = new StringBuilder("[");
+    int i = 0;
+    for(String key : dailySales.keySet()) {
+        if(i > 0) { dateLabels.append(","); salesData.append(","); }
+        dateLabels.append("'").append(key).append("'");
+        salesData.append(dailySales.get(key));
+        i++;
+    }
+    dateLabels.append("]");
+    salesData.append("]");
+
+    StringBuilder catLabels = new StringBuilder("[");
+    StringBuilder catData = new StringBuilder("[");
+    i = 0;
+    for(String key : categoryCount.keySet()) {
+        if(i > 0) { catLabels.append(","); catData.append(","); }
+        catLabels.append("'").append(key).append("'");
+        catData.append(categoryCount.get(key));
+        i++;
+    }
+    catLabels.append("]");
+    catData.append("]");
+    
+    String root = request.getContextPath() + "/project";
 %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>MERCI</title>
-<link rel="stylesheet" href="../style.css">
+<title>ADMIN DASHBOARD - MERCI ADMIN</title>
+<link rel="icon" href="../images/favicon.ico">
+<link rel="stylesheet" href="<%=root%>/style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+    @media(max-width: 900px) { .dash-grid { grid-template-columns: 1fr; } }
+</style>
 </head>
-
-<body>
+<body class="admin-body">
 
 	<!-- ========== HEADER ========== -->
-	<header class="header">
-		<div class="header-inner">
-			<div class="header-logo">
-				<a href="index.jsp"><img src="../images/mainlogo.png"
-					alt="logo"></a>
-			</div>
+	<jsp:include page="header.jsp" />
 
-			<nav class="header-nav">
-				<a href="index.jsp">HOME</a> <a href="manageabout.jsp">MANAGE
-					ABOUT</a> <a href="manageproduct.jsp">MANAGE PRODUCT</a> <a
-					href="manageorder.jsp">MANAGE ORDER</a>
-				<%
-				if (isLogin) {
-				%><a href="../user/logout_proc.jsp">LOGOUT</a>
-				<%
-				} else {
-				%>
-				<a href="#" id="loginMenu">LOGIN</a>
-				<%
-				}
-				%>
-			</nav>
-		</div>
-	</header>
+	<div class="admin-container">
+        <div class="admin-page-title">
+            <span>DASHBOARD</span>
+            <span style="font-size: 14px; color: #777; font-weight: 400;">Welcome, Administrator</span>
+        </div>
+        
+        <div class="dash-grid">
+            <!-- Sales Chart -->
+            <div class="admin-card">
+                <h3>Weekly Sales Trend</h3>
+                <div style="position: relative; height: 300px; width: 100%;">
+                    <canvas id="salesChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Category Chart -->
+            <div class="admin-card">
+                <h3>Inventory by Category</h3>
+                <div style="position: relative; height: 300px; width: 100%; display: flex; justify-content: center;">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+        </div>
+	</div>
 
-	<main>
+    <script>
+        // Sales Chart
+        const ctxSales = document.getElementById('salesChart').getContext('2d');
+        new Chart(ctxSales, {
+            type: 'line',
+            data: {
+                labels: <%=dateLabels.toString()%>,
+                datasets: [{
+                    label: 'Sales (₩)',
+                    data: <%=salesData.toString()%>,
+                    borderColor: '#007bff',
+                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: '#007bff',
+                    pointRadius: 4,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { display: false } },
+                    y: { beginAtZero: true, border: { dash: [4, 4] } }
+                }
+            }
+        });
 
-		<!-- ========== HERO INTERACTION AREA (최상단) ========== -->
-		<!-- 중앙 고정 로고 (항상 hero 위에 있어야 함) -->
-		<img src="../images/mainlogo.svg" class="hero-logo" alt="logo">
-
-		<section class="hero">
-			<div class="hero-inner">
-
-				<!-- 왼쪽 큰 이미지 -->
-				<div class="hero-left">
-					<img src="../images/heromain.png" class="hero-left-img" alt="">
-				</div>
-
-				<!-- 오른쪽 두 개 이미지 -->
-				<div class="hero-right">
-					<div class="hero-right-top">
-						<img src="../images/herorighttop.png" alt="sub look 1">
-					</div>
-
-				</div>
-
-			</div>
-		</section>
-
-		<!-- ========== SECTION 2 : 상품 5개 (옷 리스트) ========== -->
-	
-		<!-- ========== SECTION 3 : 콜라주 3장 (Editorial / Collage) ========== -->
-		<section class="collage-section">
-			<div class="collage-wrapper">
-
-				<div class="collage-img img1">
-					<img src="../images/collage01.png" />
-				</div>
-
-				<div class="collage-img img2">
-					<img src="../images/collage02.png" />
-				</div>
-
-				<div class="collage-img img3">
-					<img src="../images/collage03.png" />
-				</div>
-
-			</div>
-		</section>
-
-	</main>
-
-
+        // Category Chart
+        const ctxCat = document.getElementById('categoryChart').getContext('2d');
+        new Chart(ctxCat, {
+            type: 'doughnut',
+            data: {
+                labels: <%=catLabels.toString()%>,
+                datasets: [{
+                    data: <%=catData.toString()%>,
+                    backgroundColor: [
+                        '#2c3e50', '#e74c3c', '#ecf0f1', '#3498db', '#f1c40f'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                plugins: { 
+                    legend: { position: 'right' } 
+                }
+            }
+        });
+    </script>
 
 	<!-- ========== FOOTER ========== -->
-	<footer class="footer">
-		<div class="footer-columns">
+	<jsp:include page="../footer.jsp" />
 
-			<div class="footer-col">
-				<h3>CUSTOMER SERVICE</h3>
-				<p>MEMBERSHIP</p>
-				<p>CONTACT</p>
-				<p>SHIPPING & RETURNS</p>
-			</div>
-
-			<div class="footer-col">
-				<h3>COMPANY</h3>
-				<p>MERCI</p>
-				<p>대표 : 김태희, 김소희, 방현익 | 사업자등록번호 : 123-45-67890</p>
-				<p>주소 : 경기도 시흥시 산기대학로</p>
-				<p>이메일 :MERCI@gmail.com</p>
-				<p>고객센터 : 070-1234-5678</p>
-			</div>
-
-			<div class="footer-col">
-				<h3>LEGAL</h3>
-				<p>PRIVACY POLICY</p>
-
-				<h3 style="margin-top: 30px;">SOCIAL</h3>
-				<p>INSTAGRAM</p>
-				<p>KAKAOTALK</p>
-			</div>
-
-		</div>
-
-		<div class="footer-bottom">
-			<span>© MERCI 2025</span>
-		</div>
-	</footer>
-
-
-	<div class="login-panel" id="loginPanel">
-		<div id="loginView">
-			<div class="login-header">
-				<h2>LOGIN</h2>
-				<button class="login-close" id="loginCloseBtn">CLOSE</button>
-			</div>
-			<form action="../user/login_proc.jsp" method="post" name="loginForm"
-				class="login-box">
-				<input type="text" name="userId" placeholder="ID"
-					class="login-input"> <input type="password" name="password"
-					placeholder="PASSWORD" class="login-input"> <input
-					type="button" value="LOGIN" class="login-btn black"
-					onclick="loginCheck()"> <input type="button"
-					value="CREATE ACCOUNT" class="login-btn gray"
-					onclick="showJoinMode()">
-			</form>
-		</div>
-
-
-		<div id="joinView" style="display: none;">
-			<div class="login-header">
-				<h2>SIGN UP</h2>
-				<button class="login-close" id="joinCloseBtn">CLOSE</button>
-			</div>
-
-			<form action="user/join_proc.jsp" method="post" name="joinForm"
-				class="login-box">
-				<input type="text" name="userId" class="login-input"
-					placeholder="ID (EMAIL)"> <input type="text" name="name"
-					class="login-input" placeholder="NAME"> <input
-					type="password" name="password" class="login-input"
-					placeholder="PASSWORD"> <input type="password"
-					name="passwordConfirm" class="login-input"
-					placeholder="CONFIRM PASSWORD"> <input type="button"
-					value="CREATE ACCOUNT" class="login-btn gray" onclick="joinCheck()">
-
-				<input type="button" value="BACK TO LOGIN" class="login-btn gray"
-					style="margin-top: 10px; background-color: black; color: white;"
-					onclick="showLoginMode()">
-			</form>
-		</div>
-	</div>
-	<script src="../style.js"></script>
 </body>
 </html>

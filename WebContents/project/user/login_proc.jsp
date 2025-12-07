@@ -29,14 +29,14 @@
 			session.setAttribute("userId", user.getUserId());
 	%>
 	<script>
-                alert("<%=user.getName()%>님 환영합니다!");
+        alert("<%=user.getName()%>님 환영합니다!");
+        <% if (user.getUserId().equals("admin")) { %>
+            location.href = "../admin/index.jsp";
+        <% } else { %>
+            location.href = "../index.jsp";
+        <% } %>
     </script>
-
 	<%
-	if (user.getUserId().equals("admin"))
-		response.sendRedirect("../admin/index.jsp");
-	else
-		response.sendRedirect("../index.jsp");
 	} else {
 	// 2. 로그인 실패 (아이디 없거나 비번 틀림)
 	%>

@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*, java.util.*, my.dao.*, my.model.*, my.util.*"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
     // [1] 세션 확인
     String userName = (String) session.getAttribute("userName");
@@ -13,12 +14,13 @@
     String search = request.getParameter("search");     // Search Keyword
 
     // [3] 데이터 조회
-    Connection conn = ConnectionProvider.getConnection();
+    Connection conn = null;
     List<Cloth> list = null;
     try {
+        conn = ConnectionProvider.getConnection();
         ClothDao dao = new ClothDao();
         list = dao.selectListMulti(conn, category, sort, search);
-    } catch (SQLException e) {
+    } catch (Exception e) {
         e.printStackTrace();
     } finally {
         JdbcUtil.close(conn);
@@ -29,6 +31,7 @@
 <head>
     <meta charset="UTF-8">
     <title>PRODUCT – MERCI</title>
+    <link rel="icon" href="images/favicon.ico">
     <link rel="stylesheet" href="style.css">
     <style>
         /* 추가된 검색/필터 UI 스타일 */
@@ -91,31 +94,7 @@
 <body class="product-page">
 
 <!-- HEADER -->
-<header class="header product-header">
-    <div class="header-inner">
-        <div class="header-logo">
-            <a href="index.jsp"><img src="images/mainlogo.png" alt="logo"></a>
-        </div>
-
-        <nav class="header-nav">
-            <a href="index.jsp">HOME</a>
-            <a href="about.html">ABOUT</a>
-            <a href="product.jsp" class="active">PRODUCT</a>
-            <%
-            if (isLogin) {
-            %>
-            <a href="user/account.jsp">MY PAGE</a> <a
-                href="user/logout_proc.jsp">LOGOUT</a>
-            <%
-            } else {
-            %>
-            <a href="#" id="loginMenu">LOGIN</a>
-            <%
-            }
-            %>
-        </nav>
-    </div>
-</header>
+<jsp:include page="header.jsp" />
 
 
 <main class="product-main">
@@ -168,7 +147,7 @@
                             <img src="uploadfile/${cloth.imgBody}" alt="${cloth.title}">
                             <div class="product-info">
                                 <h3>${cloth.title}</h3>
-                                <p class="price">₩ ${cloth.price}</p>
+                                <p class="price">₩ <fmt:formatNumber value="${cloth.price}" type="number"/></p>
                             </div>
                         </div>
                     </a>
@@ -186,82 +165,11 @@
 </main>
 
 <!-- ========== FOOTER ========== -->
- <footer class="footer">
-      <div class="footer-columns">
-
-         <div class="footer-col">
-            <h3>CUSTOMER SERVICE</h3>
-            <p>MEMBERSHIP</p>
-            <p>CONTACT</p>
-            <p>SHIPPING & RETURNS</p>
-         </div>
-
-         <div class="footer-col">
-            <h3>COMPANY</h3>
-            <p>MERCI</p>
-            <p>대표 : 김태희, 김소희, 방현익 | 사업자등록번호 : 123-45-67890</p>
-            <p>주소 : 경기도 시흥시 산기대학로</p>
-            <p>이메일 :MERCI@gmail.com</p>
-            <p>고객센터 : 070-1234-5678</p>
-         </div>
-
-         <div class="footer-col">
-            <h3>LEGAL</h3>
-            <p>PRIVACY POLICY</p>
-
-            <h3 style="margin-top: 30px;">SOCIAL</h3>
-            <p>INSTAGRAM</p>
-            <p>KAKAOTALK</p>
-         </div>
-
-      </div>
-
-      <div class="footer-bottom">
-         <span>© MERCI 2025</span>
-      </div>
-   </footer>
+ <jsp:include page="footer.jsp" />
    
    <!-- 로그인 패널 (index.jsp와 동일한 로직 사용을 위해 id 유지) -->
-   <div class="login-panel" id="loginPanel">
-        <div id="loginView">
-            <div class="login-header">
-                <h2>LOGIN</h2>
-                <button class="login-close" id="loginCloseBtn">CLOSE</button>
-            </div>
-            <form action="user/login_proc.jsp" method="post" name="loginForm"
-                class="login-box">
-                <input type="text" name="userId" placeholder="ID"
-                    class="login-input"> <input type="password" name="password"
-                    placeholder="PASSWORD" class="login-input"> <input
-                    type="button" value="LOGIN" class="login-btn black"
-                    onclick="loginCheck()"> <input type="button"
-                    value="CREATE ACCOUNT" class="login-btn gray"
-                    onclick="showJoinMode()">
-            </form>
-        </div>
-
-        <div id="joinView" style="display: none;">
-            <div class="login-header">
-                <h2>SIGN UP</h2>
-                <button class="login-close" id="joinCloseBtn">CLOSE</button>
-            </div>
-            <form action="user/join_proc.jsp" method="post" name="joinForm"
-                class="login-box">
-                <input type="text" name="userId" class="login-input"
-                    placeholder="ID (EMAIL)"> <input type="text" name="name"
-                    class="login-input" placeholder="NAME"> <input
-                    type="password" name="password" class="login-input"
-                    placeholder="PASSWORD"> <input type="password"
-                    name="passwordConfirm" class="login-input"
-                    placeholder="CONFIRM PASSWORD"> <input type="button"
-                    value="CREATE ACCOUNT" class="login-btn gray" onclick="joinCheck()">
-
-                <input type="button" value="BACK TO LOGIN" class="login-btn gray"
-                    style="margin-top: 10px; background-color: black; color: white;"
-                    onclick="showLoginMode()">
-            </form>
-        </div>
-    </div>
+   <!-- header.jsp에 포함됨 -->
+   
    <script src="style.js"></script>
    
    <!-- style.css에 .active 클래스 스타일이 메뉴용으로만 되어있을 수 있어 추가 스타일 정의 -->

@@ -16,7 +16,7 @@ if (userName == null) {
 // [2] 배송지 가져오기
 DeliveryAddressDao deliveryDao = new DeliveryAddressDao();
 DeliveryAddress defaultAddr = null;
-List<DeliveryAddress> addrList = null; // ★ 이 줄이 빠져 있었습니다. 추가해주세요!
+List<DeliveryAddress> addrList = null;
 
 Connection conn = null;
 try {
@@ -39,6 +39,8 @@ try {
 } finally {
     JdbcUtil.close(conn);
 }
+
+String root = request.getContextPath() + "/project";
 %>
 <!DOCTYPE html>
 <html>
@@ -48,29 +50,9 @@ try {
 <link rel="stylesheet" type="text/css" href="../style.css">
 </head>
 <body>
-	<header class="header">
-		<div class="header-inner">
-			<div class="header-logo">
-				<a href="../index.jsp"><img src="../images/mainlogo.png"
-					alt="logo"></a>
-			</div>
-			<nav class="header-nav">
-				<a href="../index.jsp">HOME</a> <a href="../about.jsp">ABOUT</a> <a
-					href="../product.jsp">PRODUCT</a>
-				<%
-				if (isLogin) {
-				%>
-				<a href="account.jsp">MY PAGE</a> <a href="logout_proc.jsp">LOGOUT</a>
-				<%
-				} else {
-				%>
-				<a href="#" id="loginMenu">LOGIN</a>
-				<%
-				}
-				%>
-			</nav>
-		</div>
-	</header>
+    
+    <!-- HEADER -->
+    <jsp:include page="../header.jsp" />
 
 	<div class="mypage-banner">
 		<img src="../images/banner.jpg" alt="banner">
@@ -79,6 +61,10 @@ try {
 	<div class="mypage-container">
 		<h2 class="welcome-text"><%=userName%>님 환영합니다!
 		</h2>
+
+		<div style="text-align: center; margin-bottom: 30px;">
+			<a href="wishlist.jsp" class="btn" style="background: #e74c3c; color: white; padding: 10px 20px; text-decoration: none; border: none; font-size: 14px;">❤️ MY WISHLIST</a>
+		</div>
 
 		<div class="address-section">
 			<h3 class="section-title"
@@ -90,7 +76,6 @@ try {
 			</h3>
 
 			<%
-			// defaultAddr가 있으면 카드 표시 (위에서 로직을 추가해서 주소가 하나라도 있으면 null이 아님)
 			if (defaultAddr != null) {
 			%>
 			<div class="address-card">
@@ -143,7 +128,9 @@ try {
 		<button type="button" class="btn delete-btn" onclick="deleteAccount()">DELETE ACCOUNT</button>
 	</div>
 
-
+    <!-- FOOTER -->
+    <jsp:include page="../footer.jsp" />
+    
 	<script src="style.js"></script>
 </body>
 </html>

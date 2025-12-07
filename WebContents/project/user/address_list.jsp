@@ -5,9 +5,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
     String userId = (String) session.getAttribute("userId");
+    String root = request.getContextPath() + "/project";
+    
     if (userId == null) {
 %>
-    <script>alert("로그인이 필요합니다."); location.href = "../index.jsp?login=open";</script>
+    <script>alert("로그인이 필요합니다."); location.href = "<%=root%>/index.jsp?login=open";</script>
 <%
         return;
     }
@@ -31,15 +33,9 @@
 <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-    <header class="header">
-        <div class="header-inner">
-            <div class="header-logo"><a href="../index.jsp"><img src="../images/mainlogo.png" alt="logo"></a></div>
-            <nav class="header-nav">
-                <a href="../index.jsp">HOME</a> <a href="../about.jsp">ABOUT</a> <a href="../product.jsp">PRODUCT</a>
-                <a href="account.jsp">MY PAGE</a> <a href="logout_proc.jsp">LOGOUT</a>
-            </nav>
-        </div>
-    </header>
+    
+    <!-- HEADER -->
+    <jsp:include page="../header.jsp" />
 
     <div class="addr-list-container">
         <h2 class="page-title">배송지 관리</h2>
@@ -77,6 +73,9 @@
         <button type="button" class="action-btn black" onclick="doAction('delete')">삭제</button>
     </div>
 
+    <!-- FOOTER -->
+    <jsp:include page="../footer.jsp" />
+    
     <script src="style.js"></script>
 </body>
 </html>

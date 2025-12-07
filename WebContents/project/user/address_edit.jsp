@@ -1,13 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*, my.util.*, my.dao.*, my.model.*"%>
 <%
+    String root = request.getContextPath() + "/project";
     // 1. 로그인 체크
     String userId = (String) session.getAttribute("userId");
     if (userId == null) {
 %>
         <script>
             alert("로그인이 필요한 서비스입니다.");
-            location.href = "../index.jsp?login=open";
+            location.href = "<%=root%>/index.jsp?login=open";
         </script>
 <%
         return;
@@ -28,7 +29,7 @@
     try {
         Connection conn = ConnectionProvider.getConnection();
         DeliveryAddressDao dao = new DeliveryAddressDao();
-        addr = dao.selectOne(conn, addrId); // DAO에 이 메서드 있어야 함 (어제 추가해드림)
+        addr = dao.selectOne(conn, addrId);
         conn.close();
     } catch(Exception e) {
         e.printStackTrace();
@@ -51,20 +52,8 @@
 </head>
 <body class="address-page">
 
-    <header class="header">
-        <div class="header-inner">
-            <div class="header-logo">
-                <a href="../index.jsp"><img src="images/mainlogo.png" alt="logo"></a>
-            </div>
-            <nav class="header-nav">
-                <a href="../index.jsp">HOME</a>
-                <a href="../about.html">ABOUT</a>
-                <a href="../product.jsp">PRODUCT</a>
-                <a href="account.jsp">MY PAGE</a>
-                <a href="logout_proc.jsp">LOGOUT</a>
-            </nav>
-        </div>
-    </header>
+    <!-- HEADER -->
+    <jsp:include page="../header.jsp" />
 
     <div class="address-container">
         <h2>배송지 수정</h2>
@@ -99,10 +88,11 @@
             <button type="submit" class="btn save-btn">수정 완료</button>
         </form>
     </div>
-    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     
+    <!-- FOOTER -->
+    <jsp:include page="../footer.jsp" />
 
-
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <script src="style.js"></script>
 </body>
 </html>
