@@ -105,8 +105,8 @@
             <input type="button" value="CREATE ACCOUNT" class="login-btn gray" onclick="showJoinMode()">
             
             <!-- KAKAO LOGIN BUTTON -->
-            <div style="margin-top: 10px; cursor: pointer;" onclick="loginWithKakao()">
-                <img src="https://k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg" width="100%" alt="카카오 로그인 버튼" style="border-radius: 4px;">
+            <div style="margin-top: 10px; cursor: pointer; text-align: center; background-color: #fee500;" onclick="loginWithKakao()">
+                <img src="https://k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg" width="150px" alt="카카오 로그인 버튼" style="border-radius: 4px;">
             </div>
         </form>
     </div>
