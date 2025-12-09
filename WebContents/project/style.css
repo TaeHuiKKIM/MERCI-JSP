@@ -1,6 +1,8 @@
 /* =================================================================== */
 /* ========================== GLOBAL RESET =========================== */
 /* =================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Noto+Sans+KR:wght@300;400;500&display=swap');
+
 * {
   margin: 0;
   padding: 0;
@@ -14,7 +16,8 @@ html, body {
   height: 100%;
 }
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, "Noto Sans KR", sans-serif;
+  font-family: 'Jost', 'Noto Sans KR', sans-serif;
+  font-weight: 300;
   color: #111;
   background: #fff;
   overflow-x: hidden;
@@ -50,8 +53,8 @@ a {
 .header-nav {
   display: flex;
   gap: 28px;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 400;
   letter-spacing: 0.12em;
 }
 /* 헤더 링크 기본 설정 */
@@ -153,8 +156,8 @@ main {
     margin: 0 auto;
 }
 .product-item h3 {
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 15px;
+    font-weight: 400;
     margin-top: 12px;
     margin-bottom: 6px;
 }
@@ -277,8 +280,8 @@ body.detail-page::-webkit-scrollbar {
     display: none !important;
 }
 .product-title {
-    font-size: 22px;
-    font-weight: 700;
+    font-size: 24px;
+    font-weight: 500;
     margin-bottom: 10px;
 }
 .product-price {
@@ -494,9 +497,9 @@ body.admin-body {
   margin-bottom: 16px;
 }
 .product-info h3 {
-  font-size: 12px;
+  font-size: 14px;
   margin-bottom: 6px;
-  font-weight: 600;
+  font-weight: 500;
 }
 .price {
   font-size: 10px;
