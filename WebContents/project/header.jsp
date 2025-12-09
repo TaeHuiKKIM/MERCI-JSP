@@ -171,11 +171,11 @@
             <input type="button" value="CREATE ACCOUNT" class="login-btn gray" onclick="showJoinMode()">
             
             <!-- KAKAO LOGIN BUTTON -->
-            <div style="cursor: pointer; text-align: center; background-color: #fee500; margin-top: 10px; height: 45px; line-height: 45px; border-radius: 4px;" onclick="loginWithKakao()">
+            <div style="cursor: pointer; text-align: center; background-color: #fee500; height: 45px; line-height: 45px; border-radius: 4px;" onclick="loginWithKakao()">
                 <img src="https://k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg" width="150px" alt="카카오 로그인 버튼" style="vertical-align: middle;">
             </div>
 
-            <a href="<%=root%>/user/find_account.jsp" style="font-size: 12px; color: #555; text-decoration: underline; margin-top: 10px; display: block; text-align: center;">
+            <a href="<%=root%>/user/find_account.jsp" style="font-size: 12px; color: #555; text-decoration: underline; margin-top: 10px; display: block; text-align: right;">
                 비밀번호 찾기
             </a>
         </form>
