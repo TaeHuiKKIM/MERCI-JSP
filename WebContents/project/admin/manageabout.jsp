@@ -49,11 +49,30 @@
         </div>
         
         <div class="admin-card">
-            <h3>About Page Preview Text</h3>
-            <p style="color: #666; font-size: 14px; line-height: 1.6;">
-                MERCI BRINGS SUBURBAN VITALITY INTO THE CITY, OFFERING WOMEN AN ACTIVE LIFESTYLE AND FASHION THAT FUSE EVERYDAY URBAN LIFE WITH EXTRAORDINARY ENERGY.<br><br>
-                MERCI는 도시에 사는 여성들에게 교외적인 생동감을 불어넣을 수 있는 새로운 라이프스타일과 패션을 제안합니다. 자연과 도시가 만나는 순간을 담아내며, 일상 속에서 편안하게 입을 수 있는 실루엣과 활동적인 에너지를 동시에 전달합니다.
+            <h3>Edit About Page Text</h3>
+            <p style="color: #666; font-size: 14px; margin-bottom: 15px;">
+                Update the text displayed on the About page.
             </p>
+            
+            <%
+                String aboutText = "";
+                Connection conn = null;
+                try {
+                    conn = ConnectionProvider.getConnection();
+                    SiteSettingsDao settingsDao = new SiteSettingsDao();
+                    aboutText = settingsDao.getSetting(conn, "about_text");
+                    if (aboutText == null) aboutText = "";
+                } catch(Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    JdbcUtil.close(conn);
+                }
+            %>
+            
+            <form action="update_about_text_proc.jsp" method="post">
+                <textarea name="aboutText" style="width: 100%; height: 200px; padding: 10px; border: 1px solid #ddd; margin-bottom: 15px;"><%=aboutText%></textarea>
+                <button type="submit" class="btn-admin btn-admin-primary">UPDATE TEXT</button>
+            </form>
         </div>
     </div>
 

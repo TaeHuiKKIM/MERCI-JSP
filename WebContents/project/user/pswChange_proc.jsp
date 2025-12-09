@@ -14,7 +14,18 @@
             location.href = "../index.jsp?login=open";
         </script>
 <%
-        return; // 아래 코드 실행 막기
+        return; 
+    }
+
+    // [KAKAO CHECK] 카카오 계정 비밀번호 변경 차단
+    if (userId.startsWith("kakao_")) {
+%>
+        <script>
+            alert("카카오 계정은 비밀번호를 변경할 수 없습니다.");
+            history.back();
+        </script>
+<%
+        return;
     }
 
     // 2. 입력 데이터 받기

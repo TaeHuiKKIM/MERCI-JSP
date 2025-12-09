@@ -193,9 +193,9 @@
         }
         function addToCart() {
             var f = document.cartForm;
-            if(!f.size.value) { alert("사이즈를 선택해주세요."); return; }
-            if(!f.color.value) { alert("색상을 선택해주세요."); return; }
-            if(f.quantity.value < 1) { alert("수량은 1개 이상이어야 합니다."); return; }
+            if(!f.size.value) { showMsg("사이즈를 선택해주세요."); return; }
+            if(!f.color.value) { showMsg("색상을 선택해주세요."); return; }
+            if(f.quantity.value < 1) { showMsg("수량은 1개 이상이어야 합니다."); return; }
             
             f.action = "cart_proc.jsp";
             f.submit();
@@ -205,14 +205,14 @@
         }
         function checkReviewForm() {
             var f = document.reviewForm;
-            if(!f.rating.value) { alert("별점을 선택해주세요."); return false; }
-            if(!f.content.value) { alert("내용을 입력해주세요."); return false; }
+            if(!f.rating.value) { showMsg("별점을 선택해주세요."); return false; }
+            if(!f.content.value) { showMsg("내용을 입력해주세요."); return false; }
             return true;
         }
         function toggleWish(clothId) {
             <% if(!isLogin) { %>
-                alert("로그인이 필요합니다.");
-                showLoginMode();
+                showMsg("로그인이 필요합니다.");
+                setTimeout(showLoginMode, 1000); // 1초 후 로그인 창 띄우기
                 return;
             <% } else { %>
                 $.ajax({
@@ -226,17 +226,17 @@
                             if(res.added) {
                                 btn.addClass('active');
                                 btn.html('♥'); // Filled heart logic or same char
-                                alert("위시리스트에 추가되었습니다.");
+                                showMsg("위시리스트에 추가되었습니다.");
                             } else {
                                 btn.removeClass('active');
                                 btn.html('♥'); 
-                                alert("위시리스트에서 삭제되었습니다.");
+                                showMsg("위시리스트에서 삭제되었습니다.");
                             }
                         } else {
-                            alert(res.message);
+                            showMsg(res.message);
                         }
                     },
-                    error: function() { alert("오류가 발생했습니다."); }
+                    error: function() { showMsg("오류가 발생했습니다."); }
                 });
             <% } %>
         }
@@ -245,10 +245,17 @@
         $(document).ready(function() {
             <% if (cartAdded) { %>
                 $('#cartAddedPopupBackdrop').addClass('show');
-                // Optional: Automatically hide after a few seconds
-                // setTimeout(function() {
-                //     $('#cartAddedPopupBackdrop').removeClass('show');
-                // }, 3000); 
+                
+                // Remove 'cart' query parameter from URL to prevent popup on reload
+                if (history.replaceState) {
+                    var newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                    var searchParams = new URLSearchParams(window.location.search);
+                    searchParams.delete("cart");
+                    if (searchParams.toString() !== "") {
+                        newUrl += "?" + searchParams.toString();
+                    }
+                    window.history.replaceState({path: newUrl}, '', newUrl);
+                }
             <% } %>
 
             $('#popupCloseBtn').click(function() {
@@ -349,28 +356,6 @@
             <span class="review-avg">Average Rating: <span class="star-rating">★ <%= String.format("%.1f", avgRating) %></span></span>
         </div>
 
-        <% if (isLogin) { %>
-            <div class="review-form">
-                <form action="review_proc.jsp" method="post" name="reviewForm" onsubmit="return checkReviewForm()">
-                    <input type="hidden" name="clothId" value="<%=cloth.getId()%>">
-                    <div style="margin-bottom: 10px;">
-                        <strong>Rating: </strong>
-                        <label><input type="radio" name="rating" value="5" checked> 5</label>
-                        <label><input type="radio" name="rating" value="4"> 4</label>
-                        <label><input type="radio" name="rating" value="3"> 3</label>
-                        <label><input type="radio" name="rating" value="2"> 2</label>
-                        <label><input type="radio" name="rating" value="1"> 1</label>
-                    </div>
-                    <textarea name="content" placeholder="Write your review here..."></textarea>
-                    <button type="submit" style="padding: 8px 16px; background: #000; color: #fff; border: none; cursor: pointer;">Submit Review</button>
-                </form>
-            </div>
-        <% } else { %>
-            <div style="background: #f9f9f9; padding: 20px; text-align: center; margin-bottom: 30px; color: #666;">
-                Please <a href="#" onclick="showLoginMode()" style="text-decoration: underline; font-weight: bold;">Login</a> to write a review.
-            </div>
-        <% } %>
-
         <ul class="review-list">
             <c:set var="reviews" value="<%=reviewList%>" />
             <c:choose>
@@ -391,7 +376,7 @@
                     </c:forEach>
                 </c:when>
                 <c:otherwise>
-                    <li style="text-align: center; padding: 30px; color: #999;">No reviews yet. Be the first to write a review!</li>
+                    <li style="text-align: center; padding: 30px; color: #999;">No reviews yet.</li>
                 </c:otherwise>
             </c:choose>
         </ul>
@@ -407,11 +392,11 @@
     <!-- Custom Cart Added Popup HTML -->
     <div class="cart-added-popup-backdrop" id="cartAddedPopupBackdrop">
         <div class="cart-added-popup">
-            <h3>Item Added to Cart!</h3>
-            <p>Your item has been successfully added to your shopping cart.</p>
+            <h3>장바구니에 상품이 담겼습니다.</h3>
+            <p>선택하신 상품이 장바구니에 정상적으로 추가되었습니다.</p>
             <div class="cart-added-popup-buttons">
-                <button class="btn-continue" id="popupCloseBtn">Continue Shopping</button>
-                <button class="btn-view-cart" id="viewCartBtn">View Cart</button>
+                <button class="btn-continue" id="popupCloseBtn">쇼핑 계속하기</button>
+                <button class="btn-view-cart" id="viewCartBtn">장바구니 확인</button>
             </div>
         </div>
     </div>

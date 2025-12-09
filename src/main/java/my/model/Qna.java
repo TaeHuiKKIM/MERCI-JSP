@@ -10,6 +10,7 @@ public class Qna {
     private String status; // '대기중', '답변완료'
     private String answer;
     private Date regdate;
+    private int isSecret; // 0: public, 1: secret
 
     public Qna() {}
 
@@ -27,4 +28,6 @@ public class Qna {
     public void setAnswer(String answer) { this.answer = answer; }
     public Date getRegdate() { return regdate; }
     public void setRegdate(Date regdate) { this.regdate = regdate; }
+    public int getIsSecret() { return isSecret; }
+    public void setIsSecret(int isSecret) { this.isSecret = isSecret; }
 }

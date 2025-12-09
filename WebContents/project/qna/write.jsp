@@ -41,7 +41,13 @@
             <table>
                 <tr>
                     <th>Subject</th>
-                    <td><input type="text" name="subject" required placeholder="제목을 입력하세요"></td>
+                    <td>
+                        <input type="text" name="subject" required placeholder="제목을 입력하세요">
+                        <div style="margin-top: 5px;">
+                            <input type="checkbox" name="isSecret" value="1" id="secretCheck"> 
+                            <label for="secretCheck" style="font-size: 13px; color: #555;">Secret Post (Private)</label>
+                        </div>
+                    </td>
                 </tr>
                 <tr>
                     <th>Content</th>

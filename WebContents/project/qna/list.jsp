@@ -64,6 +64,11 @@
                     <th width="120">Date</th>
                 </tr>
             </thead>
+<%
+    // Get current logged in user (for checking secret posts)
+    String currentUserId = (String) session.getAttribute("userId");
+    boolean isAdmin = (currentUserId != null && currentUserId.equals("admin"));
+%>
             <tbody>
                 <c:set var="list" value="<%=list%>" />
                 <c:choose>
@@ -77,9 +82,31 @@
                                     </span>
                                 </td>
                                 <td class="subject">
-                                    <a href="view.jsp?qnaId=${q.qnaId}">
-                                        ${q.subject}
-                                    </a>
+                                    <%
+                                        my.model.Qna q = (my.model.Qna) pageContext.getAttribute("q");
+                                        boolean isSecret = (q.getIsSecret() == 1);
+                                        boolean canView = isAdmin || (currentUserId != null && currentUserId.equals(q.getUserId()));
+                                        
+                                        if (isSecret) {
+                                            if (canView) {
+                                    %>
+                                                <a href="view.jsp?qnaId=${q.qnaId}">
+                                                    🔒 ${q.subject}
+                                                </a>
+                                    <%
+                                            } else {
+                                    %>
+                                                <span style="color: #999;">🔒 Secret Post</span>
+                                    <%
+                                            }
+                                        } else {
+                                    %>
+                                            <a href="view.jsp?qnaId=${q.qnaId}">
+                                                ${q.subject}
+                                            </a>
+                                    <%
+                                        }
+                                    %>
                                 </td>
                                 <td>${q.userId}</td>
                                 <td><fmt:formatDate value="${q.regdate}" pattern="yyyy-MM-dd"/></td>

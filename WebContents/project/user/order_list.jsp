@@ -60,7 +60,7 @@
                         <div class="order-header">
                             <span class="order-date">
                                 <fmt:formatDate value="${o.orderDate}" pattern="yyyy.MM.dd"/> 
-                                (Order ID: ${o.orderId})
+                                (Order ID: <a href="order_detail.jsp?orderId=${o.orderId}" style="color: #333; text-decoration: underline;">${o.orderId}</a>)
                             </span>
                             <span class="order-status">${o.status}</span>
                         </div>
@@ -69,6 +69,9 @@
                             <div><span class="info-label">Receiver</span> ${o.receiverName}</div>
                             <div><span class="info-label">Address</span> ${o.address}</div>
                             <div><span class="info-label">Total</span> ₩ <fmt:formatNumber value="${o.totalAmount}" type="number"/></div>
+                            <div style="margin-top: 10px;">
+                                <a href="order_detail.jsp?orderId=${o.orderId}" class="btn" style="background: #333; color: white; padding: 5px 10px; font-size: 12px; text-decoration: none;">View Details</a>
+                            </div>
                         </div>
 
                         <!-- Status Messages -->

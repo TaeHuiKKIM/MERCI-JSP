@@ -96,6 +96,18 @@
             <div class="about-overlay"></div>
             
             <div class="about-text-container">
+                <%
+                    String aboutText = "";
+                    try {
+                        java.sql.Connection conn = my.util.ConnectionProvider.getConnection();
+                        my.dao.SiteSettingsDao settingsDao = new my.dao.SiteSettingsDao();
+                        aboutText = settingsDao.getSetting(conn, "about_text");
+                        my.util.JdbcUtil.close(conn);
+                    } catch(Exception e) { e.printStackTrace(); }
+                    
+                    if (aboutText == null || aboutText.isEmpty()) {
+                        // Fallback to default if DB is empty
+                %>
                 <div class="about-column">
                     <div class="about-eng">
                         MERCI BRINGS SUBURBAN VITALITY INTO THE CITY,<br>
@@ -109,6 +121,19 @@
                         자연과 도시가 만나는 순간을 담아내며, 일상 속에서 편안하게 입을 수 있는 실루엣과 활동적인 에너지를 동시에 전달합니다.
                     </div>
                 </div>
+                <%
+                    } else {
+                        // Display DB content, converting newlines to <br>
+                        String formattedText = aboutText.replace("\n", "<br>");
+                %>
+                <div style="text-align: center; width: 100%;">
+                    <div class="about-kor" style="font-size: 18px; line-height: 2.0; font-weight: 500;">
+                        <%=formattedText%>
+                    </div>
+                </div>
+                <%
+                    }
+                %>
             </div>
         </section>
     </main>

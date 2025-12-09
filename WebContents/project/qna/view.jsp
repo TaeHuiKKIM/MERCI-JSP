@@ -28,6 +28,16 @@
         return;
     }
     
+    // Check for Secret Post permission
+    String currentUserId = (String) session.getAttribute("userId");
+    boolean isAdmin = (currentUserId != null && currentUserId.equals("admin"));
+    boolean isOwner = (currentUserId != null && currentUserId.equals(qna.getUserId()));
+    
+    if (qna.getIsSecret() == 1 && !isAdmin && !isOwner) {
+        out.println("<script>alert('This is a secret post. You do not have permission to view it.'); location.href='list.jsp';</script>");
+        return;
+    }
+    
     String root = request.getContextPath() + "/project";
 %>
 <!DOCTYPE html>

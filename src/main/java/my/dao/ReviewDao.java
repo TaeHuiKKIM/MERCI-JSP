@@ -63,4 +63,58 @@ public class ReviewDao {
             JdbcUtil.close(pstmt);
         }
     }
+    
+    // 사용자별 상품 리뷰 조회 (작성 여부 확인용)
+    public Review selectByUserIdAndClothId(Connection conn, String userId, int clothId) throws SQLException {
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            pstmt = conn.prepareStatement("SELECT * FROM review WHERE userId = ? AND clothId = ?");
+            pstmt.setString(1, userId);
+            pstmt.setInt(2, clothId);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                Review r = new Review();
+                r.setReviewId(rs.getInt("reviewId"));
+                r.setUserId(rs.getString("userId"));
+                r.setClothId(rs.getInt("clothId"));
+                r.setRating(rs.getInt("rating"));
+                r.setContent(rs.getString("content"));
+                r.setRegdate(rs.getTimestamp("regdate"));
+                return r;
+            }
+            return null;
+        } finally {
+            JdbcUtil.close(rs);
+            JdbcUtil.close(pstmt);
+        }
+    }
+    
+    // 리뷰 수정
+    public void update(Connection conn, Review review) throws SQLException {
+        PreparedStatement pstmt = null;
+        try {
+            pstmt = conn.prepareStatement("UPDATE review SET rating = ?, content = ? WHERE reviewId = ? AND userId = ?");
+            pstmt.setInt(1, review.getRating());
+            pstmt.setString(2, review.getContent());
+            pstmt.setInt(3, review.getReviewId());
+            pstmt.setString(4, review.getUserId());
+            pstmt.executeUpdate();
+        } finally {
+            JdbcUtil.close(pstmt);
+        }
+    }
+    
+    // 리뷰 삭제
+    public void delete(Connection conn, int reviewId, String userId) throws SQLException {
+        PreparedStatement pstmt = null;
+        try {
+            pstmt = conn.prepareStatement("DELETE FROM review WHERE reviewId = ? AND userId = ?");
+            pstmt.setInt(1, reviewId);
+            pstmt.setString(2, userId);
+            pstmt.executeUpdate();
+        } finally {
+            JdbcUtil.close(pstmt);
+        }
+    }
 }

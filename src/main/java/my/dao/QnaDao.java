@@ -10,10 +10,11 @@ public class QnaDao {
     public void insert(Connection conn, Qna qna) throws SQLException {
         PreparedStatement pstmt = null;
         try {
-            pstmt = conn.prepareStatement("INSERT INTO qna (userId, subject, content, status, regdate) VALUES (?, ?, ?, '대기중', NOW())");
+            pstmt = conn.prepareStatement("INSERT INTO qna (userId, subject, content, status, regdate, isSecret) VALUES (?, ?, ?, '대기중', NOW(), ?)");
             pstmt.setString(1, qna.getUserId());
             pstmt.setString(2, qna.getSubject());
             pstmt.setString(3, qna.getContent());
+            pstmt.setInt(4, qna.getIsSecret());
             pstmt.executeUpdate();
         } finally {
             JdbcUtil.close(pstmt);
@@ -39,6 +40,7 @@ public class QnaDao {
                 q.setStatus(rs.getString("status"));
                 q.setAnswer(rs.getString("answer"));
                 q.setRegdate(rs.getTimestamp("regdate"));
+                q.setIsSecret(rs.getInt("isSecret"));
                 list.add(q);
             }
         } finally {
@@ -78,6 +80,7 @@ public class QnaDao {
                 q.setStatus(rs.getString("status"));
                 q.setAnswer(rs.getString("answer"));
                 q.setRegdate(rs.getTimestamp("regdate"));
+                q.setIsSecret(rs.getInt("isSecret"));
                 return q;
             }
             return null;

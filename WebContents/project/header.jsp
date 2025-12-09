@@ -45,22 +45,86 @@
             $('#loginView').show();
         }
 
+        // Custom Message Modal Function
+        function showMsg(message) {
+            $('#msgPopupContent').text(message);
+            $('#msgPopupBackdrop').addClass('show');
+        }
+
+        function closeMsg() {
+            $('#msgPopupBackdrop').removeClass('show');
+        }
+
         function loginCheck() {
             var f = document.loginForm;
-            if(!f.userId.value) { alert("아이디를 입력하세요."); f.userId.focus(); return; }
-            if(!f.password.value) { alert("비밀번호를 입력하세요."); f.password.focus(); return; }
+            if(!f.userId.value) { showMsg("아이디를 입력하세요."); return; }
+            if(!f.password.value) { showMsg("비밀번호를 입력하세요."); return; }
             f.submit();
         }
 
         function joinCheck() {
             var f = document.joinForm;
-            if(!f.userId.value) { alert("아이디를 입력하세요."); f.userId.focus(); return; }
-            if(!f.name.value) { alert("이름을 입력하세요."); f.name.focus(); return; }
-            if(!f.password.value) { alert("비밀번호를 입력하세요."); f.password.focus(); return; }
-            if(f.password.value !== f.passwordConfirm.value) { alert("비밀번호가 일치하지 않습니다."); return; }
+            if(!f.userId.value) { showMsg("아이디를 입력하세요."); return; }
+            if(!f.name.value) { showMsg("이름을 입력하세요."); return; }
+            if(!f.password.value) { showMsg("비밀번호를 입력하세요."); return; }
+            if(f.password.value !== f.passwordConfirm.value) { showMsg("비밀번호가 일치하지 않습니다."); return; }
             f.submit();
         }
     </script>
+    <style>
+        /* Shared Message Popup Style */
+        .msg-popup-backdrop {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 20000; /* Higher than login panel */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+        }
+        .msg-popup-backdrop.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .msg-popup {
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            width: 300px;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .msg-popup-backdrop.show .msg-popup {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .msg-popup p {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 25px;
+            line-height: 1.5;
+            word-break: keep-all;
+        }
+        .msg-popup button {
+            padding: 10px 25px;
+            background: #000;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .msg-popup button:hover {
+            background: #333;
+        }
+    </style>
 <header class="header">
     <div class="header-inner">
         <div class="header-logo">
@@ -73,10 +137,12 @@
                 boolean isHome = currentUri.endsWith("index.jsp") || currentUri.endsWith("/");
                 boolean isAbout = currentUri.endsWith("about.jsp");
                 boolean isProduct = currentUri.contains("product.jsp") || currentUri.contains("catalogdetail.jsp");
+                boolean isQna = currentUri.contains("qna/list.jsp") || currentUri.contains("qna/view.jsp") || currentUri.contains("qna/write.jsp");
             %>
             <a href="<%=root%>/index.jsp" class="<%= isHome ? "active" : "" %>">HOME</a>
             <a href="<%=root%>/about.jsp" class="<%= isAbout ? "active" : "" %>">ABOUT</a>
             <a href="<%=root%>/product.jsp" class="<%= isProduct ? "active" : "" %>">PRODUCT</a>
+            <a href="<%=root%>/qna/list.jsp" class="<%= isQna ? "active" : "" %>">Q&A</a>
             <% if (isLogin && "admin".equals(userName)) { %>
                 <a href="<%=root%>/admin/index.jsp" style="color: red; font-weight: bold;">ADMIN</a>
             <% } %>
@@ -105,7 +171,7 @@
             <input type="button" value="CREATE ACCOUNT" class="login-btn gray" onclick="showJoinMode()">
             
             <!-- KAKAO LOGIN BUTTON -->
-            <div style="margin-top: 10px; cursor: pointer; text-align: center; background-color: #fee500;" onclick="loginWithKakao()">
+            <div style="cursor: pointer; text-align: center; background-color: #fee500;" onclick="loginWithKakao()">
                 <img src="https://k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg" width="150px" alt="카카오 로그인 버튼" style="border-radius: 4px;">
             </div>
         </form>
@@ -124,5 +190,13 @@
             <input type="button" value="CREATE ACCOUNT" class="login-btn gray" onclick="joinCheck()">
             <input type="button" value="BACK TO LOGIN" class="login-btn gray" style="margin-top: 10px; background-color: black; color: white;" onclick="showLoginMode()">
         </form>
+    </div>
+</div>
+
+<!-- Message Popup HTML -->
+<div class="msg-popup-backdrop" id="msgPopupBackdrop">
+    <div class="msg-popup">
+        <p id="msgPopupContent">Message goes here</p>
+        <button onclick="closeMsg()">확인</button>
     </div>
 </div>

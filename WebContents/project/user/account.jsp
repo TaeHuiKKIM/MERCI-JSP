@@ -64,6 +64,7 @@ String root = request.getContextPath() + "/project";
 
 		<div style="text-align: center; margin-bottom: 30px;">
 			<a href="wishlist.jsp" class="btn" style="background: #e74c3c; color: white; padding: 10px 20px; text-decoration: none; border: none; font-size: 14px;">❤️ MY WISHLIST</a>
+			<a href="order_list.jsp" class="btn" style="background: #2ecc71; color: white; padding: 10px 20px; text-decoration: none; border: none; font-size: 14px; margin-left: 10px;">📦 ORDER HISTORY</a>
 		</div>
 
 		<div class="address-section">
@@ -113,6 +114,11 @@ String root = request.getContextPath() + "/project";
 			%>
 		</div>
 
+		<%
+		// Check if user is logged in via Kakao (starts with "kakao_")
+		boolean isKakaoUser = (userId != null && userId.startsWith("kakao_"));
+		if (!isKakaoUser) {
+		%>
 		<h3 class="section-title">비밀번호 변경</h3>
 		<form action="pswChange_proc.jsp" method="post" name="pwForm"
 			class="password-box">
@@ -123,6 +129,9 @@ String root = request.getContextPath() + "/project";
 			<button type="button" class="btn change-btn"
 				onclick="checkPasswordChange()">비밀번호 변경</button>
 		</form>
+		<%
+		}
+		%>
 
 		<h3 class="section-title">계정 삭제</h3>
 		<button type="button" class="btn delete-btn" onclick="deleteAccount()">DELETE ACCOUNT</button>

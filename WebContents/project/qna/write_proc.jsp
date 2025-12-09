@@ -13,6 +13,8 @@
 
     String subject = request.getParameter("subject");
     String content = request.getParameter("content");
+    String isSecretStr = request.getParameter("isSecret");
+    int isSecret = (isSecretStr != null && isSecretStr.equals("1")) ? 1 : 0;
 
     if (subject == null || content == null) {
         out.println("<script>alert('잘못된 접근입니다.'); history.back();</script>");
@@ -27,6 +29,7 @@
         qna.setUserId(sUserId);
         qna.setSubject(subject);
         qna.setContent(content);
+        qna.setIsSecret(isSecret);
         
         dao.insert(conn, qna);
         

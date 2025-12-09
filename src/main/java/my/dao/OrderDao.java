@@ -214,6 +214,37 @@ public class OrderDao {
         }
         return o;
     }
+    
+    // 8. 주문 상품 목록 조회 (JOIN cloth)
+    public List<OrderItem> selectOrderItemsByOrderId(Connection conn, int orderId) throws SQLException {
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        List<OrderItem> list = new ArrayList<>();
+        try {
+            String sql = "SELECT oi.*, c.title, c.img_body " +
+                         "FROM order_item oi " +
+                         "JOIN cloth c ON oi.clothId = c.id " +
+                         "WHERE oi.orderId = ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, orderId);
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                OrderItem item = new OrderItem();
+                item.setItemId(rs.getInt("itemId")); // if column exists, or just ignore
+                item.setOrderId(rs.getInt("orderId"));
+                item.setClothId(rs.getInt("clothId"));
+                item.setQuantity(rs.getInt("quantity"));
+                item.setPrice(rs.getInt("price"));
+                item.setClothTitle(rs.getString("title"));
+                item.setClothImg(rs.getString("img_body"));
+                list.add(item);
+            }
+        } finally {
+            JdbcUtil.close(rs);
+            JdbcUtil.close(pstmt);
+        }
+        return list;
+    }
 
     // 최근 7일 매출 통계
     public Map<String, Integer> getDailySales(Connection conn) throws SQLException {

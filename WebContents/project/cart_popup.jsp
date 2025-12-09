@@ -33,14 +33,16 @@
                 <% for(int i=0; i<cartList.size(); i++) { 
                     Map<String, Object> item = cartList.get(i);
                 %>
-                <li class="cart-item">
+                <li class="cart-item" id="cart-item-<%=i%>">
                     <img src="uploadfile/<%=item.get("img")%>" class="c-img">
                     <div class="c-info">
                         <p class="c-title"><%=item.get("title")%></p>
                         <p class="c-opt"><%=item.get("color")%> / <%=item.get("size")%></p>
-                        <p class="c-price">₩ <%= String.format("%,d", item.get("price")) %> x <%=item.get("quantity")%></p>
+                        <p class="c-price" data-price="<%= (Integer)item.get("price") * (Integer)item.get("quantity") %>">
+                            ₩ <%= String.format("%,d", item.get("price")) %> x <%=item.get("quantity")%>
+                        </p>
                     </div>
-                    <button class="c-del" onclick="location.href='cart_proc.jsp?action=remove&idx=<%=i%>'">X</button>
+                    <button class="c-del" onclick="removeCartItem(<%=i%>)">X</button>
                 </li>
                 <% } %>
             </ul>
@@ -49,8 +51,41 @@
     <div class="cart-footer">
         <div class="c-total">
             <span>TOTAL</span>
-            <span>₩ <%= String.format("%,d", cartTotal) %></span>
+            <span id="cartTotalDisplay">₩ <%= String.format("%,d", cartTotal) %></span>
         </div>
         <button class="checkout-btn" onclick="location.href='order_form.jsp'">CHECKOUT</button>
     </div>
 </div>
+
+<script>
+    function removeCartItem(idx) {
+        if(!confirm('정말 삭제하시겠습니까?')) return;
+        
+        fetch('cart_proc_ajax.jsp?action=remove&idx=' + idx)
+            .then(response => response.json())
+            .then(data => {
+                if(data.status === 'success') {
+                    // Remove item from DOM
+                    // Since idx is index, but after deletion indices shift server-side.
+                    // For simple UI update, we can reload or remove. 
+                    // However, removing specific index from DOM is tricky if list isn't re-rendered.
+                    // Safest way without React/Vue is to reload the page or re-fetch cart.
+                    // BUT user asked for visible deletion.
+                    // Let's reload to ensure sync, but 'history.back()' was the issue. 
+                    // location.reload() might be better. 
+                    // OR, simply remove the element and update total.
+                    // Warning: Sequential deletes might fail if we don't sync indices.
+                    // Best approach for this legacy setup: Reload content of cart popup or reload page.
+                    // Given the constraint, let's reload the page which is better than history.back().
+                    // Wait, user wants to SEE it deleted.
+                    
+                    // Let's try DOM removal + Reload on next action if needed?
+                    // No, let's use location.reload() as it is reliable for index sync.
+                    location.reload(); 
+                } else {
+                    alert('삭제 실패');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+</script>
