@@ -12,23 +12,9 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>WRITE Q&A - MERCI</title>
+<title>문의 작성 - MERCI</title>
 <link rel="icon" href="../images/favicon.ico">
-<link rel="stylesheet" href="../style.css">
-<style>
-    .qna-container { max-width: 800px; margin: 80px auto; padding: 20px; min-height: 500px; }
-    .qna-title { font-size: 24px; font-weight: bold; margin-bottom: 20px; border-bottom: 2px solid #333; padding-bottom: 10px; }
-    
-    .write-form table { width: 100%; border-collapse: collapse; }
-    .write-form th, .write-form td { padding: 15px; border-bottom: 1px solid #eee; }
-    .write-form th { width: 120px; text-align: left; background: #f9f9f9; font-weight: 600; }
-    .write-form input[type="text"], .write-form textarea { width: 100%; border: 1px solid #ddd; padding: 10px; font-size: 13px; }
-    .write-form textarea { height: 300px; resize: vertical; }
-    
-    .btn-group { margin-top: 30px; text-align: center; }
-    .btn-submit { background: #333; color: #fff; padding: 12px 30px; border: none; font-size: 14px; cursor: pointer; }
-    .btn-cancel { background: #fff; color: #333; border: 1px solid #ddd; padding: 12px 30px; font-size: 14px; cursor: pointer; margin-left: 10px; }
-</style>
+<link rel="stylesheet" href="<%=request.getContextPath()%>/project/style.css">
 </head>
 <body>
 
@@ -36,29 +22,29 @@
     <jsp:include page="../header.jsp" />
 
     <div class="qna-container">
-        <div class="qna-title">WRITE Q&A</div>
+        <div class="qna-title">문의 작성</div>
         
         <form action="write_proc.jsp" method="post" class="write-form">
             <table>
                 <tr>
-                    <th>Subject</th>
+                    <th>제목</th>
                     <td>
                         <input type="text" name="subject" required placeholder="제목을 입력하세요">
                         <div style="margin-top: 5px;">
                             <input type="checkbox" name="isSecret" value="1" id="secretCheck"> 
-                            <label for="secretCheck" style="font-size: 13px; color: #555;">Secret Post (Private)</label>
+                            <label for="secretCheck" style="font-size: 13px; color: #555;">비밀글</label>
                         </div>
                     </td>
                 </tr>
                 <tr>
-                    <th>Content</th>
+                    <th>내용</th>
                     <td><textarea name="content" required placeholder="내용을 입력하세요"></textarea></td>
                 </tr>
             </table>
             
             <div class="btn-group">
-                <button type="submit" class="btn-submit">SUBMIT</button>
-                <button type="button" class="btn-cancel" onclick="history.back()">CANCEL</button>
+                <button type="submit" class="btn-submit">등록</button>
+                <button type="button" class="btn-cancel" onclick="history.back()">취소</button>
             </div>
         </form>
     </div>

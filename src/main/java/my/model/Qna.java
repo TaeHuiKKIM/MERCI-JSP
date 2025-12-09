@@ -11,6 +11,7 @@ public class Qna {
     private String answer;
     private Date regdate;
     private int isSecret; // 0: public, 1: secret
+    private String userName; // Join with User table
 
     public Qna() {}
 
@@ -30,4 +31,6 @@ public class Qna {
     public void setRegdate(Date regdate) { this.regdate = regdate; }
     public int getIsSecret() { return isSecret; }
     public void setIsSecret(int isSecret) { this.isSecret = isSecret; }
+    public String getUserName() { return userName; }
+    public void setUserName(String userName) { this.userName = userName; }
 }

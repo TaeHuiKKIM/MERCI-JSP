@@ -15,7 +15,7 @@ String root = request.getContextPath() + "/project";
 <meta charset="UTF-8">
 <title>배송지 정보 입력</title>
 <link rel="icon" href="../images/favicon.ico">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/project/style.css">
 </head>
 
 <body class="address-page">

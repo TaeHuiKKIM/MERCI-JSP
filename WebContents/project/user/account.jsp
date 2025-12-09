@@ -48,7 +48,7 @@ String root = request.getContextPath() + "/project";
 <meta charset="UTF-8">
 <title>MYPAGE</title>
 <link rel="icon" href="../images/favicon.ico">
-<link rel="stylesheet" type="text/css" href="../style.css">
+<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/project/style.css">
 </head>
 <body>
     

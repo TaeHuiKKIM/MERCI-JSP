@@ -57,7 +57,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>ADMIN DASHBOARD - MERCI ADMIN</title>
+<title>관리자 대시보드 - MERCI</title>
 <link rel="icon" href="../images/favicon.ico">
 <link rel="stylesheet" href="<%=root%>/style.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -73,14 +73,14 @@
 
 	<div class="admin-container">
         <div class="admin-page-title">
-            <span>DASHBOARD</span>
-            <span style="font-size: 14px; color: #777; font-weight: 400;">Welcome, Administrator</span>
+            <span>대시보드</span>
+            <span style="font-size: 14px; color: #777; font-weight: 400;">관리자님 환영합니다</span>
         </div>
         
         <div class="dash-grid">
             <!-- Sales Chart -->
             <div class="admin-card">
-                <h3>Weekly Sales Trend</h3>
+                <h3>주간 매출 현황</h3>
                 <div style="position: relative; height: 300px; width: 100%;">
                     <canvas id="salesChart"></canvas>
                 </div>
@@ -88,7 +88,7 @@
             
             <!-- Category Chart -->
             <div class="admin-card">
-                <h3>Inventory by Category</h3>
+                <h3>카테고리별 재고 현황</h3>
                 <div style="position: relative; height: 300px; width: 100%; display: flex; justify-content: center;">
                     <canvas id="categoryChart"></canvas>
                 </div>

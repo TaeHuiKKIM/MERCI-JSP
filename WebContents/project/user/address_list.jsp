@@ -31,7 +31,7 @@
 <meta charset="UTF-8">
 <title>배송지 관리</title>
 <link rel="icon" href="../images/favicon.ico">
-<link rel="stylesheet" type="text/css" href="style.css">
+<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/project/style.css">
 </head>
 <body>
     

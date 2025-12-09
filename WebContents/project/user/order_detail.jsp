@@ -57,7 +57,7 @@
 <meta charset="UTF-8">
 <title>ORDER DETAILS - MERCI</title>
 <link rel="icon" href="../images/favicon.ico">
-<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/project/style.css">
 <style>
     .order-detail-container { max-width: 1000px; margin: 80px auto; padding: 20px; }
     .page-title { font-size: 24px; font-weight: bold; margin-bottom: 30px; border-bottom: 2px solid #333; padding-bottom: 10px; }
@@ -178,7 +178,7 @@
                             <td>
                                 <div class="item-info">
                                     <a href="../catalogdetail.jsp?clothId=${item.clothId}">
-                                        <img src="../images/${item.clothImg}" alt="img">
+                                        <img src="../uploadfile/${item.clothImg}" alt="img">
                                     </a>
                                     <div>
                                         <a href="../catalogdetail.jsp?clothId=${item.clothId}" style="color: #333; text-decoration: none;">

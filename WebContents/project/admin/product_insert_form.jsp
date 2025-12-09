@@ -144,8 +144,8 @@
                 <input type="file" name="imgBody" accept="image/*" required>
             </div>
             <div class="form-group">
-                <label>정면 사진 (Front)</label>
-                <input type="file" name="imgFront" accept="image/*">
+                <label>정면 사진 (Front) *필수</label>
+                <input type="file" name="imgFront" accept="image/*" required>
             </div>
             <div class="form-group">
                 <label>뒷면 사진 (Back)</label>

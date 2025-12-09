@@ -82,7 +82,14 @@
 							<c:forEach var="cloth" items="${list}">
 								<div class="slider-item product-item">
 									<a href="catalogdetail.jsp?clothId=${cloth.id}"> 
-										<img src="uploadfile/${cloth.imgBody}" width="200" height="250">
+										<c:choose>
+											<c:when test="${not empty cloth.imgFront}">
+												<img src="uploadfile/${cloth.imgFront}" width="200" height="250">
+											</c:when>
+											<c:otherwise>
+												<img src="uploadfile/${cloth.imgBody}" width="200" height="250">
+											</c:otherwise>
+										</c:choose>
 									</a>
 									<h3>${cloth.title}</h3>
 									<p>₩ <fmt:formatNumber value="${cloth.price}" type="number"/></p>

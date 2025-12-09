@@ -12,11 +12,13 @@ public class UserDao {
 	public void insert(Connection conn, User user) throws SQLException {
 		PreparedStatement pstmt = null;
 		try {
-			pstmt = conn.prepareStatement("insert into user values(?,?,?,?)");
+			pstmt = conn.prepareStatement("insert into user (userId, password, name, registerTime, find_q, find_a) values(?,?,?,?,?,?)");
 			pstmt.setString(1, user.getUserId());
 			pstmt.setString(2, user.getPassword());
 			pstmt.setString(3, user.getName());
 			pstmt.setTimestamp(4, new Timestamp(user.getRegisterTime().getTime()));
+			pstmt.setString(5, user.getFindQ());
+			pstmt.setString(6, user.getFindA());
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -24,6 +26,31 @@ public class UserDao {
 			// JdbcUtil.close(conn);
 			JdbcUtil.close(pstmt);
 		}
+	}
+
+	// [추가] 비밀번호 찾기 (질문/답변 검증)
+	public boolean verifyUserForRecovery(Connection conn, String userId, String findQ, String findA) throws SQLException {
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			// find_q는 고정된 질문이므로 사용자가 선택한 질문과 DB에 저장된 질문이 일치하는지,
+			// 그리고 답변이 일치하는지 확인해야 합니다.
+			// 하지만 보통 DB에 질문 자체를 저장하거나 질문 키를 저장합니다.
+			// 여기서는 텍스트 그대로 비교합니다.
+			String sql = "SELECT count(*) FROM user WHERE userId = ? AND find_q = ? AND find_a = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, userId);
+			pstmt.setString(2, findQ);
+			pstmt.setString(3, findA);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				return rs.getInt(1) > 0;
+			}
+		} finally {
+			JdbcUtil.close(rs);
+			JdbcUtil.close(pstmt);
+		}
+		return false;
 	}
 
 	public User selectById(Connection conn, String userId) throws SQLException {
@@ -212,5 +239,45 @@ public class UserDao {
 		} finally {
 			JdbcUtil.close(pstmt);
 		}
+	}
+
+	// [추가] 아이디 찾기 (이름으로 검색)
+	public List<String> findIdsByName(Connection conn, String name) throws SQLException {
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<String> list = new ArrayList<>();
+		try {
+			String sql = "SELECT userId FROM user WHERE name = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, name);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				list.add(rs.getString("userId"));
+			}
+		} finally {
+			JdbcUtil.close(rs);
+			JdbcUtil.close(pstmt);
+		}
+		return list;
+	}
+
+	// [추가] 비밀번호 찾기용 사용자 확인 (아이디 + 이름 일치 여부)
+	public boolean verifyUser(Connection conn, String userId, String name) throws SQLException {
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			String sql = "SELECT count(*) FROM user WHERE userId = ? AND name = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, userId);
+			pstmt.setString(2, name);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				return rs.getInt(1) > 0;
+			}
+		} finally {
+			JdbcUtil.close(rs);
+			JdbcUtil.close(pstmt);
+		}
+		return false;
 	}
 }

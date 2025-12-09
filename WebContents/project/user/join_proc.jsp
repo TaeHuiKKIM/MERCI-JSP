@@ -14,6 +14,8 @@
     String userId = request.getParameter("userId");
     String userPw = request.getParameter("password");
     String userName = request.getParameter("name");
+    String findQ = request.getParameter("findQ");
+    String findA = request.getParameter("findA");
 
     Connection conn = null;
     UserDao dao = new UserDao();
@@ -26,7 +28,6 @@
             %>
             <script>
                 alert("이미 존재하는 계정입니다.");
-                // [상대 경로 수정] 상위 폴더(project)로 이동 -> index.jsp
                 location.href = "../index.jsp";
             </script>
             <%
@@ -36,6 +37,9 @@
             newUser.setPassword(userPw);
             newUser.setName(userName);
             newUser.setRegisterTime(new Date()); 
+            newUser.setFindQ(findQ); // 추가
+            newUser.setFindA(findA); // 추가
+            
             dao.insert(conn, newUser); 
             %>
             <script>

@@ -22,26 +22,9 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>Q&A BOARD - MERCI</title>
+<title>문의 게시판 - MERCI</title>
 <link rel="icon" href="../images/favicon.ico">
-<link rel="stylesheet" href="../style.css">
-<style>
-    .qna-container { max-width: 1000px; margin: 80px auto; padding: 20px; min-height: 500px; }
-    .qna-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #333; padding-bottom: 10px; }
-    .qna-title { font-size: 24px; font-weight: bold; }
-    .btn-write { background: #333; color: #fff; padding: 10px 20px; text-decoration: none; font-size: 14px; }
-    
-    .qna-list { width: 100%; border-collapse: collapse; }
-    .qna-list th, .qna-list td { border-bottom: 1px solid #eee; padding: 15px 10px; font-size: 13px; text-align: center; }
-    .qna-list th { background: #f9f9f9; font-weight: 600; }
-    .qna-list td.subject { text-align: left; padding-left: 20px; }
-    .qna-list a { color: #333; text-decoration: none; }
-    .qna-list a:hover { text-decoration: underline; }
-    
-    .status-badge { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 11px; color: #fff; margin-left: 5px;}
-    .status-waiting { background: #ccc; }
-    .status-completed { background: #333; }
-</style>
+<link rel="stylesheet" href="<%=request.getContextPath()%>/project/style.css">
 </head>
 <body>
 
@@ -50,18 +33,18 @@
 
     <div class="qna-container">
         <div class="qna-header">
-            <div class="qna-title">Q&A BOARD</div>
-            <a href="write.jsp" class="btn-write">WRITE Q&A</a>
+            <div class="qna-title">문의 게시판</div>
+            <a href="write.jsp" class="btn-write">문의 작성</a>
         </div>
 
         <table class="qna-list">
             <thead>
                 <tr>
-                    <th width="60">No</th>
-                    <th width="100">Status</th>
-                    <th>Subject</th>
-                    <th width="100">Writer</th>
-                    <th width="120">Date</th>
+                    <th width="60">번호</th>
+                    <th width="100">상태</th>
+                    <th>제목</th>
+                    <th width="100">작성자</th>
+                    <th width="120">작성일</th>
                 </tr>
             </thead>
 <%
@@ -96,7 +79,7 @@
                                     <%
                                             } else {
                                     %>
-                                                <span style="color: #999;">🔒 Secret Post</span>
+                                                <span style="color: #999;">🔒 비밀글입니다.</span>
                                     <%
                                             }
                                         } else {
@@ -108,13 +91,13 @@
                                         }
                                     %>
                                 </td>
-                                <td>${q.userId}</td>
+                                <td>${q.userName}</td>
                                 <td><fmt:formatDate value="${q.regdate}" pattern="yyyy-MM-dd"/></td>
                             </tr>
                         </c:forEach>
                     </c:when>
                     <c:otherwise>
-                        <tr><td colspan="5" style="padding: 50px; color: #999;">No posts found.</td></tr>
+                        <tr><td colspan="5" style="padding: 50px; color: #999;">게시글이 없습니다.</td></tr>
                     </c:otherwise>
                 </c:choose>
             </tbody>

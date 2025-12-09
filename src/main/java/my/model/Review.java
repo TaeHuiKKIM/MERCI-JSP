@@ -9,6 +9,7 @@ public class Review {
     private int rating;
     private String content;
     private Date regdate;
+    private String userName; // Join with User table
 
     public Review() {}
 
@@ -33,4 +34,6 @@ public class Review {
     public void setContent(String content) { this.content = content; }
     public Date getRegdate() { return regdate; }
     public void setRegdate(Date regdate) { this.regdate = regdate; }
+    public String getUserName() { return userName; }
+    public void setUserName(String userName) { this.userName = userName; }
 }

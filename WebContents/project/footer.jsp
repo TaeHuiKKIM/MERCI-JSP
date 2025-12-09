@@ -1,4 +1,43 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<style>
+    .footer {
+        background-color: #1b0f0a;
+        color: #fff;
+        padding: 80px 0 60px;
+        margin-top: 150px;
+    }
+    .footer-columns {
+        max-width: 1600px;
+        margin: 0 auto;
+        padding: 0 60px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 80px;
+    }
+    .footer-col { flex: 1; }
+    .footer-col h3 {
+        font-size: 16px;
+        margin-bottom: 18px;
+        font-weight: 700;
+    }
+    .footer-col p, .footer-col a {
+        font-size: 14px;
+        line-height: 1.8;
+        color: #fff;
+        text-decoration: none;
+    }
+    .footer-col a:hover { opacity: 0.7; }
+    .footer-bottom {
+        max-width: 1600px;
+        margin: 50px auto 0;
+        padding: 0 60px;
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        color: #ccc;
+    }
+</style>
 <footer class="footer">
     <div class="footer-columns">
         <div class="footer-col">

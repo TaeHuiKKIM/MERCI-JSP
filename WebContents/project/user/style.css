@@ -1,6 +1,8 @@
 /* =================================================================== */
 /* ========================== GLOBAL RESET =========================== */
 /* =================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Noto+Sans+KR:wght@300;400;500&display=swap');
+
 * {
   margin: 0;
   padding: 0;
@@ -14,7 +16,8 @@ html, body {
   height: 100%;
 }
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, "Noto Sans KR", sans-serif;
+  font-family: 'Jost', 'Noto Sans KR', sans-serif;
+  font-weight: 300;
   color: #111;
   background: #fff;
   overflow-x: hidden;
@@ -51,7 +54,7 @@ a {
   display: flex;
   gap: 28px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 400;
   letter-spacing: 0.12em;
 }
 /* 헤더 링크 기본 설정 */
@@ -135,7 +138,7 @@ main {
 }
 .section-title {
     font-size: 18px;
-    font-weight: 700;
+    font-weight: 400;
     letter-spacing: 0.08em;
     margin-bottom: 32px;
 }
@@ -160,7 +163,7 @@ main {
 }
 .product-item p {
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 400;
     margin-bottom: 20px;
 }
 
@@ -349,7 +352,7 @@ main.product-main {
 }
 .product-top h2 {
   font-size: 24px;
-  font-weight: 700;
+  font-weight: 400;
   margin-bottom: 20px;
 }
 .product-grid {
@@ -481,7 +484,7 @@ main.product-main {
 
 .login-header h2 {
     font-size: 18px;
-    font-weight: 700;
+    font-weight: 400;
     letter-spacing: 0.04em;
 }
 
@@ -620,7 +623,7 @@ main.product-main {
 }
 .mypage-header .logo {
     font-size: 22px;
-    font-weight: 600;
+    font-weight: 400;
     color: #222;
 }
 .mypage-header nav a {
@@ -652,7 +655,7 @@ main.product-main {
 }
 .welcome-text {
     font-size: 22px;
-    font-weight: 500;
+    font-weight: 300;
     margin-bottom: 25px; /* 25px로 좁힌 버전 적용 */
 }
 
@@ -721,7 +724,7 @@ main.product-main {
 .address-container h2 {
     text-align: center;
     font-size: 22px;
-    font-weight: 600;
+    font-weight: 400;
     margin-bottom: 40px;
 }
 .address-form label {
@@ -811,7 +814,7 @@ main.product-main {
 .page-title {
     text-align: center;
     font-size: 24px;
-    font-weight: 700;
+    font-weight: 400;
     margin-bottom: 40px;
 }
 

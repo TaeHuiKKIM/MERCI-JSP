@@ -14,7 +14,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>MANAGE ABOUT - MERCI ADMIN</title>
+<title>소개글 관리 - MERCI</title>
 <link rel="icon" href="../images/favicon.ico">
 <link rel="stylesheet" href="<%=root%>/style.css">
 </head>
@@ -25,12 +25,12 @@
 
     <div class="admin-container">
         <div class="admin-page-title">
-            <span>MANAGE ABOUT PAGE</span>
+            <span>소개 페이지 관리</span>
         </div>
 
         <div class="admin-card">
-            <h3>Current About Image</h3>
-            <p style="margin-bottom: 20px; color: #666; font-size: 13px;">This image is displayed on the user-facing About page.</p>
+            <h3>현재 소개 이미지</h3>
+            <p style="margin-bottom: 20px; color: #666; font-size: 13px;">이 이미지는 사용자 소개 페이지에 표시됩니다.</p>
             
             <div style="border: 1px solid #ddd; padding: 10px; display: inline-block; margin-bottom: 30px;">
                 <img src="<%=root%>/images/about_custom.png?t=<%=new java.util.Date().getTime()%>" 
@@ -40,18 +40,18 @@
 
             <form action="upload_about_image.jsp" method="post" enctype="multipart/form-data">
                 <div class="admin-form-group">
-                    <label class="admin-label">Upload New Image (PNG only)</label>
+                    <label class="admin-label">새 이미지 업로드 (PNG만 가능)</label>
                     <input type="file" name="aboutImage" accept="image/png" class="admin-input" required>
                 </div>
                 
-                <button type="submit" class="btn-admin btn-admin-primary">UPDATE IMAGE</button>
+                <button type="submit" class="btn-admin btn-admin-primary">이미지 업데이트</button>
             </form>
         </div>
         
         <div class="admin-card">
-            <h3>Edit About Page Text</h3>
+            <h3>소개글 수정</h3>
             <p style="color: #666; font-size: 14px; margin-bottom: 15px;">
-                Update the text displayed on the About page.
+                소개 페이지에 표시될 텍스트를 수정하세요.
             </p>
             
             <%
@@ -71,7 +71,7 @@
             
             <form action="update_about_text_proc.jsp" method="post">
                 <textarea name="aboutText" style="width: 100%; height: 200px; padding: 10px; border: 1px solid #ddd; margin-bottom: 15px;"><%=aboutText%></textarea>
-                <button type="submit" class="btn-admin btn-admin-primary">UPDATE TEXT</button>
+                <button type="submit" class="btn-admin btn-admin-primary">텍스트 업데이트</button>
             </form>
         </div>
     </div>

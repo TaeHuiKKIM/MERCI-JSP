@@ -22,7 +22,7 @@
 <meta charset="UTF-8">
 <title>WRITE REVIEW</title>
 <link rel="icon" href="../images/favicon.ico">
-<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/project/style.css">
 <style>
     .review-container { width: 500px; margin: 50px auto; padding: 30px; border: 1px solid #ddd; }
     .review-title { font-size: 20px; font-weight: bold; margin-bottom: 20px; text-align: center; }

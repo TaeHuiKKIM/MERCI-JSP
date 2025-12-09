@@ -171,9 +171,13 @@
             <input type="button" value="CREATE ACCOUNT" class="login-btn gray" onclick="showJoinMode()">
             
             <!-- KAKAO LOGIN BUTTON -->
-            <div style="cursor: pointer; text-align: center; background-color: #fee500;" onclick="loginWithKakao()">
-                <img src="https://k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg" width="150px" alt="카카오 로그인 버튼" style="border-radius: 4px;">
+            <div style="cursor: pointer; text-align: center; background-color: #fee500; margin-top: 10px; height: 45px; line-height: 45px; border-radius: 4px;" onclick="loginWithKakao()">
+                <img src="https://k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg" width="150px" alt="카카오 로그인 버튼" style="vertical-align: middle;">
             </div>
+
+            <a href="<%=root%>/user/find_account.jsp" style="font-size: 12px; color: #555; text-decoration: underline; margin-top: 10px; display: block; text-align: center;">
+                비밀번호 찾기
+            </a>
         </form>
     </div>
 
@@ -187,6 +191,18 @@
             <input type="text" name="name" class="login-input" placeholder="NAME">
             <input type="password" name="password" class="login-input" placeholder="PASSWORD">
             <input type="password" name="passwordConfirm" class="login-input" placeholder="CONFIRM PASSWORD">
+            
+            <!-- Password Recovery Info -->
+            <select name="findQ" class="login-input" style="height: 45px;">
+                <option value="">비밀번호 찾기 질문 선택</option>
+                <option value="기억에 남는 추억의 장소는?">기억에 남는 추억의 장소는?</option>
+                <option value="자신의 보물 제1호는?">자신의 보물 제1호는?</option>
+                <option value="가장 기억에 남는 선생님 성함은?">가장 기억에 남는 선생님 성함은?</option>
+                <option value="내가 좋아하는 캐릭터는?">내가 좋아하는 캐릭터는?</option>
+                <option value="다시 태어나면 되고 싶은 것은?">다시 태어나면 되고 싶은 것은?</option>
+            </select>
+            <input type="text" name="findA" class="login-input" placeholder="답변 입력">
+            
             <input type="button" value="CREATE ACCOUNT" class="login-btn gray" onclick="joinCheck()">
             <input type="button" value="BACK TO LOGIN" class="login-btn gray" style="margin-top: 10px; background-color: black; color: white;" onclick="showLoginMode()">
         </form>

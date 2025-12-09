@@ -79,14 +79,18 @@ public class OrderDao {
         ResultSet rs = null;
         List<Order> list = new ArrayList<>();
         try {
-            StringBuilder sql = new StringBuilder("SELECT * FROM orders WHERE 1=1 ");
+            StringBuilder sql = new StringBuilder("SELECT o.*, u.name as userName FROM orders o ");
+            sql.append("LEFT JOIN user u ON o.userId = u.userId ");
+            sql.append("WHERE 1=1 ");
+            
             if (status != null && !status.isEmpty() && !"All".equals(status)) {
-                sql.append("AND status = ? ");
+                sql.append("AND o.status = ? ");
             }
             if (keyword != null && !keyword.isEmpty()) {
-                sql.append("AND (depositor LIKE ? OR userId LIKE ?) ");
+                // Search in depositor, userId, OR userName
+                sql.append("AND (o.depositor LIKE ? OR o.userId LIKE ? OR u.name LIKE ?) ");
             }
-            sql.append("ORDER BY orderId DESC");
+            sql.append("ORDER BY o.orderId DESC");
 
             pstmt = conn.prepareStatement(sql.toString());
             
@@ -95,6 +99,7 @@ public class OrderDao {
                 pstmt.setString(idx++, status);
             }
             if (keyword != null && !keyword.isEmpty()) {
+                pstmt.setString(idx++, "%" + keyword + "%");
                 pstmt.setString(idx++, "%" + keyword + "%");
                 pstmt.setString(idx++, "%" + keyword + "%");
             }
@@ -111,8 +116,12 @@ public class OrderDao {
                 o.setAddress(rs.getString("address"));
                 o.setDepositor(rs.getString("depositor"));
                 o.setOrderDate(rs.getTimestamp("orderDate"));
-                o.setTrackingCarrier(rs.getString("tracking_carrier")); // Added
-                o.setTrackingNum(rs.getString("tracking_num"));         // Added
+                o.setTrackingCarrier(rs.getString("tracking_carrier"));
+                o.setTrackingNum(rs.getString("tracking_num"));
+                
+                String uName = rs.getString("userName");
+                o.setUserName(uName != null ? uName : o.getUserId());
+                
                 list.add(o);
             }
         } finally {
@@ -158,7 +167,9 @@ public class OrderDao {
         ResultSet rs = null;
         List<Order> list = new ArrayList<>();
         try {
-            String sql = "SELECT * FROM orders WHERE userId = ? ORDER BY orderId DESC";
+            String sql = "SELECT o.*, u.name as userName FROM orders o " +
+                         "LEFT JOIN user u ON o.userId = u.userId " +
+                         "WHERE o.userId = ? ORDER BY o.orderId DESC";
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, userId);
             rs = pstmt.executeQuery();
@@ -175,6 +186,10 @@ public class OrderDao {
                 o.setOrderDate(rs.getTimestamp("orderDate"));
                 o.setTrackingCarrier(rs.getString("tracking_carrier"));
                 o.setTrackingNum(rs.getString("tracking_num"));
+                
+                String uName = rs.getString("userName");
+                o.setUserName(uName != null ? uName : o.getUserId());
+                
                 list.add(o);
             }
         } finally {
@@ -190,7 +205,9 @@ public class OrderDao {
         ResultSet rs = null;
         Order o = null;
         try {
-            String sql = "SELECT * FROM orders WHERE orderId = ?";
+            String sql = "SELECT o.*, u.name as userName FROM orders o " +
+                         "LEFT JOIN user u ON o.userId = u.userId " +
+                         "WHERE o.orderId = ?";
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, orderId);
             rs = pstmt.executeQuery();
@@ -207,6 +224,9 @@ public class OrderDao {
                 o.setOrderDate(rs.getTimestamp("orderDate"));
                 o.setTrackingCarrier(rs.getString("tracking_carrier"));
                 o.setTrackingNum(rs.getString("tracking_num"));
+                
+                String uName = rs.getString("userName");
+                o.setUserName(uName != null ? uName : o.getUserId());
             }
         } finally {
             JdbcUtil.close(rs);

@@ -363,7 +363,7 @@
                     <c:forEach var="r" items="${reviews}">
                         <li class="review-item">
                             <div class="review-meta">
-                                <strong>${r.userId}</strong> | <fmt:formatDate value="${r.regdate}" pattern="yyyy-MM-dd"/>
+                                <strong>${r.userName}</strong> | <fmt:formatDate value="${r.regdate}" pattern="yyyy-MM-dd"/>
                             </div>
                             <div style="margin-bottom: 5px;">
                                 <span class="star-rating">

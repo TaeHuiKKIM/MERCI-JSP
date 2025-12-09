@@ -42,12 +42,16 @@ function joinCheck() {
 	var pw = f.password.value;
 	var pwConfirm = f.passwordConfirm.value;
 	var name = f.name.value;
+	var findQ = f.findQ.value;
+	var findA = f.findA.value;
 
 	var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
 	// 비밀번호: 영문, 숫자, 특수문자 포함 8자 이상
 	var pwPattern = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*?_]).{8,}$/;
 
 	if (!id || !name || !pw || !pwConfirm) { alert("모든 정보를 입력하세요."); return; }
+	if (!findQ || !findA) { alert("비밀번호 찾기 질문과 답변을 입력하세요."); return; }
+	
 	if (!emailPattern.test(id)) { alert("아이디는 이메일 형식이어야 합니다."); f.userId.focus(); return; }
 
 	// 비밀번호 정규식 체크
@@ -315,5 +319,31 @@ function toggleCartPopup() {
     var popup = document.getElementById('cartPopup');
     if(popup) {
         popup.classList.toggle('show');
+    }
+}
+
+/* =========================================
+   9. 관리자 페이지 유틸리티 (Q&A, Order)
+   ========================================= */
+function toggleAnswer(rowId) {
+    var row = document.getElementById(rowId);
+    if(row.style.display === 'none' || row.style.display === '') {
+        row.style.display = 'table-row';
+    } else {
+        row.style.display = 'none';
+    }
+}
+
+function toggleTrackingInput(select, orderId) {
+    var val = select.value;
+    var carrier = document.getElementById('carrier_' + orderId);
+    var trackNum = document.getElementById('trackNum_' + orderId);
+    
+    if(val === '배송중' || val === '배송완료') {
+        if(carrier) carrier.style.display = 'inline-block';
+        if(trackNum) trackNum.style.display = 'inline-block';
+    } else {
+        if(carrier) carrier.style.display = 'none';
+        if(trackNum) trackNum.style.display = 'none';
     }
 }

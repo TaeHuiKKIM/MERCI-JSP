@@ -28,7 +28,7 @@
 <meta charset="UTF-8">
 <title>나의 주문 목록 - MERCI</title>
 <link rel="icon" href="../images/favicon.ico">
-<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/project/style.css">
 <style>
     .order-container { max-width: 1000px; margin: 80px auto; padding: 20px; min-height: 500px; }
     .page-title { font-size: 24px; font-weight: bold; margin-bottom: 30px; border-bottom: 2px solid #333; padding-bottom: 10px; }

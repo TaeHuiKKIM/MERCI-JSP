@@ -26,7 +26,10 @@ public class ReviewDao {
         ResultSet rs = null;
         List<Review> list = new ArrayList<>();
         try {
-            pstmt = conn.prepareStatement("SELECT * FROM review WHERE clothId = ? ORDER BY reviewId DESC");
+            String sql = "SELECT r.*, u.name as userName FROM review r " +
+                         "LEFT JOIN user u ON r.userId = u.userId " +
+                         "WHERE r.clothId = ? ORDER BY r.reviewId DESC";
+            pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, clothId);
             rs = pstmt.executeQuery();
             while (rs.next()) {
@@ -37,6 +40,10 @@ public class ReviewDao {
                 r.setRating(rs.getInt("rating"));
                 r.setContent(rs.getString("content"));
                 r.setRegdate(rs.getTimestamp("regdate"));
+                
+                String uName = rs.getString("userName");
+                r.setUserName(uName != null ? uName : r.getUserId());
+                
                 list.add(r);
             }
         } finally {
@@ -69,7 +76,10 @@ public class ReviewDao {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            pstmt = conn.prepareStatement("SELECT * FROM review WHERE userId = ? AND clothId = ?");
+            String sql = "SELECT r.*, u.name as userName FROM review r " +
+                         "LEFT JOIN user u ON r.userId = u.userId " +
+                         "WHERE r.userId = ? AND r.clothId = ?";
+            pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, userId);
             pstmt.setInt(2, clothId);
             rs = pstmt.executeQuery();
@@ -81,6 +91,10 @@ public class ReviewDao {
                 r.setRating(rs.getInt("rating"));
                 r.setContent(rs.getString("content"));
                 r.setRegdate(rs.getTimestamp("regdate"));
+                
+                String uName = rs.getString("userName");
+                r.setUserName(uName != null ? uName : r.getUserId());
+                
                 return r;
             }
             return null;

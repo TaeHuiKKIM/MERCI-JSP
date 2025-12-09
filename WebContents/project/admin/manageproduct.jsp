@@ -18,7 +18,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>MANAGE PRODUCTS - MERCI ADMIN</title>
+<title>상품 관리 - MERCI</title>
 <link rel="icon" href="../images/favicon.ico">
 <link rel="stylesheet" href="<%=root%>/style.css">
 <style>
@@ -45,19 +45,19 @@
 	<div class="admin-container">
         
         <div class="admin-page-title">
-            <span>MANAGE PRODUCTS</span>
-            <a href="product_insert_form.jsp" class="btn-admin btn-admin-primary">+ NEW PRODUCT</a>
+            <span>상품 관리</span>
+            <a href="product_insert_form.jsp" class="btn-admin btn-admin-primary">+ 새 상품 등록</a>
         </div>
 	
         <div class="search-area">
-            <h3 style="margin:0; font-size: 16px;">Product List</h3>
+            <h3 style="margin:0; font-size: 16px;">상품 목록</h3>
             <form action="manageproduct.jsp" method="post" class="search-form">
                 <select name="target" class="admin-select" style="width: auto;">
-                    <option value="title">Product Name</option>
-                    <option value="maker">Manufacturer</option>
+                    <option value="title">상품명</option>
+                    <option value="maker">제조사</option>
                 </select>
-                <input name="keyword" type="text" class="admin-input" placeholder="Keyword..." style="width: 200px;"> 
-                <button type="submit" class="btn-admin btn-admin-dark">SEARCH</button>
+                <input name="keyword" type="text" class="admin-input" placeholder="검색어 입력..." style="width: 200px;"> 
+                <button type="submit" class="btn-admin btn-admin-dark">검색</button>
             </form>
         </div>
 	
@@ -86,12 +86,12 @@
                 <thead>
                     <tr>
                         <th width="50">ID</th>
-                        <th width="80">Image</th>
-                        <th>Name</th>
-                        <th width="120">Category</th>
-                        <th width="120">Price</th>
-                        <th width="120">Manufacturer</th>
-                        <th width="150">Actions</th>
+                        <th width="80">이미지</th>
+                        <th>상품명</th>
+                        <th width="120">카테고리</th>
+                        <th width="120">가격</th>
+                        <th width="120">제조사</th>
+                        <th width="150">관리</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -111,15 +111,15 @@
                                 <td>${cloth.maker}</td>
                                 <td>
                                     <button class="btn-admin btn-admin-outline" 
-                                            onclick="location.href='product_update_form.jsp?clothId=${cloth.id}'">Edit</button>
+                                            onclick="location.href='product_update_form.jsp?clothId=${cloth.id}'">수정</button>
                                     <button class="btn-admin btn-admin-outline" style="color: #dc3545; border-color: #dc3545;"
-                                            onclick="if(confirm('Are you sure you want to delete this product?')) location.href='product_delete_proc.jsp?clothId=${cloth.id}'">Del</button>
+                                            onclick="if(confirm('정말 삭제하시겠습니까?')) location.href='product_delete_proc.jsp?clothId=${cloth.id}'">삭제</button>
                                 </td>
                             </tr>
                         </c:forEach>
                     </c:when>
                     <c:otherwise>
-                        <tr><td colspan="7" style="text-align: center; padding: 50px; color: #999;">No products found.</td></tr>
+                        <tr><td colspan="7" style="text-align: center; padding: 50px; color: #999;">상품이 없습니다.</td></tr>
                     </c:otherwise>
                 </c:choose>
                 </tbody>

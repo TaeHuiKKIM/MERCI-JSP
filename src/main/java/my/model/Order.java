@@ -14,6 +14,7 @@ public class Order {
     private Date orderDate;
     private String trackingCarrier;
     private String trackingNum;
+    private String userName; // Join with User table
 
     public Order() {}
 
@@ -39,4 +40,6 @@ public class Order {
     public void setTrackingCarrier(String trackingCarrier) { this.trackingCarrier = trackingCarrier; }
     public String getTrackingNum() { return trackingNum; }
     public void setTrackingNum(String trackingNum) { this.trackingNum = trackingNum; }
+    public String getUserName() { return userName; }
+    public void setUserName(String userName) { this.userName = userName; }
 }

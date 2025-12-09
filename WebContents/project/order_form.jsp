@@ -41,26 +41,6 @@
 <title>ORDER - MERCI</title>
 <link rel="icon" href="images/favicon.ico">
 <link rel="stylesheet" href="style.css">
-<style>
-    .checkout-container { width: 800px; margin: 100px auto; }
-    .checkout-title { font-size: 24px; font-weight: 700; margin-bottom: 30px; text-align: center; }
-    .order-section { margin-bottom: 40px; border-top: 2px solid #000; padding-top: 20px; }
-    .section-head { font-size: 16px; font-weight: 700; margin-bottom: 15px; }
-    
-    .order-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-    .order-table th, .order-table td { padding: 12px; border-bottom: 1px solid #eee; text-align: center; font-size: 13px; }
-    .order-table th { background: #f9f9f9; }
-    
-    .form-group { margin-bottom: 15px; }
-    .form-label { display: block; font-size: 13px; margin-bottom: 5px; font-weight: 600; }
-    .form-input { width: 100%; padding: 10px; border: 1px solid #ddd; font-size: 13px; }
-    .addr-select { width: 100%; padding: 10px; border: 1px solid #ddd; font-size: 13px; margin-bottom: 15px; background: #f9f9f9; }
-    
-    .payment-info { background: #f5f5f5; padding: 20px; text-align: right; }
-    .final-price { font-size: 20px; font-weight: 700; color: #d00; }
-    
-    .pay-btn { width: 100%; padding: 15px; background: #000; color: #fff; font-size: 16px; font-weight: 700; cursor: pointer; border: none; margin-top: 20px; }
-</style>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script src="style.js"></script>
 <script>

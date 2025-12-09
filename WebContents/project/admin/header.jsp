@@ -60,18 +60,17 @@
         <div class="header-logo">
             <a href="index.jsp">
                 <img src="<%=root%>/images/mainlogo.png" alt="MERCI" style="height: 25px; vertical-align: middle; margin-right: 5px;">
-                <span style="font-size: 20px; font-weight: 300; vertical-align: middle;">ADMIN</span>
             </a>
         </div>
 
         <nav class="header-nav">
-            <a href="index.jsp">DASHBOARD</a>
-            <a href="manageabout.jsp">ABOUT</a>
-            <a href="manageproduct.jsp">PRODUCT</a>
-            <a href="manageorder.jsp">ORDER</a>
-            <a href="manageqna.jsp">Q&A</a>
-            <a href="<%=root%>/index.jsp" style="color: #666; margin-left: 20px;">[SHOP VIEW]</a>
-            <a href="<%=root%>/user/logout_proc.jsp" style="color: #e74c3c;">LOGOUT</a>
+            <a href="index.jsp">대시보드</a>
+            <a href="manageabout.jsp">소개 관리</a>
+            <a href="manageproduct.jsp">상품 관리</a>
+            <a href="manageorder.jsp">주문 관리</a>
+            <a href="manageqna.jsp">문의 관리</a>
+            <a href="<%=root%>/index.jsp" style="color: #666; margin-left: 20px;">[쇼핑몰 보기]</a>
+            <a href="<%=root%>/user/logout_proc.jsp" style="color: #e74c3c;">로그아웃</a>
         </nav>
     </div>
 </header>

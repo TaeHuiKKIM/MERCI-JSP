@@ -181,7 +181,14 @@ try {
 						<a href="catalogdetail.jsp?clothId=${cloth.id}"
 							class="product-link">
 							<div class="product-card">
-								<img src="uploadfile/${cloth.imgBody}" alt="${cloth.title}">
+								<c:choose>
+									<c:when test="${not empty cloth.imgFront}">
+										<img src="uploadfile/${cloth.imgFront}" alt="${cloth.title}">
+									</c:when>
+									<c:otherwise>
+										<img src="uploadfile/${cloth.imgBody}" alt="${cloth.title}">
+									</c:otherwise>
+								</c:choose>
 								<div class="product-info">
 									<h3>${cloth.title}</h3>
 									<p class="price">

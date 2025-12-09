@@ -46,7 +46,7 @@
 <meta charset="UTF-8">
 <title>VIEW Q&A - MERCI</title>
 <link rel="icon" href="../images/favicon.ico">
-<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/project/style.css">
 </head>
 <body>
 
@@ -54,17 +54,17 @@
     <jsp:include page="../header.jsp" />
 
     <div class="qna-container">
-        <div class="qna-title">Q&A DETAIL</div>
+        <div class="qna-title">문의 상세</div>
         
         <table class="view-table">
             <tr>
-                <th>Subject</th>
+                <th>제목</th>
                 <td colspan="3"><%=qna.getSubject()%></td>
             </tr>
             <tr>
-                <th>Writer</th>
-                <td><%=qna.getUserId()%></td>
-                <th>Date</th>
+                <th>작성자</th>
+                <td><%=qna.getUserName()%></td>
+                <th>작성일</th>
                 <td><fmt:formatDate value="<%=qna.getRegdate()%>" pattern="yyyy-MM-dd HH:mm"/></td>
             </tr>
             <tr>
@@ -76,13 +76,13 @@
         
         <% if (qna.getAnswer() != null) { %>
             <div class="answer-box">
-                <div class="answer-header">[ADMIN ANSWER]</div>
+                <div class="answer-header">[관리자 답변]</div>
                 <div class="answer-text"><%=qna.getAnswer().replace("\n", "<br>")%></div>
             </div>
         <% } %>
         
         <div class="btn-group">
-            <a href="list.jsp" class="btn-list">LIST</a>
+            <a href="list.jsp" class="btn-list">목록</a>
         </div>
     </div>
 
