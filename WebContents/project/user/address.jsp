@@ -14,6 +14,7 @@ String root = request.getContextPath() + "/project";
 <head>
 <meta charset="UTF-8">
 <title>배송지 정보 입력</title>
+<link rel="icon" href="../images/favicon.ico">
 <link rel="stylesheet" href="style.css">
 </head>
 
@@ -32,7 +33,7 @@ String root = request.getContextPath() + "/project";
 			<label>주소명</label> <input type="text" name="addressName"
 				placeholder="예: 집, 회사" required> <label>받는 사람</label> <input
 				type="text" name="receiver" required> <label>전화번호</label> <input
-				type="text" name="phone" placeholder="010-0000-0000" required>
+				type="text" name="phone" placeholder="01000000000" required>
 
 			<label>주소</label>
 			<div class="address-input-group"

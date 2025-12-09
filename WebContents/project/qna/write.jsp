@@ -13,6 +13,7 @@
 <head>
 <meta charset="UTF-8">
 <title>WRITE Q&A - MERCI</title>
+<link rel="icon" href="../images/favicon.ico">
 <link rel="stylesheet" href="../style.css">
 <style>
     .qna-container { max-width: 800px; margin: 80px auto; padding: 20px; min-height: 500px; }

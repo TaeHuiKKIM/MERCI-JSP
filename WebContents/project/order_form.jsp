@@ -114,24 +114,24 @@
     <header class="header">
         <div class="header-inner">
             <div class="header-logo"><a href="index.jsp"><img src="images/mainlogo.png"></a></div>
-            <nav class="header-nav"><a href="product.jsp">BACK TO SHOP</a></nav>
+            <nav class="header-nav"><a href="product.jsp">쇼핑 계속하기</a></nav>
         </div>
     </header>
 
     <div class="checkout-container">
-        <h2 class="checkout-title">ORDER SHEET</h2>
+        <h2 class="checkout-title">주문서 작성</h2>
         
         <form action="order_proc.jsp" method="post" name="orderForm">
             <!-- 1. 주문 상품 정보 -->
             <div class="order-section">
-                <p class="section-head">PRODUCT INFO</p>
+                <p class="section-head">주문 상품 정보</p>
                 <table class="order-table">
                     <tr>
-                        <th>IMAGE</th>
-                        <th>PRODUCT</th>
-                        <th>OPTION</th>
-                        <th>QTY</th>
-                        <th>PRICE</th>
+                        <th>이미지</th>
+                        <th>상품명</th>
+                        <th>옵션</th>
+                        <th>수량</th>
+                        <th>가격</th>
                     </tr>
                     <% for(Map<String, Object> item : cartList) { %>
                     <tr>
@@ -147,11 +147,11 @@
 
             <!-- 2. 배송지 정보 -->
             <div class="order-section">
-                <p class="section-head">SHIPPING INFO</p>
+                <p class="section-head">배송지 정보</p>
                 
                 <% if(addrList != null && !addrList.isEmpty()) { %>
                 <select class="addr-select" onchange="changeAddress(this)">
-                    <option value="new">-- New Address --</option>
+                    <option value="new">-- 새로운 배송지 --</option>
                     <% for(DeliveryAddress addr : addrList) { 
                         boolean isSelected = (defaultAddr != null && defaultAddr.getAddrId() == addr.getAddrId());
                     %>
@@ -163,40 +163,40 @@
                 <% } %>
                 
                 <div class="form-group">
-                    <label class="form-label">Recipient</label>
+                    <label class="form-label">받는 분</label>
                     <input type="text" name="receiverName" class="form-input" value="<%= (defaultAddr != null) ? defaultAddr.getRecipientName() : "" %>" required>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Phone</label>
+                    <label class="form-label">휴대전화</label>
                     <input type="text" name="receiverPhone" class="form-input" value="<%= (defaultAddr != null) ? defaultAddr.getPhone() : "" %>" required>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Address</label>
+                    <label class="form-label">주소</label>
                     <div style="display:flex; gap:10px; margin-bottom:5px;">
-                        <input type="text" id="postcode" class="form-input" style="width:100px;" placeholder="Zip" readonly>
-                        <button type="button" onclick="execDaumPostcode()" style="padding:0 10px; cursor:pointer;">Find</button>
+                        <input type="text" id="postcode" class="form-input" style="width:100px;" placeholder="우편번호" readonly>
+                        <button type="button" onclick="execDaumPostcode()" style="padding:0 10px; cursor:pointer;">주소 찾기</button>
                     </div>
-                    <input type="text" id="roadAddress" name="addr1" class="form-input" value="<%= (defaultAddr != null) ? defaultAddr.getAddrRoad() : "" %>" placeholder="Road Address" readonly style="margin-bottom:5px;">
-                    <input type="text" id="detailAddress" name="addr2" class="form-input" value="<%= (defaultAddr != null) ? defaultAddr.getAddrDetail() : "" %>" placeholder="Detail Address">
+                    <input type="text" id="roadAddress" name="addr1" class="form-input" value="<%= (defaultAddr != null) ? defaultAddr.getAddrRoad() : "" %>" placeholder="도로명 주소" readonly style="margin-bottom:5px;">
+                    <input type="text" id="detailAddress" name="addr2" class="form-input" value="<%= (defaultAddr != null) ? defaultAddr.getAddrDetail() : "" %>" placeholder="상세 주소">
                     <input type="hidden" id="extraAddress">
                 </div>
             </div>
 
             <!-- 3. 결제 정보 -->
             <div class="order-section">
-                <p class="section-head">PAYMENT INFO</p>
+                <p class="section-head">결제 정보</p>
                 <div class="form-group">
-                    <label class="form-label">Depositor Name (입금자명)</label>
+                    <label class="form-label">입금자명</label>
                     <input type="text" name="depositor" class="form-input" required placeholder="무통장 입금자명을 입력하세요">
                 </div>
                 <div class="payment-info">
-                    <p>TOTAL AMOUNT</p>
+                    <p>총 결제 금액</p>
                     <p class="final-price">₩ <%= String.format("%,d", totalAmount) %></p>
                     <input type="hidden" name="totalAmount" value="<%=totalAmount%>">
                 </div>
             </div>
 
-            <button type="submit" class="pay-btn">PLACE ORDER</button>
+            <button type="submit" class="pay-btn">결제하기</button>
         </form>
     </div>
 </body>

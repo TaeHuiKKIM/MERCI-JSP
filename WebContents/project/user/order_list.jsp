@@ -26,7 +26,8 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>MY ORDERS - MERCI</title>
+<title>나의 주문 목록 - MERCI</title>
+<link rel="icon" href="../images/favicon.ico">
 <link rel="stylesheet" href="../style.css">
 <style>
     .order-container { max-width: 1000px; margin: 80px auto; padding: 20px; min-height: 500px; }
@@ -50,7 +51,7 @@
     <jsp:include page="../header.jsp" />
 
     <div class="order-container">
-        <h2 class="page-title">MY ORDERS</h2>
+        <h2 class="page-title">나의 주문 목록</h2>
         
         <c:set var="list" value="<%=list%>" />
         <c:choose>
@@ -60,36 +61,36 @@
                         <div class="order-header">
                             <span class="order-date">
                                 <fmt:formatDate value="${o.orderDate}" pattern="yyyy.MM.dd"/> 
-                                (Order ID: <a href="order_detail.jsp?orderId=${o.orderId}" style="color: #333; text-decoration: underline;">${o.orderId}</a>)
+                                (주문번호: <a href="order_detail.jsp?orderId=${o.orderId}" style="color: #333; text-decoration: underline;">${o.orderId}</a>)
                             </span>
                             <span class="order-status">${o.status}</span>
                         </div>
                         
                         <div class="order-info">
-                            <div><span class="info-label">Receiver</span> ${o.receiverName}</div>
-                            <div><span class="info-label">Address</span> ${o.address}</div>
-                            <div><span class="info-label">Total</span> ₩ <fmt:formatNumber value="${o.totalAmount}" type="number"/></div>
+                            <div><span class="info-label">수령인</span> ${o.receiverName}</div>
+                            <div><span class="info-label">주소</span> ${o.address}</div>
+                            <div><span class="info-label">총 결제 금액</span> ₩ <fmt:formatNumber value="${o.totalAmount}" type="number"/></div>
                             <div style="margin-top: 10px;">
-                                <a href="order_detail.jsp?orderId=${o.orderId}" class="btn" style="background: #333; color: white; padding: 5px 10px; font-size: 12px; text-decoration: none;">View Details</a>
+                                <a href="order_detail.jsp?orderId=${o.orderId}" class="btn" style="background: #333; color: white; padding: 5px 10px; font-size: 12px; text-decoration: none;">상세보기</a>
                             </div>
                         </div>
 
                         <!-- Status Messages -->
                         <c:if test="${o.status == '결제대기'}">
                             <div class="payment-msg">
-                                <strong>[Payment Required]</strong><br>
-                                Please deposit <strong>₩ <fmt:formatNumber value="${o.totalAmount}" type="number"/></strong> to:<br>
-                                Bank: KB Kookmin Bank 123-456-7890<br>
-                                Account Holder: MERCI<br>
-                                Depositor Name: ${o.depositor}
+                                <strong>[입금 대기중]</strong><br>
+                                아래 계좌로 <strong>₩ <fmt:formatNumber value="${o.totalAmount}" type="number"/></strong>을(를) 입금해 주세요.<br>
+                                은행: KB국민은행 123-456-7890<br>
+                                예금주: MERCI<br>
+                                입금자명: ${o.depositor}
                             </div>
                         </c:if>
 
                         <c:if test="${o.status == '배송중' || o.status == '배송완료'}">
                             <div class="tracking-box">
-                                <strong>[Tracking Information]</strong><br>
-                                Carrier: ${o.trackingCarrier != null ? o.trackingCarrier : 'Not Available'}<br>
-                                Tracking No: ${o.trackingNum != null ? o.trackingNum : 'Not Available'}
+                                <strong>[배송 정보]</strong><br>
+                                택배사: ${o.trackingCarrier != null ? o.trackingCarrier : '정보 없음'}<br>
+                                운송장 번호: ${o.trackingNum != null ? o.trackingNum : '정보 없음'}
                             </div>
                         </c:if>
                     </div>
@@ -97,7 +98,7 @@
             </c:when>
             <c:otherwise>
                 <div style="text-align: center; padding: 50px; color: #999;">
-                    No order history found.
+                    주문 내역이 없습니다.
                 </div>
             </c:otherwise>
         </c:choose>

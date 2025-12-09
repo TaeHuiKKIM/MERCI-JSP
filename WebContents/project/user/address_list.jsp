@@ -30,6 +30,7 @@
 <head>
 <meta charset="UTF-8">
 <title>배송지 관리</title>
+<link rel="icon" href="../images/favicon.ico">
 <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>

@@ -48,6 +48,7 @@
 <head>
 <meta charset="UTF-8">
 <title>배송지 수정</title>
+<link rel="icon" href="../images/favicon.ico">
 <link rel="stylesheet" href="style.css">
 </head>
 <body class="address-page">

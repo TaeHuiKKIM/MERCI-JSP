@@ -33,7 +33,8 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>PRODUCT UPDATE - MERCI</title>
+<title>상품 수정 - MERCI</title>
+<link rel="icon" href="../images/favicon.ico">
 <link rel="stylesheet" href="<%=root%>/style.css">
 <style>
     .update-container {

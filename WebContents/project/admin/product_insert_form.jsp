@@ -14,7 +14,8 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>PRODUCT REGISTRATION - MERCI</title>
+<title>상품 등록 - MERCI</title>
+<link rel="icon" href="../images/favicon.ico">
 <link rel="stylesheet" href="<%=root%>/style.css">
 <style>
     .update-container {

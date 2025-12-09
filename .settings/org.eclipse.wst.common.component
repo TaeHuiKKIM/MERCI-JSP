@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
         
-    <wb-module deploy-name="pro1013">
+    <wb-module deploy-name="ShoppingAddict">
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
         <wb-resource deploy-path="/" source-path="/WebContents"/>
                 
-        <property name="context-root" value="pro1013"/>
+        <property name="context-root" value="ShoppingAddict"/>
                 
-        <property name="java-output-path" value="/pro1013/build/classes"/>
+        <property name="java-output-path" value="/ShoppingAddict/build/classes"/>
             
     </wb-module>
     

@@ -56,6 +56,7 @@
 <head>
 <meta charset="UTF-8">
 <title>ORDER DETAILS - MERCI</title>
+<link rel="icon" href="../images/favicon.ico">
 <link rel="stylesheet" href="../style.css">
 <style>
     .order-detail-container { max-width: 1000px; margin: 80px auto; padding: 20px; }
@@ -97,20 +98,20 @@
     <jsp:include page="../header.jsp" />
 
     <div class="order-detail-container">
-        <h2 class="page-title">ORDER DETAILS</h2>
+        <h2 class="page-title">주문 상세 내역</h2>
         
         <!-- 주문 기본 정보 -->
         <div class="info-section">
             <h3 class="info-title">주문 정보</h3>
             <table class="info-table">
                 <tr>
-                    <th>Order No.</th>
+                    <th>주문 번호</th>
                     <td><%=order.getOrderId()%></td>
-                    <th>Date</th>
+                    <th>주문 일시</th>
                     <td><fmt:formatDate value="<%=order.getOrderDate()%>" pattern="yyyy-MM-dd HH:mm"/></td>
                 </tr>
                 <tr>
-                    <th>Status</th>
+                    <th>주문 상태</th>
                     <td>
                         <strong style="color: #e74c3c;"><%=order.getStatus()%></strong>
                         <% if ("배송중".equals(order.getStatus()) || "배송완료".equals(order.getStatus())) { %>
@@ -120,18 +121,18 @@
                             </div>
                         <% } %>
                     </td>
-                    <th>Total Amount</th>
+                    <th>총 결제 금액</th>
                     <td>₩ <fmt:formatNumber value="<%=order.getTotalAmount()%>" /></td>
                 </tr>
             </table>
             
             <% if ("결제대기".equals(order.getStatus())) { %>
             <div style="margin-top: 15px; padding: 15px; background: #fff8f8; border: 1px solid #ffcccc; color: #d63031; font-size: 13px;">
-                <strong>[Payment Required]</strong><br>
-                Please deposit <strong>₩ <fmt:formatNumber value="<%=order.getTotalAmount()%>" /></strong> to:<br>
-                Bank: KB Kookmin Bank 123-456-7890<br>
-                Account Holder: MERCI<br>
-                Depositor Name: <%=order.getDepositor()%>
+                <strong>[입금 대기중]</strong><br>
+                아래 계좌로 <strong>₩ <fmt:formatNumber value="<%=order.getTotalAmount()%>" /></strong>을(를) 입금해 주세요.<br>
+                은행: KB국민은행 123-456-7890<br>
+                예금주: MERCI<br>
+                입금자명: <%=order.getDepositor()%>
             </div>
             <% } %>
         </div>
@@ -141,15 +142,15 @@
             <h3 class="info-title">배송지 정보</h3>
             <table class="info-table">
                 <tr>
-                    <th>Receiver</th>
+                    <th>받는 분</th>
                     <td><%=order.getReceiverName()%></td>
                 </tr>
                 <tr>
-                    <th>Phone</th>
+                    <th>휴대전화</th>
                     <td><%=order.getReceiverPhone()%></td>
                 </tr>
                 <tr>
-                    <th>Address</th>
+                    <th>주소</th>
                     <td><%=order.getAddress()%></td>
                 </tr>
             </table>
@@ -161,10 +162,10 @@
             <table class="item-list">
                 <thead>
                     <tr>
-                        <th>Product Info</th>
-                        <th width="100">Price</th>
-                        <th width="80">Qty</th>
-                        <th width="120">Review</th>
+                        <th>상품 정보</th>
+                        <th width="100">가격</th>
+                        <th width="80">수량</th>
+                        <th width="120">리뷰</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -197,15 +198,15 @@
                                             <!-- 리뷰가 있으면 수정/삭제 -->
                                             <div style="display: flex; gap: 5px; justify-content: center;">
                                                 <button type="button" class="btn-edit" 
-                                                    onclick="openReviewEdit(${review.reviewId}, '${item.clothTitle}')">Edit</button>
+                                                    onclick="openReviewEdit(${review.reviewId}, '${item.clothTitle}')">수정</button>
                                                 <button type="button" class="btn-delete" 
-                                                    onclick="deleteReview(${review.reviewId})">Del</button>
+                                                    onclick="deleteReview(${review.reviewId})">삭제</button>
                                             </div>
                                         </c:when>
                                         <c:otherwise>
                                             <!-- 없으면 작성 -->
                                             <button type="button" class="btn-review" 
-                                                onclick="openReviewWrite(${item.clothId}, '${item.clothTitle}', ${order.orderId})">Write Review</button>
+                                                onclick="openReviewWrite(${item.clothId}, '${item.clothTitle}', ${order.orderId})">리뷰 작성</button>
                                         </c:otherwise>
                                     </c:choose>
                                 </c:if>
@@ -220,7 +221,7 @@
         </div>
 
         <div style="text-align: center; margin-top: 30px;">
-            <a href="order_list.jsp" class="btn" style="background: #fff; border: 1px solid #ddd; padding: 10px 30px; color: #333; text-decoration: none;">BACK TO LIST</a>
+            <a href="order_list.jsp" class="btn" style="background: #fff; border: 1px solid #ddd; padding: 10px 30px; color: #333; text-decoration: none;">목록으로 돌아가기</a>
         </div>
     </div>
 

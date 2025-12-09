@@ -53,7 +53,7 @@
             <span>TOTAL</span>
             <span id="cartTotalDisplay">₩ <%= String.format("%,d", cartTotal) %></span>
         </div>
-        <button class="checkout-btn" onclick="location.href='order_form.jsp'">CHECKOUT</button>
+        <button class="checkout-btn" onclick="location.href='order_form.jsp'">구매하기</button>
     </div>
 </div>
 

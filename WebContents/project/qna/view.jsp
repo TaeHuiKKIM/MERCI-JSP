@@ -45,23 +45,8 @@
 <head>
 <meta charset="UTF-8">
 <title>VIEW Q&A - MERCI</title>
+<link rel="icon" href="../images/favicon.ico">
 <link rel="stylesheet" href="../style.css">
-<style>
-    .qna-container { max-width: 800px; margin: 80px auto; padding: 20px; min-height: 500px; }
-    .qna-title { font-size: 24px; font-weight: bold; margin-bottom: 20px; border-bottom: 2px solid #333; padding-bottom: 10px; }
-    
-    .view-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
-    .view-table th, .view-table td { padding: 15px; border-bottom: 1px solid #eee; }
-    .view-table th { width: 120px; text-align: left; background: #f9f9f9; color: #555; }
-    .view-content { min-height: 200px; padding: 20px 10px; line-height: 1.6; }
-    
-    .answer-box { background: #f5f5f5; padding: 20px; border: 1px solid #ddd; margin-top: 30px; }
-    .answer-header { font-weight: bold; margin-bottom: 10px; color: #333; }
-    .answer-text { line-height: 1.6; color: #444; }
-    
-    .btn-group { margin-top: 30px; text-align: center; }
-    .btn-list { background: #333; color: #fff; padding: 12px 30px; text-decoration: none; font-size: 14px; }
-</style>
 </head>
 <body>
 
