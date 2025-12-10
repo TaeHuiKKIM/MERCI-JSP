@@ -42,10 +42,7 @@
     <div class="footer-columns">
         <div class="footer-col">
             <h3>CUSTOMER SERVICE</h3>
-            <p><a href="#">MEMBERSHIP</a></p>
-            <p><a href="#">CONTACT</a></p>
             <p><a href="${pageContext.request.contextPath}/project/qna/list.jsp" style="color: inherit; text-decoration: none;">Q&A BOARD</a></p>
-            <p><a href="#">SHIPPING & RETURNS</a></p>
         </div>
 
         <div class="footer-col">
@@ -58,25 +55,16 @@
         </div>
 
         <div class="footer-col">
-            <h3>LEGAL</h3>
-            <p><a href="#">PRIVACY POLICY</a></p>
-
-            <h3 style="margin-top: 30px;">SOCIAL</h3>
-            <p><a href="#">INSTAGRAM</a></p>
-            <p><a href="#">KAKAOTALK</a></p>
-        </div>
-        
-        <div class="footer-col">
             <h3>MY PAGE</h3>
-            <p><a href="/WebContents/project/order_form.jsp">마이페이지</a></p>
-            <p><a href="/WebContents/project/order_form.jsp">주문조회</a></p>
-            <p><a href="/WebContents/project/wishlist_proc_ajax.jsp">위시리스트</a></p>
-            <p><a href="/WebContents/project/cart_popup.jsp">장바구니</a></p>
+            <p><a href="${pageContext.request.contextPath}/project/user/account.jsp">마이페이지</a></p>
+            <p><a href="${pageContext.request.contextPath}/project/user/order_list.jsp">주문조회</a></p>
+            <p><a href="${pageContext.request.contextPath}/project/user/wishlist.jsp">위시리스트</a></p>
+
         </div>
 
         <div class="footer-col">
             <h3>PRODUCT</h3>
-            <p><a href="/WebContents/project/product.jsp">상품 전체보기</a></p>
+            <p><a href="${pageContext.request.contextPath}/project/product.jsp">상품 전체보기</a></p>
         </div>
     </div>
 
