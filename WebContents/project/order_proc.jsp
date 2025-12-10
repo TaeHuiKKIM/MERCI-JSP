@@ -17,8 +17,17 @@
     String addr1 = request.getParameter("addr1");
     String addr2 = request.getParameter("addr2");
     String address = addr1 + " " + addr2;
-    String depositor = request.getParameter("depositor");
+    
+    // 결제 정보 수신
+    String payMethod = request.getParameter("payMethod"); // kakaopay or general
+    String paymentId = request.getParameter("paymentId");
     int totalAmount = Integer.parseInt(request.getParameter("totalAmount"));
+    
+    // 입금자명 자동 설정
+    String depositor = "";
+    if("kakaopay".equals(payMethod)) depositor = "카카오페이";
+    else if("general".equals(payMethod)) depositor = "일반결제";
+    else depositor = "기타";
 
     Connection conn = null;
     boolean success = false;
@@ -37,6 +46,11 @@
         order.setReceiverPhone(receiverPhone);
         order.setAddress(address);
         order.setDepositor(depositor);
+        order.setPayMethod(payMethod);
+        order.setPaymentId(paymentId);
+        
+        // 결제 완료 (PortOne 성공 콜백 후 넘어오므로)
+        order.setStatus("결제완료");
         
         int orderId = orderDao.insertOrder(conn, order);
         

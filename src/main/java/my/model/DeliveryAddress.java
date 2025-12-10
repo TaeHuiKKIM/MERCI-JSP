@@ -7,13 +7,14 @@ public class DeliveryAddress {
 	private String addrName;      // 배송지 별칭
 	private String recipientName; // 수령인
 	private String phone;
+	private String zipcode;
 	private String addrRoad;
 	private String addrDetail;
 	private int isDefault; 
 
 	public DeliveryAddress() {}
 
-	public DeliveryAddress(int addrId, String userId, String addrName, String recipientName, String phone,
+	public DeliveryAddress(int addrId, String userId, String addrName, String recipientName, String phone, String zipcode,
 			String addrRoad, String addrDetail, int isDefault) {
 		super();
 		this.addrId = addrId;
@@ -21,10 +22,19 @@ public class DeliveryAddress {
 		this.addrName = addrName;
 		this.recipientName = recipientName;
 		this.phone = phone;
+		this.zipcode = zipcode;
 		this.addrRoad = addrRoad;
 		this.addrDetail = addrDetail;
 		this.isDefault = isDefault;
 	}
+    
+    public String getZipcode() {
+        return zipcode;
+    }
+
+    public void setZipcode(String zipcode) {
+        this.zipcode = zipcode;
+    }
 
 	public int getAddrId() {
 		return addrId;

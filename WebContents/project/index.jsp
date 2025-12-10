@@ -55,44 +55,51 @@
 			conn = ConnectionProvider.getConnection();
 			ClothDao dao = new ClothDao();
 			// 메인에서는 인기순 혹은 최신순으로 가져오는 것이 일반적이지만, 여기서는 기본 리스트 사용
-			list = dao.selectList(conn); 
+			list = dao.selectList(conn);
 		} catch (Exception e) {
 			e.printStackTrace(); // 콘솔 로그
 			errorMsg = e.getMessage(); // 화면 출력용 메시지
-		} finally{
+		} finally {
 			if (conn != null) {
-				try { conn.close(); } catch(SQLException ex) {}
+				try {
+			conn.close();
+				} catch (SQLException ex) {
+				}
 			}
 		}
 		%>
 		<section class="product-section">
 			<h2 class="section-title">PRODUCTS</h2>
-			
+
 			<c:set var="list" value="<%=list%>" />
 			<c:set var="errorMsg" value="<%=errorMsg%>" />
-			
+
 			<c:choose>
 				<c:when test="${list != null && not empty list}">
 					<div class="product-slider-wrapper">
 						<!-- 왼쪽 화살표 -->
 						<button class="slider-btn prev-btn" onclick="moveSlide(-1)">❮</button>
-						
+
 						<!-- 슬라이더 트랙 -->
 						<div class="product-slider-track" id="sliderTrack">
 							<c:forEach var="cloth" items="${list}">
 								<div class="slider-item product-item">
-									<a href="catalogdetail.jsp?clothId=${cloth.id}"> 
-										<c:choose>
+									<a href="catalogdetail.jsp?clothId=${cloth.id}"> <c:choose>
 											<c:when test="${not empty cloth.imgFront}">
-												<img src="uploadfile/${cloth.imgFront}" width="200" height="250">
+												<img src="uploadfile/${cloth.imgFront}" width="200"
+													height="250">
 											</c:when>
 											<c:otherwise>
-												<img src="uploadfile/${cloth.imgBody}" width="200" height="250">
+												<img src="uploadfile/${cloth.imgBody}" width="200"
+													height="250">
 											</c:otherwise>
 										</c:choose>
 									</a>
 									<h3>${cloth.title}</h3>
-									<p>₩ <fmt:formatNumber value="${cloth.price}" type="number"/></p>
+									<p>
+										₩
+										<fmt:formatNumber value="${cloth.price}" type="number" />
+									</p>
 								</div>
 							</c:forEach>
 						</div>
@@ -107,7 +114,11 @@
 						<c:if test="${not empty errorMsg}">
 							<p style="color: #999; font-size: 12px;">(Error: ${errorMsg})</p>
 						</c:if>
-						<p><a href="setup_db.jsp" style="text-decoration: underline; font-weight: bold;">[DB 초기화 페이지로 이동]</a></p>
+						<p>
+							<a href="setup_db.jsp"
+								style="text-decoration: underline; font-weight: bold;">[DB
+								초기화 페이지로 이동]</a>
+						</p>
 					</div>
 				</c:otherwise>
 			</c:choose>
@@ -140,10 +151,10 @@
 
 	<!-- ========== FOOTER ========== -->
 	<jsp:include page="footer.jsp" />
-	
+
 	<!-- 장바구니 팝업 포함 -->
-    <jsp:include page="cart_popup.jsp" />
-    
+	<jsp:include page="cart_popup.jsp" />
+
 	<script src="style.js"></script>
 	<script>
         // 슬라이더 로직

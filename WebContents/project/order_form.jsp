@@ -42,6 +42,7 @@
 <link rel="icon" href="images/favicon.ico">
 <link rel="stylesheet" href="style.css">
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
 <script src="style.js"></script>
 <script>
     var savedAddresses = [
@@ -49,12 +50,14 @@
         if(addrList != null) {
             for(int i=0; i<addrList.size(); i++) {
                 DeliveryAddress addr = addrList.get(i);
+                String zip = (addr.getZipcode() == null) ? "" : addr.getZipcode();
         %>
             {
                 id: <%=addr.getAddrId()%>,
                 name: "<%=addr.getAddrName()%>",
                 recipient: "<%=addr.getRecipientName()%>",
                 phone: "<%=addr.getPhone()%>",
+                zipcode: "<%=zip%>",
                 road: "<%=addr.getAddrRoad()%>",
                 detail: "<%=addr.getAddrDetail()%>"
             }<%= (i < addrList.size() - 1) ? "," : "" %>
@@ -71,6 +74,7 @@
         if (selectedValue === "new") {
             form.receiverName.value = "";
             form.receiverPhone.value = "";
+            document.getElementById("postcode").value = "";
             document.getElementById("roadAddress").value = "";
             document.getElementById("detailAddress").value = "";
             return;
@@ -82,10 +86,87 @@
                 var addr = savedAddresses[i];
                 form.receiverName.value = addr.recipient;
                 form.receiverPhone.value = addr.phone;
+                document.getElementById("postcode").value = addr.zipcode;
                 document.getElementById("roadAddress").value = addr.road;
                 document.getElementById("detailAddress").value = addr.detail;
                 break;
             }
+        }
+    }
+
+    // --- PortOne V2 Integration ---
+    async function checkPayment(e) {
+        e.preventDefault(); 
+        var form = document.orderForm;
+        
+        // Selected Payment Method
+        var method = document.querySelector('input[name="payMethod"]:checked').value;
+
+        // Basic Validation
+        if(!form.receiverName.value || !form.receiverPhone.value || !form.addr2.value) {
+            alert("배송지 정보를 모두 입력해주세요.");
+            return false;
+        }
+        
+        var postcodeVal = document.getElementById("postcode").value;
+        if(!postcodeVal) {
+            alert("우편번호를 입력해주세요.");
+            return false;
+        }
+
+        var channelKeyToUse = "";
+        var payMethodToUse = "";
+        var easyPayOption = undefined;
+
+        if (method === 'kakaopay') {
+            // KakaoPay Config
+            channelKeyToUse = "channel-key-5a5e4804-a215-4506-bb64-91a13fb31e06";
+            payMethodToUse = "EASY_PAY";
+            easyPayOption = { provider: "KAKAOPAY" };
+        } else if (method === 'general') {
+            // General Payment (KG Inicis Test) Config
+            // [중요] 포트원 콘솔에서 KG이니시스(테스트) 채널을 추가하고 키를 발급받아 교체해야 합니다.
+            // 현재는 예시 키입니다.
+            channelKeyToUse = "channel-key-fd9c016a-7e83-4d01-96c3-8377214cee24"; 
+            payMethodToUse = "CARD";
+        }
+
+        try {
+            // PortOne V2 Payment Request
+            const response = await PortOne.requestPayment({
+                storeId: "store-4ad37cda-c027-4827-92ce-356e9b8ca025",
+                channelKey: channelKeyToUse,
+                paymentId: "ORD" + new Date().getTime(),
+                orderName: "MERCI Ordered Items",
+                totalAmount: <%=totalAmount%>,
+                currency: "CURRENCY_KRW",
+                payMethod: payMethodToUse,
+                easyPay: easyPayOption, // Only used for KakaoPay
+                customer: {
+                    fullName: form.receiverName.value,
+                    phoneNumber: form.receiverPhone.value,
+                    email: "test@merci.com",
+                    address: {
+                        addressLine1: document.getElementById("roadAddress").value,
+                        addressLine2: document.getElementById("detailAddress").value,
+                    },
+                    zipcode: postcodeVal
+                }
+            });
+
+            if (response.code != null) {
+                // Payment Failed
+                alert("결제 실패: " + response.message);
+                return false;
+            }
+
+            // Payment Success
+            document.querySelector('input[name="paymentId"]').value = response.paymentId;
+            form.submit();
+
+        } catch (err) {
+            console.error(err);
+            alert("결제 시스템 오류: " + (err.message || err));
         }
     }
 </script>
@@ -101,7 +182,8 @@
     <div class="checkout-container">
         <h2 class="checkout-title">주문서 작성</h2>
         
-        <form action="order_proc.jsp" method="post" name="orderForm">
+        <form action="order_proc.jsp" method="post" name="orderForm" onsubmit="checkPayment(event)">
+            <input type="hidden" name="paymentId" value="">
             <!-- 1. 주문 상품 정보 -->
             <div class="order-section">
                 <p class="section-head">주문 상품 정보</p>
@@ -165,10 +247,21 @@
             <!-- 3. 결제 정보 -->
             <div class="order-section">
                 <p class="section-head">결제 정보</p>
+                
                 <div class="form-group">
-                    <label class="form-label">입금자명</label>
-                    <input type="text" name="depositor" class="form-input" required placeholder="무통장 입금자명을 입력하세요">
+                    <label class="form-label">결제 수단</label>
+                    <div style="margin-top: 10px; display: flex; gap: 20px; align-items: center;">
+                        <label style="cursor: pointer; display: flex; align-items: center;">
+                            <input type="radio" name="payMethod" value="general" checked style="margin-right: 5px;">
+                            일반결제 (카드/간편결제)
+                        </label>
+                        <label style="cursor: pointer; display: flex; align-items: center;">
+                            <input type="radio" name="payMethod" value="kakaopay" style="margin-right: 5px;">
+                            카카오페이 (테스트)
+                        </label>
+                    </div>
                 </div>
+
                 <div class="payment-info">
                     <p>총 결제 금액</p>
                     <p class="final-price">₩ <%= String.format("%,d", totalAmount) %></p>

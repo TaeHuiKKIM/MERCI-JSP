@@ -13,16 +13,17 @@ public class DeliveryAddressDao {
 	public void insert(Connection conn, DeliveryAddress addr) throws SQLException {
 		PreparedStatement pstmt = null;
 		try {
-			// DB컬럼명: userId, addrName, recipient, phone, addrRoad, addrDetail, isDefault
-			String sql = "INSERT INTO deliveryaddr (userId, addrName, recipient, phone, addrRoad, addrDetail, isDefault) VALUES (?, ?, ?, ?, ?, ?, ?)";
+			// DB컬럼명: userId, addrName, recipient, phone, zipcode, addrRoad, addrDetail, isDefault
+			String sql = "INSERT INTO deliveryaddr (userId, addrName, recipient, phone, zipcode, addrRoad, addrDetail, isDefault) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, addr.getUserId());
 			pstmt.setString(2, addr.getAddrName());
 			pstmt.setString(3, addr.getRecipientName());
 			pstmt.setString(4, addr.getPhone());
-			pstmt.setString(5, addr.getAddrRoad());
-			pstmt.setString(6, addr.getAddrDetail());
-			pstmt.setInt(7, addr.getIsDefault());
+			pstmt.setString(5, addr.getZipcode());
+			pstmt.setString(6, addr.getAddrRoad());
+			pstmt.setString(7, addr.getAddrDetail());
+			pstmt.setInt(8, addr.getIsDefault());
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -49,9 +50,9 @@ public class DeliveryAddressDao {
 				addr.setAddrName(rs.getString("addrName"));
 				addr.setRecipientName(rs.getString("recipient"));
 				addr.setPhone(rs.getString("phone"));
+				addr.setZipcode(rs.getString("zipcode"));
 				addr.setAddrRoad(rs.getString("addrRoad"));
 				addr.setAddrDetail(rs.getString("addrDetail"));
-				// [확인] DB 컬럼명 isDefault 맞음
 				addr.setIsDefault(rs.getInt("isDefault"));
 				list.add(addr);
 			}
@@ -75,21 +76,19 @@ public class DeliveryAddressDao {
 		}
 	}
 
-	// 4. 배송지 수정 (update) - [수정됨: 6번 파라미터 중복 해결]
+	// 4. 배송지 수정 (update)
 	public int update(Connection conn, DeliveryAddress addr) throws SQLException {
 		PreparedStatement pstmt = null;
 		try {
-			// 수정할 항목: 이름, 수령인, 전화번호, 주소, 상세주소 (기본배송지 여부는 여기서 수정 안 함)
-			String sql = "UPDATE deliveryaddr SET addrName=?, recipient=?, phone=?, addrRoad=?, addrDetail=? WHERE addrId=?";
+			String sql = "UPDATE deliveryaddr SET addrName=?, recipient=?, phone=?, zipcode=?, addrRoad=?, addrDetail=? WHERE addrId=?";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, addr.getAddrName());
 			pstmt.setString(2, addr.getRecipientName());
 			pstmt.setString(3, addr.getPhone());
-			pstmt.setString(4, addr.getAddrRoad());
-			pstmt.setString(5, addr.getAddrDetail());
-			
-			// 6번째 물음표는 WHERE addrId=? 입니다.
-			pstmt.setInt(6, addr.getAddrId());
+			pstmt.setString(4, addr.getZipcode());
+			pstmt.setString(5, addr.getAddrRoad());
+			pstmt.setString(6, addr.getAddrDetail());
+			pstmt.setInt(7, addr.getAddrId());
 			
 			return pstmt.executeUpdate(); 
 		} finally {
@@ -114,6 +113,7 @@ public class DeliveryAddressDao {
 				addr.setAddrName(rs.getString("addrName"));
 				addr.setRecipientName(rs.getString("recipient"));
 				addr.setPhone(rs.getString("phone"));
+				addr.setZipcode(rs.getString("zipcode"));
 				addr.setAddrRoad(rs.getString("addrRoad"));
 				addr.setAddrDetail(rs.getString("addrDetail"));
 				addr.setIsDefault(rs.getInt("isDefault"));
@@ -131,7 +131,6 @@ public class DeliveryAddressDao {
         ResultSet rs = null;
         DeliveryAddress addr = null;
         try {
-            // [확인] DB 컬럼명 isDefault 맞음
             String sql = "SELECT * FROM deliveryaddr WHERE userId = ? AND isDefault = 1";
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, userId);
@@ -143,6 +142,7 @@ public class DeliveryAddressDao {
                 addr.setAddrName(rs.getString("addrName"));
                 addr.setRecipientName(rs.getString("recipient"));
                 addr.setPhone(rs.getString("phone"));
+                addr.setZipcode(rs.getString("zipcode"));
                 addr.setAddrRoad(rs.getString("addrRoad"));
                 addr.setAddrDetail(rs.getString("addrDetail"));
                 addr.setIsDefault(rs.getInt("isDefault")); 

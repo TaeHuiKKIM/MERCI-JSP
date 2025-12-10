@@ -22,6 +22,7 @@
     String addrName = request.getParameter("addressName");
     String recipient = request.getParameter("receiver");
     String phone = request.getParameter("phone");
+    String zipcode = request.getParameter("zipcode");
     String roadAddr = request.getParameter("roadAddress");
     String detailAddr = request.getParameter("detailAddress");
 
@@ -37,6 +38,7 @@
         addr.setAddrName(addrName);
         addr.setRecipientName(recipient);
         addr.setPhone(phone);
+        addr.setZipcode(zipcode);
         addr.setAddrRoad(roadAddr);
         addr.setAddrDetail(detailAddr);
         

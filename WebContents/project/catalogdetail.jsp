@@ -393,7 +393,7 @@
     <div class="cart-added-popup-backdrop" id="cartAddedPopupBackdrop">
         <div class="cart-added-popup">
             <h3>장바구니에 상품이 담겼습니다.</h3>
-            <p>선택하신 상품이 장바구니에 정상적으로 추가되었습니다.</p>
+            <p>선택하신 상품이 장바구니에 추가되었습니다.</p>
             <div class="cart-added-popup-buttons">
                 <button class="btn-continue" id="popupCloseBtn">쇼핑 계속하기</button>
                 <button class="btn-view-cart" id="viewCartBtn">장바구니 확인</button>

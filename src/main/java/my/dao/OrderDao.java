@@ -17,15 +17,17 @@ public class OrderDao {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            String sql = "INSERT INTO orders (userId, totalAmount, status, receiverName, receiverPhone, address, depositor, orderDate) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
+            String sql = "INSERT INTO orders (userId, totalAmount, status, receiverName, receiverPhone, address, depositor, pay_method, payment_id, orderDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
             pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             pstmt.setString(1, order.getUserId());
             pstmt.setInt(2, order.getTotalAmount());
-            pstmt.setString(3, "결제대기");
+            pstmt.setString(3, order.getStatus()); // Use status from object
             pstmt.setString(4, order.getReceiverName());
             pstmt.setString(5, order.getReceiverPhone());
             pstmt.setString(6, order.getAddress());
             pstmt.setString(7, order.getDepositor());
+            pstmt.setString(8, order.getPayMethod());
+            pstmt.setString(9, order.getPaymentId());
             pstmt.executeUpdate();
 
             rs = pstmt.getGeneratedKeys();
@@ -118,6 +120,8 @@ public class OrderDao {
                 o.setOrderDate(rs.getTimestamp("orderDate"));
                 o.setTrackingCarrier(rs.getString("tracking_carrier"));
                 o.setTrackingNum(rs.getString("tracking_num"));
+                o.setPayMethod(rs.getString("pay_method"));
+                o.setPaymentId(rs.getString("payment_id"));
                 
                 String uName = rs.getString("userName");
                 o.setUserName(uName != null ? uName : o.getUserId());
@@ -186,6 +190,8 @@ public class OrderDao {
                 o.setOrderDate(rs.getTimestamp("orderDate"));
                 o.setTrackingCarrier(rs.getString("tracking_carrier"));
                 o.setTrackingNum(rs.getString("tracking_num"));
+                o.setPayMethod(rs.getString("pay_method"));
+                o.setPaymentId(rs.getString("payment_id"));
                 
                 String uName = rs.getString("userName");
                 o.setUserName(uName != null ? uName : o.getUserId());
@@ -224,6 +230,8 @@ public class OrderDao {
                 o.setOrderDate(rs.getTimestamp("orderDate"));
                 o.setTrackingCarrier(rs.getString("tracking_carrier"));
                 o.setTrackingNum(rs.getString("tracking_num"));
+                o.setPayMethod(rs.getString("pay_method"));
+                o.setPaymentId(rs.getString("payment_id"));
                 
                 String uName = rs.getString("userName");
                 o.setUserName(uName != null ? uName : o.getUserId());

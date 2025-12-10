@@ -38,7 +38,7 @@ String root = request.getContextPath() + "/project";
 			<label>주소</label>
 			<div class="address-input-group"
 				style="display: flex; gap: 10px; margin-bottom: 10px;">
-				<input type="text" id="postcode" placeholder="우편번호"
+				<input type="text" id="postcode" name="zipcode" placeholder="우편번호"
 					style="width: 150px;" readonly> <input type="button"
 					onclick="execDaumPostcode()" value="우편번호 찾기"
 					style="width: 120px; background: #333; color: #fff; border: none; cursor: pointer;">

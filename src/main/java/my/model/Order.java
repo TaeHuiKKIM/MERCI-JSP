@@ -15,6 +15,8 @@ public class Order {
     private String trackingCarrier;
     private String trackingNum;
     private String userName; // Join with User table
+    private String payMethod;
+    private String paymentId;
 
     public Order() {}
 
@@ -42,4 +44,8 @@ public class Order {
     public void setTrackingNum(String trackingNum) { this.trackingNum = trackingNum; }
     public String getUserName() { return userName; }
     public void setUserName(String userName) { this.userName = userName; }
+    public String getPayMethod() { return payMethod; }
+    public void setPayMethod(String payMethod) { this.payMethod = payMethod; }
+    public String getPaymentId() { return paymentId; }
+    public void setPaymentId(String paymentId) { this.paymentId = paymentId; }
 }

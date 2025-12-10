@@ -1,3 +1,24 @@
+-- 1. Cloth Table & Data (From init_database.sql & insert_product_data.sql)
+DROP TABLE IF EXISTS cloth;
+
+CREATE TABLE cloth (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    maker VARCHAR(100),
+    price INT NOT NULL,
+    img_body VARCHAR(255),
+    img_front VARCHAR(255),
+    img_back VARCHAR(255),
+    img_detail VARCHAR(255),
+    description TEXT,
+    stock INT DEFAULT 0,
+    sizes VARCHAR(100),
+    colors VARCHAR(100),
+    clothType VARCHAR(50),
+    freq INT DEFAULT 0,
+    opendate TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 INSERT INTO cloth (title, maker, price, img_body, img_front, img_back, img_detail, description, stock, sizes, colors, clothType, freq, opendate) VALUES
 ('Quilted String Backpack Brown', 'Made In Korea', 128000, 'product01_body.jpg', 'product01_front.jpg', 'product01_back.jpg', 'product01_detail.jpg', '', 100, 'FREE', 'BROWN', 'acc', 0, NOW()),
 ('Crochet Wool Knit Shawl Grey', 'Made In Korea', 78000, 'product02_body.jpg', 'product02_front.jpg', 'product02_back.jpg', 'product02_detail.jpg', '', 100, 'FREE', 'GREY, BROWN', 'acc', 0, NOW()),
@@ -24,3 +45,56 @@ INSERT INTO cloth (title, maker, price, img_body, img_front, img_back, img_detai
 ('Color Blocked Nylon Pants Blue', 'Made In Vietnam', 148000, 'product23_body.jpg', 'product23_front.jpg', 'product23_back.jpg', 'product23_detail.jpg', '', 100, 'S, M, L', 'BLUE', 'bottom', 0, NOW()),
 ('Embroidered Patch Jeans Light Blue', 'Made In China', 158000, 'product24_body.jpg', 'product24_front.jpg', 'product24_back.jpg', 'product24_detail.jpg', '', 100, 'S, M, L', 'LIGHT BLUE, BLACK', 'bottom', 0, NOW()),
 ('Middle Length Windbreaker Light Grey', 'Made in Vietnam', 268000, 'product25_body.jpg', 'product25_front.jpg', 'product25_back.jpg', 'product25_detail.jpg', '', 100, 'FREE', 'LIGHT GREY, BLACK', 'outer', 0, NOW());
+
+-- 2. Review & QnA Tables (From backup_setup_queries.sql)
+CREATE TABLE IF NOT EXISTS review (
+    reviewId INT AUTO_INCREMENT PRIMARY KEY,
+    userId VARCHAR(50),
+    clothId INT,
+    rating INT,
+    content TEXT,
+    regdate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (userId) REFERENCES user(userId) ON DELETE CASCADE,
+    FOREIGN KEY (clothId) REFERENCES cloth(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS qna (
+    qnaId INT AUTO_INCREMENT PRIMARY KEY,
+    userId VARCHAR(50),
+    subject VARCHAR(200),
+    content TEXT,
+    status VARCHAR(20) DEFAULT '대기중',
+    answer TEXT,
+    regdate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (userId) REFERENCES user(userId) ON DELETE CASCADE
+);
+
+-- 3. Site Settings (From backup_setup_queries.sql)
+CREATE TABLE IF NOT EXISTS site_settings (setting_key VARCHAR(50) PRIMARY KEY, setting_value TEXT);
+
+INSERT IGNORE INTO site_settings (setting_key, setting_value) VALUES ('about_text', 'MERCI BRINGS SUBURBAN VITALITY INTO THE CITY, OFFERING WOMEN AN ACTIVE LIFESTYLE AND FASHION THAT FUSE EVERYDAY URBAN LIFE WITH EXTRAORDINARY ENERGY.
+
+MERCI는 도시에 사는 여성들에게 교외적인 생동감을 불어넣을 수 있는 새로운 라이프스타일과 패션을 제안합니다. 자연과 도시가 만나는 순간을 담아내며, 일상 속에서 편안하게 입을 수 있는 실루엣과 활동적인 에너지를 동시에 전달합니다.');
+
+-- 4. Schema Updates (ALTER Statements)
+-- QnA Secret Option
+-- Note: 'IF NOT EXISTS' for columns is syntax-dependent. If running on standard MySQL 5.7/8.0 without specific procedure, direct ALTER might fail if column exists.
+-- For a consolidated script, it is safer to rely on 'CREATE TABLE' or ignore errors if running manually, or wrap in procedure.
+-- Assuming this script is run for initialization or migration.
+
+-- Add isSecret to qna (Check if exists logic is complex in pure SQL script without procedures, so we assume these are needed updates)
+-- Uncomment if running on a fresh DB where qna table might not have it, or ignore error if it exists.
+-- ALTER TABLE qna ADD COLUMN isSecret INT DEFAULT 0;
+
+-- User Find Password Columns
+-- ALTER TABLE user ADD COLUMN find_q VARCHAR(100) DEFAULT '기억에 남는 추억의 장소는?';
+-- ALTER TABLE user ADD COLUMN find_a VARCHAR(100) DEFAULT 'merci';
+
+-- Payment & Tracking Columns (From backup_setup_queries_v2.sql)
+-- ALTER TABLE orders ADD COLUMN pay_method VARCHAR(50);
+-- ALTER TABLE orders ADD COLUMN payment_id VARCHAR(100);
+-- ALTER TABLE orders ADD COLUMN tracking_carrier VARCHAR(50);
+-- ALTER TABLE orders ADD COLUMN tracking_num VARCHAR(100);
+
+-- Zipcode Column (From backup_setup_queries_v2.sql)
+-- ALTER TABLE deliveryaddr ADD COLUMN zipcode VARCHAR(10);
