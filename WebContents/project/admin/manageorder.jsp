@@ -65,7 +65,7 @@
                         <th width="100">주문자</th>
                         <th width="100">결제금액</th>
                         <th width="120">주문일</th>
-                        <th width="100">입금자</th>
+                        <th width="120">결제수단</th>
                         <th width="200">배송 정보</th>
                         <th>상태 / 운송장</th>
                         <th width="120">관리</th>
@@ -81,7 +81,10 @@
                                 <td>${o.userName}</td>
                                 <td><fmt:formatNumber value="${o.totalAmount}" type="number"/></td>
                                 <td><fmt:formatDate value="${o.orderDate}" pattern="yyyy-MM-dd"/></td>
-                                <td>${o.depositor}</td>
+                                <td style="font-size: 12px;">
+                                    <strong>${o.payMethod != null ? o.payMethod : '-'}</strong><br>
+                                    <span style="color: #888; font-size: 11px;">${o.paymentId != null ? o.paymentId : ''}</span>
+                                </td>
                                 <td style="font-size: 12px; line-height: 1.4;">
                                     <strong>${o.receiverName}</strong><br>
                                     ${o.address}

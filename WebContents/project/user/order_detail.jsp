@@ -124,17 +124,16 @@
                     <th>총 결제 금액</th>
                     <td>₩ <fmt:formatNumber value="<%=order.getTotalAmount()%>" /></td>
                 </tr>
+                <tr>
+                    <th>결제 수단</th>
+                    <td colspan="3">
+                        <%= (order.getPayMethod() != null) ? order.getPayMethod() : "-" %>
+                        <% if (order.getPaymentId() != null && !order.getPaymentId().isEmpty()) { %>
+                            <span style="font-size: 11px; color: #888; margin-left: 10px;">(ID: <%=order.getPaymentId()%>)</span>
+                        <% } %>
+                    </td>
+                </tr>
             </table>
-            
-            <% if ("결제대기".equals(order.getStatus())) { %>
-            <div style="margin-top: 15px; padding: 15px; background: #fff8f8; border: 1px solid #ffcccc; color: #d63031; font-size: 13px;">
-                <strong>[입금 대기중]</strong><br>
-                아래 계좌로 <strong>₩ <fmt:formatNumber value="<%=order.getTotalAmount()%>" /></strong>을(를) 입금해 주세요.<br>
-                은행: KB국민은행 123-456-7890<br>
-                예금주: MERCI<br>
-                입금자명: <%=order.getDepositor()%>
-            </div>
-            <% } %>
         </div>
         
         <!-- 배송지 정보 -->

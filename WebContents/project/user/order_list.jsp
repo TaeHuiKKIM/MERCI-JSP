@@ -76,16 +76,6 @@
                         </div>
 
                         <!-- Status Messages -->
-                        <c:if test="${o.status == '결제대기'}">
-                            <div class="payment-msg">
-                                <strong>[입금 대기중]</strong><br>
-                                아래 계좌로 <strong>₩ <fmt:formatNumber value="${o.totalAmount}" type="number"/></strong>을(를) 입금해 주세요.<br>
-                                은행: KB국민은행 123-456-7890<br>
-                                예금주: MERCI<br>
-                                입금자명: ${o.depositor}
-                            </div>
-                        </c:if>
-
                         <c:if test="${o.status == '배송중' || o.status == '배송완료'}">
                             <div class="tracking-box">
                                 <strong>[배송 정보]</strong><br>

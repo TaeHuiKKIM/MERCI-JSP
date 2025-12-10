@@ -114,11 +114,6 @@
 						<c:if test="${not empty errorMsg}">
 							<p style="color: #999; font-size: 12px;">(Error: ${errorMsg})</p>
 						</c:if>
-						<p>
-							<a href="setup_db.jsp"
-								style="text-decoration: underline; font-weight: bold;">[DB
-								초기화 페이지로 이동]</a>
-						</p>
 					</div>
 				</c:otherwise>
 			</c:choose>
