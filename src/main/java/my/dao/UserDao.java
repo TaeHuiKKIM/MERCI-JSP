@@ -12,7 +12,7 @@ public class UserDao {
 	public void insert(Connection conn, User user) throws SQLException {
 		PreparedStatement pstmt = null;
 		try {
-			pstmt = conn.prepareStatement("insert into user (userId, password, name, registerTime, find_q, find_a) values(?,?,?,?,?,?)");
+			pstmt = conn.prepareStatement("insert into user (userId, password, name, registerTime, findQ, findA) values(?,?,?,?,?,?)");
 			pstmt.setString(1, user.getUserId());
 			pstmt.setString(2, user.getPassword());
 			pstmt.setString(3, user.getName());
@@ -37,7 +37,7 @@ public class UserDao {
 			// 그리고 답변이 일치하는지 확인해야 합니다.
 			// 하지만 보통 DB에 질문 자체를 저장하거나 질문 키를 저장합니다.
 			// 여기서는 텍스트 그대로 비교합니다.
-			String sql = "SELECT count(*) FROM user WHERE userId = ? AND find_q = ? AND find_a = ?";
+			String sql = "SELECT count(*) FROM user WHERE userId = ? AND findQ = ? AND findA = ?";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, userId);
 			pstmt.setString(2, findQ);

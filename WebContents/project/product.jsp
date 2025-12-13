@@ -116,16 +116,15 @@ try {
 
 				<!-- Category Filter -->
 				<div class="category-nav">
-					<a href="product.jsp"
-						class="<%=category == null ? "active" : ""%>">ALL</a> <a
+					<a href="product.jsp" class="<%=category == null ? "active" : ""%>">ALL</a>
+					<a
 						href="product.jsp?category=Top&sort=<%=sort != null ? sort : ""%>"
 						class="<%="Top".equals(category) ? "active" : ""%>">TOP</a> <a
 						href="product.jsp?category=Bottom&sort=<%=sort != null ? sort : ""%>"
 						class="<%="Bottom".equals(category) ? "active" : ""%>">BOTTOM</a>
 					<a
 						href="product.jsp?category=Outer&sort=<%=sort != null ? sort : ""%>"
-						class="<%="Outer".equals(category) ? "active" : ""%>">OUTER</a>
-					<a
+						class="<%="Outer".equals(category) ? "active" : ""%>">OUTER</a> <a
 						href="product.jsp?category=Acc&sort=<%=sort != null ? sort : ""%>"
 						class="<%="Acc".equals(category) ? "active" : ""%>">ACC</a>
 				</div>
@@ -136,15 +135,13 @@ try {
 						style="margin: 0;">
 						<%
 						if (category != null) {
-						%><input type="hidden" name="category"
-							value="<%=category%>">
+						%><input type="hidden" name="category" value="<%=category%>">
 						<%
 						}
 						%>
 						<%
 						if (search != null) {
-						%><input type="hidden" name="search"
-							value="<%=search%>">
+						%><input type="hidden" name="search" value="<%=search%>">
 						<%
 						}
 						%>
@@ -164,8 +161,7 @@ try {
 					<!-- Search Box -->
 					<form action="product.jsp" method="get" class="search-box">
 						<input type="text" name="search" class="search-input"
-							placeholder="Search..."
-							value="<%=search != null ? search : ""%>">
+							placeholder="Search..." value="<%=search != null ? search : ""%>">
 						<button type="submit" class="search-btn">SEARCH</button>
 					</form>
 				</div>
@@ -220,7 +216,7 @@ try {
 	<script src="style.js"></script>
 
 	<!-- style.css에 .active 클래스 스타일이 메뉴용으로만 되어있을 수 있어 추가 스타일 정의 -->
-	<style>
+<style>
 /* 카테고리 active 상태 스타일 보강 */
 .category-nav a.active {
 	font-weight: bold;
@@ -228,5 +224,6 @@ try {
 	padding-bottom: 2px;
 }
 </style>
+	<jsp:include page="cart_popup.jsp" />
 </body>
 </html>

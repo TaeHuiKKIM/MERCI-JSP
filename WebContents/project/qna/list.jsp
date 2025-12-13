@@ -66,9 +66,10 @@
                                 </td>
                                 <td class="subject">
                                     <%
-                                        my.model.Qna q = (my.model.Qna) pageContext.getAttribute("q");
-                                        boolean isSecret = (q.getIsSecret() == 1);
-                                        boolean canView = isAdmin || (currentUserId != null && currentUserId.equals(q.getUserId()));
+                                        // pageContext에서 현재 반복문의 q 객체를 가져옴
+                                        my.model.Qna qObj = (my.model.Qna) pageContext.getAttribute("q");
+                                        boolean isSecret = (qObj.getIsSecret() == 1);
+                                        boolean canView = isAdmin || (currentUserId != null && currentUserId.equals(qObj.getUserId()));
                                         
                                         if (isSecret) {
                                             if (canView) {
@@ -91,7 +92,39 @@
                                         }
                                     %>
                                 </td>
-                                <td>${q.userName}</td>
+                                
+                                <td>
+                                <%
+                                    String name = qObj.getUserName();
+                                    
+                                    // 비밀글이면서 이름이 null이 아닐 때 마스킹 처리
+                                    if (isSecret && name != null && name.length() >= 1) {
+                                        String maskedName = "";
+                                        
+                                        if (name.length() == 1) {
+                                            maskedName = "*"; // 외자인데 1글자만 잡히는 경우(거의 없음)
+                                        } else if (name.length() == 2) {
+                                            // 이름이 2글자일 때 (예: 이산 -> 이*)
+                                            maskedName = name.substring(0, 1) + "*";
+                                        } else {
+                                            // 이름이 3글자 이상일 때 (예: 홍길동 -> 홍*동, 남궁민수 -> 남**수)
+                                            String first = name.substring(0, 1);
+                                            String last = name.substring(name.length() - 1);
+                                            String stars = "";
+                                            // 중간 글자 수만큼 별표 생성
+                                            for(int i = 0; i < name.length() - 2; i++) {
+                                                stars += "*";
+                                            }
+                                            maskedName = first + stars + last;
+                                        }
+                                        out.print(maskedName);
+                                    } else {
+                                        // 비밀글이 아니면 그대로 출력
+                                        out.print(name);
+                                    }
+                                %>
+                                </td>
+                                
                                 <td><fmt:formatDate value="${q.regdate}" pattern="yyyy-MM-dd"/></td>
                             </tr>
                         </c:forEach>
