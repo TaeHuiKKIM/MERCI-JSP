@@ -224,14 +224,14 @@
         <form action="<%=root%>/user/join_proc.jsp" method="post" name="joinForm" class="login-box">
             
             <div style="display: flex; gap: 5px; margin-bottom: 0;">
-                <input type="text" name="userId" class="login-input" placeholder="ID (EMAIL)" style="flex: 1;" oninput="resetCheckMsg()">
+                <input type="text" name="userId" class="login-input" placeholder="아이디" style="flex: 1;" oninput="resetCheckMsg()">
                 <button type="button" onclick="checkDuplicateId()" style="background: #333; color: white; border: none; padding: 0 10px; font-size: 12px; cursor: pointer; height: 45px;">중복확인</button>
             </div>
             <div id="idCheckMsg" style="font-size: 12px; height: 15px; margin-bottom: 10px;"></div>
 
-            <input type="text" name="name" class="login-input" placeholder="NAME">
-            <input type="password" name="password" class="login-input" placeholder="PASSWORD">
-            <input type="password" name="passwordConfirm" class="login-input" placeholder="CONFIRM PASSWORD">
+            <input type="text" name="name" class="login-input" placeholder="이름">
+            <input type="password" name="password" class="login-input" placeholder="비밀번호">
+            <input type="password" name="passwordConfirm" class="login-input" placeholder="비밀번호 확인">
             
             <select name="findQ" class="login-input" style="height: 45px;">
                 <option value="">비밀번호 찾기 질문 선택</option>
@@ -241,7 +241,7 @@
                 <option value="내가 좋아하는 캐릭터는?">내가 좋아하는 캐릭터는?</option>
                 <option value="다시 태어나면 되고 싶은 것은?">다시 태어나면 되고 싶은 것은?</option>
             </select>
-            <input type="text" name="findA" class="login-input" placeholder="답변 입력">
+            <input type="text" name="findA" class="login-input" placeholder="비밀번호 찾기 답변">
             
             <input type="button" value="CREATE ACCOUNT" class="login-btn gray" onclick="joinCheck()">
             <input type="button" value="BACK TO LOGIN" class="login-btn gray" style="margin-top: 10px; background-color: black; color: white;" onclick="showLoginMode()">
