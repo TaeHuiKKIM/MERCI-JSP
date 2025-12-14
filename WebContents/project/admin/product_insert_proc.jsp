@@ -43,6 +43,38 @@
         String imgBack = multi.getFilesystemName("imgBack");
         String imgDetail = multi.getFilesystemName("imgDetail");
 
+        // [DEV] 로컬 개발 환경에서 서버 리로드 시 이미지 삭제 방지를 위해 원본 폴더로 복사
+        String srcFolder = "C:/webProgramming/ws/ShoppingAddict/WebContents/project/uploadfile";
+        String[] uploadedFiles = {imgBody, imgFront, imgBack, imgDetail};
+        
+        for (String fName : uploadedFiles) {
+            if (fName != null) {
+                File savedFile = new File(realFolder, fName);
+                File destFile = new File(srcFolder, fName);
+                
+                // 원본 폴더가 존재하는지 확인
+                File destDir = new File(srcFolder);
+                if(destDir.exists()) {
+	                FileInputStream fis = null;
+	                FileOutputStream fos = null;
+	                try {
+	                    fis = new FileInputStream(savedFile);
+	                    fos = new FileOutputStream(destFile);
+	                    byte[] buf = new byte[1024];
+	                    int len;
+	                    while ((len = fis.read(buf)) > 0) {
+	                        fos.write(buf, 0, len);
+	                    }
+	                } catch (IOException e) {
+	                    System.out.println("Source copy failed: " + e.getMessage());
+	                } finally {
+	                    if (fis != null) try { fis.close(); } catch(Exception e) {}
+	                    if (fos != null) try { fos.close(); } catch(Exception e) {}
+	                }
+                }
+            }
+        }
+
         // 파일이 업로드되지 않았을 경우 처리 (null 방지 혹은 기본값)
         // 여기서는 업로드 안하면 null로 들어감. 보여줄 때 처리하거나 필수로 강제.
         // imgBody는 form에서 required였음.

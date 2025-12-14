@@ -44,6 +44,38 @@
         String newImgBack = multi.getFilesystemName("imgBack");
         String newImgDetail = multi.getFilesystemName("imgDetail");
 
+        // [DEV] 로컬 개발 환경에서 서버 리로드 시 이미지 삭제 방지를 위해 원본 폴더로 복사
+        String srcFolder = "C:/webProgramming/ws/ShoppingAddict/WebContents/project/uploadfile";
+        String[] uploadedFiles = {newImgBody, newImgFront, newImgBack, newImgDetail};
+        
+        for (String fName : uploadedFiles) {
+            if (fName != null) {
+                File savedFile = new File(realFolder, fName);
+                File destFile = new File(srcFolder, fName);
+                
+                // 원본 폴더가 존재하는지 확인
+                File destDir = new File(srcFolder);
+                if(destDir.exists()) {
+	                FileInputStream fis = null;
+	                FileOutputStream fos = null;
+	                try {
+	                    fis = new FileInputStream(savedFile);
+	                    fos = new FileOutputStream(destFile);
+	                    byte[] buf = new byte[1024];
+	                    int len;
+	                    while ((len = fis.read(buf)) > 0) {
+	                        fos.write(buf, 0, len);
+	                    }
+	                } catch (IOException e) {
+	                    System.out.println("Source copy failed: " + e.getMessage());
+	                } finally {
+	                    if (fis != null) try { fis.close(); } catch(Exception e) {}
+	                    if (fos != null) try { fos.close(); } catch(Exception e) {}
+	                }
+                }
+            }
+        }
+
         // 변경 없으면 기존값 유지
         String imgBody = (newImgBody != null) ? newImgBody : oldImgBody;
         String imgFront = (newImgFront != null) ? newImgFront : oldImgFront;
