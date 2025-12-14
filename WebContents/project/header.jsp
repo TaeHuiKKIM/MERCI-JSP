@@ -224,7 +224,7 @@
         <form action="<%=root%>/user/join_proc.jsp" method="post" name="joinForm" class="login-box">
             
             <div style="display: flex; gap: 5px; margin-bottom: 0;">
-                <input type="text" name="userId" class="login-input" placeholder="아이디" style="flex: 1;" oninput="resetCheckMsg()">
+                <input type="text" name="userId" class="login-input" placeholder="ID (EMAIL)" style="flex: 1;" oninput="resetCheckMsg()">
                 <button type="button" onclick="checkDuplicateId()" style="background: #333; color: white; border: none; padding: 0 10px; font-size: 12px; cursor: pointer; height: 45px;">중복확인</button>
             </div>
             <div id="idCheckMsg" style="font-size: 12px; height: 15px; margin-bottom: 10px;"></div>
