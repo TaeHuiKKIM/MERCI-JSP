@@ -7,6 +7,12 @@
 // [1] 세션 확인
 String userId = (String) session.getAttribute("userId");
 String userName = (String) session.getAttribute("userName");
+
+if (userId == null) {
+	out.println("<script>alert('로그인이 필요합니다.'); location.href='../index.jsp?login=open';</script>");
+	return;
+}
+
 boolean isLogin = (userName != null);
 
 if (userName == null) {

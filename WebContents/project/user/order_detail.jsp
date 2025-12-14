@@ -11,7 +11,7 @@
         out.println("<script>alert('로그인이 필요합니다.'); location.href='../index.jsp?login=open';</script>");
         return;
     }
-    if (orderIdStr == null) {
+    if (orderIdStr == null || orderIdStr.trim().isEmpty()) {
         out.println("<script>alert('잘못된 접근입니다.'); history.back();</script>");
         return;
     }

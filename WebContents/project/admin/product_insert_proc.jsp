@@ -15,6 +15,7 @@
 
     ServletContext context = getServletContext();
     realFolder = context.getRealPath(saveFolder);
+    System.out.println("DEBUG: Upload Path = " + realFolder);
 
     // 폴더 없으면 생성 (옵션)
     File dir = new File(realFolder);
