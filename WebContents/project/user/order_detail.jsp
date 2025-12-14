@@ -171,6 +171,7 @@
                     <c:set var="items" value="<%=items%>" />
                     <c:set var="reviewMap" value="<%=reviewMap%>" />
                     <c:set var="status" value="<%=order.getStatus()%>" />
+                    <c:set var="order" value="<%=order%>" />
                     
                     <c:forEach var="item" items="${items}">
                         <tr>
