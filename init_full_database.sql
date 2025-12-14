@@ -98,3 +98,6 @@ MERCI는 도시에 사는 여성들에게 교외적인 생동감을 불어넣을
 
 -- Zipcode Column (From backup_setup_queries_v2.sql)
 -- ALTER TABLE deliveryaddr ADD COLUMN zipcode VARCHAR(10);
+
+ALTER TABLE user ADD COLUMN findQ VARCHAR(100) DEFAULT '기억에 남는 추억의 장소는?';
+ALTER TABLE user ADD COLUMN findA VARCHAR(100) DEFAULT 'merci';
