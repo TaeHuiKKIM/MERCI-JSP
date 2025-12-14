@@ -13,7 +13,7 @@ public class ClothDao {
     public void insert(Connection conn, Cloth cloth) throws SQLException {
         PreparedStatement pstmt = null;
         try {
-            String sql = "INSERT INTO cloth (title, maker, price, imgBody, imgFront, imgBack, imgDetail, description, stock, sizes, colors, clothType, freq, openDate) "
+            String sql = "INSERT INTO cloth (title, maker, price, img_Body, img_Front, img_Back, img_Detail, description, stock, sizes, colors, clothType, freq, openDate) "
                        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             
             pstmt = conn.prepareStatement(sql);
@@ -202,7 +202,7 @@ public class ClothDao {
     public void update(Connection conn, Cloth cloth) throws SQLException {
         PreparedStatement pstmt = null;
         try {
-            String sql = "UPDATE cloth SET title=?, maker=?, price=?, imgBody=?, imgFront=?, imgBack=?, imgDetail=?, description=?, stock=?, sizes=?, colors=?, clothType=? WHERE id=?";
+            String sql = "UPDATE cloth SET title=?, maker=?, price=?, img_Body=?, img_Front=?, img_Back=?, img_Detail=?, description=?, stock=?, sizes=?, colors=?, clothType=? WHERE id=?";
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, cloth.getTitle());
             pstmt.setString(2, cloth.getMaker());
@@ -244,10 +244,10 @@ public class ClothDao {
         cloth.setTitle(rs.getString("title"));
         cloth.setMaker(rs.getString("maker"));
         cloth.setPrice(rs.getInt("price"));
-        cloth.setImgBody(rs.getString("imgBody"));
-        cloth.setImgFront(rs.getString("imgFront"));
-        cloth.setImgBack(rs.getString("imgBack"));
-        cloth.setImgDetail(rs.getString("imgDetail"));
+        cloth.setImgBody(rs.getString("img_Body"));
+        cloth.setImgFront(rs.getString("img_Front"));
+        cloth.setImgBack(rs.getString("img_Back"));
+        cloth.setImgDetail(rs.getString("img_Detail"));
         cloth.setDescription(rs.getString("description"));
         cloth.setStock(rs.getInt("stock"));
         cloth.setSizes(rs.getString("sizes"));
