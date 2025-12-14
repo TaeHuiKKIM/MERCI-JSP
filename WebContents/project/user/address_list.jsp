@@ -53,7 +53,7 @@
                     <strong style="font-size:16px;"><%= addr.getAddrName() %></strong> 
                     <span style="margin-left:5px;"><%= addr.getRecipientName() %></span>
                     <% if(isDef) { %><span class="badge-default">기본</span><% } %>
-                    <p style="margin:8px 0; color:#444;"><%= addr.getAddrRoad() %> <%= addr.getAddrDetail() %></p>
+                    <p style="margin:8px 0; color:#444;">[<%= addr.getZipcode() %>] <%= addr.getAddrRoad() %> <%= addr.getAddrDetail() %></p>
                     <p style="color:#888; font-size:13px;"><%= addr.getPhone() %></p>
                 </div>
             </div>

@@ -104,6 +104,7 @@ String root = request.getContextPath() + "/project";
 
 					<p class="address-text">
 						주소 :
+						[<%=defaultAddr.getZipcode()%>]
 						<%=defaultAddr.getAddrRoad()%>
 						(<%=defaultAddr.getAddrDetail()%>)
 					</p>

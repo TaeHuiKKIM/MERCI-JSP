@@ -247,7 +247,7 @@
                 <div class="form-group">
                     <label class="form-label">주소</label>
                     <div style="display:flex; gap:10px; margin-bottom:5px;">
-                        <input type="text" id="postcode" class="form-input" style="width:100px;" placeholder="우편번호" readonly>
+                        <input type="text" id="postcode" class="form-input" style="width:100px;" placeholder="우편번호" value="<%= (defaultAddr != null && defaultAddr.getZipcode() != null) ? defaultAddr.getZipcode() : "" %>" readonly>
                         <button type="button" onclick="execDaumPostcode()" style="padding:0 10px; cursor:pointer;">주소 찾기</button>
                     </div>
                     <input type="text" id="roadAddress" name="addr1" class="form-input" value="<%= (defaultAddr != null) ? defaultAddr.getAddrRoad() : "" %>" placeholder="도로명 주소" readonly style="margin-bottom:5px;">
