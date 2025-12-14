@@ -1,0 +1,2 @@
+ALTER TABLE user ADD COLUMN findQ VARCHAR(100) DEFAULT '기억에 남는 추억의 장소는?';
+ALTER TABLE user ADD COLUMN findA VARCHAR(100) DEFAULT 'merci';

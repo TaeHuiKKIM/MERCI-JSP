@@ -39,8 +39,8 @@
             <input type="hidden" name="mode" value="checkRecovery">
             
             <div class="input-group">
-                <label>아이디 (이메일)</label>
-                <input type="text" name="userId" required placeholder="예: user@example.com">
+                <label>아이디</label>
+                <input type="text" name="userId" required placeholder="아이디를 입력하세요">
             </div>
             
             <div class="input-group">

@@ -67,6 +67,8 @@ public class UserDao {
 				user.setPassword(rs.getString(2));
 				user.setName(rs.getString(3));
 				user.setRegisterTime(rs.getTimestamp(4));
+				user.setFindQ(rs.getString(5));
+				user.setFindA(rs.getString(6));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -195,6 +197,8 @@ public class UserDao {
 				user.setPassword(rs.getString(2));
 				user.setName(rs.getString(3));
 				user.setRegisterTime(rs.getTimestamp(4));
+				user.setFindQ(rs.getString(5));
+				user.setFindA(rs.getString(6));
 				userList.add(user);
 			}
 		} finally {
@@ -228,11 +232,13 @@ public class UserDao {
 		PreparedStatement pstmt = null;
 		try {
 			// userId를 kakaoId로, 비밀번호는 임의의 값(kakao_user), 이름은 닉네임 사용
-			pstmt = conn.prepareStatement("insert into user values(?,?,?,?)");
+			pstmt = conn.prepareStatement("insert into user (userId, password, name, registerTime, findQ, findA) values(?,?,?,?,?,?)");
 			pstmt.setString(1, kakaoId);
 			pstmt.setString(2, "kakao_user"); // 비밀번호는 더미값
 			pstmt.setString(3, nickname);
 			pstmt.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
+			pstmt.setString(5, "카카오톡 가입 사용자"); // findQ의 기본값
+			pstmt.setString(6, "카카오"); // findA의 기본값
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
