@@ -35,7 +35,9 @@
             
             int result = dao.updatePassword(conn, userId, newPw);
             if (result > 0) {
-                out.println("<script>alert('비밀번호가 성공적으로 변경되었습니다.\n로그인 해주세요.'); location.href='../index.jsp?login=open';</script>");
+                out.println("<!DOCTYPE html><html><head><meta charset='UTF-8'></head><body>");
+                out.println("<script>alert('비밀번호가 성공적으로 변경되었습니다.\\n로그인 해주세요.'); location.href='../index.jsp?login=open';</script>");
+                out.println("</body></html>");
                 return;
             } else {
                 out.println("<script>alert('비밀번호 변경 실패.'); history.back();</script>");
